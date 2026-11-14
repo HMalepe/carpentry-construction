@@ -56,8 +56,19 @@ export function findElements(html, attrRe) {
   return out;
 }
 
+/** Remove ranges; when an element sits on its own line(s), remove its indentation and line break too. */
 const removeRanges = (html, ranges) =>
-  ranges.sort((a, b) => b.start - a.start).reduce((h, r) => h.slice(0, r.start) + h.slice(r.end), html);
+  ranges
+    .sort((a, b) => b.start - a.start)
+    .reduce((h, r) => {
+      let { start, end } = r;
+      const lineStart = h.lastIndexOf('\n', start - 1) + 1;
+      if (/^[ \t]*$/.test(h.slice(lineStart, start)) && /^[ \t]*(\n|$)/.test(h.slice(end))) {
+        start = lineStart;
+        end += h.slice(end).match(/^[ \t]*\n?/)[0].length;
+      }
+      return h.slice(0, start) + h.slice(end);
+    }, html);
 
 /**
  * Production clean-up.

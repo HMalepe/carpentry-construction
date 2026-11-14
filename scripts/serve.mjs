@@ -13,14 +13,14 @@ const PORT = Number(process.env.PORT) || 3000;
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.woff2': 'font/woff2', '.pdf': 'application/pdf', '.xml': 'application/xml', '.txt': 'text/plain; charset=utf-8', '.json': 'application/json', '.webmanifest': 'application/manifest+json' };
 const rules = JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8')).headers.map((r) => ({ re: new RegExp(`^${r.source}$`), headers: r.headers }));
 
-export function createServer() {
+export function createServer(dist = DIST) {
   return http.createServer((req, res) => {
     const url = decodeURIComponent(new URL(req.url, 'http://x').pathname);
     if (!path.extname(url) && !url.endsWith('/')) { res.writeHead(308, { Location: url + '/' }); return res.end(); }
-    let file = path.join(DIST, url.endsWith('/') ? url + 'index.html' : url);
-    if (!file.startsWith(DIST)) { res.writeHead(403); return res.end(); }
+    let file = path.join(dist, url.endsWith('/') ? url + 'index.html' : url);
+    if (!file.startsWith(dist)) { res.writeHead(403); return res.end(); }
     let status = 200;
-    if (!fs.existsSync(file)) { file = path.join(DIST, '404.html'); status = 404; }
+    if (!fs.existsSync(file)) { file = path.join(dist, '404.html'); status = 404; }
     for (const r of rules) if (r.re.test(url)) for (const h of r.headers) res.setHeader(h.key, h.value);
     res.setHeader('Content-Type', TYPES[path.extname(file)] || 'application/octet-stream');
     res.writeHead(status);
