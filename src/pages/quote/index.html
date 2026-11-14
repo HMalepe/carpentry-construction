@@ -21,7 +21,7 @@
 
 <section class="section tight" aria-label="Quote builder">
   <div class="wrap qb-wrap">
-    <form class="qb" id="qb" action="#" autocomplete="on">
+    <div class="qb" id="qb" role="group" aria-label="Quote request steps">
       <fieldset>
         <legend><span class="mono">Step 01</span>What do you need?</legend>
         <div class="chips">
@@ -66,7 +66,7 @@
 
       <fieldset>
         <legend><span class="mono">Step 05 · Optional</span>Anything else?</legend>
-        <div class="field" style="margin-top:0">
+        <div class="field mt-0">
           <label for="qb-name">Your name</label>
           <input id="qb-name" name="name" type="text" maxlength="60" autocomplete="name">
         </div>
@@ -75,10 +75,10 @@
           <textarea id="qb-notes" name="notes" maxlength="500"></textarea>
         </div>
       </fieldset>
-    </form>
+    </div>
 
-    <aside class="qb-out" aria-labelledby="sum-t">
-      <p class="mono" id="sum-t" style="margin-bottom:12px">Your message preview</p>
+    <section class="qb-out" aria-labelledby="sum-t">
+      <p class="mono mb-12" id="sum-t">Your message preview</p>
       <div class="summary" aria-live="polite">
         <div class="h"><span>QUOTE REQUEST</span><span>MALEPE R&amp;R</span></div>
         <div class="r"><span>Service</span><b data-out="service" class="empty">—</b></div>
@@ -93,6 +93,6 @@
         <a class="btn btn-o" id="qb-mail" href="{{mailHref}}" data-to="{{mailTo}}">Send by email instead</a>
       </div>
       <p class="qb-note">WhatsApp opens with the message typed out: you can still edit it, and attach photos or plans, before you press send. See our <a class="link" href="/privacy/">privacy notice</a>.</p>
-    </aside>
+    </section>
   </div>
 </section>

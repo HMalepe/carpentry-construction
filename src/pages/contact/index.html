@@ -25,21 +25,21 @@
         <p class="mono">/01 · Fastest</p>
         <h2>WhatsApp</h2>
         <p>Quotes, site visits and questions. Your message opens already written: just add the details.</p>
-        <p class="mono" style="color:var(--ink-2)">+{{waNumber}}</p>
+        <p class="mono ink-2">+{{waNumber}}</p>
         <a class="btn btn-lg" data-wa="general">Get a Quote on WhatsApp <span aria-hidden="true">↗</span></a>
       </div>
       <div class="c-card">
         <p class="mono">/02 · Call</p>
         <h2>Phone</h2>
         <p>Talk to us directly during office hours.</p>
-        <p class="mono" style="color:var(--ink-2)">{{cfg.phone}}</p>
+        <p class="mono ink-2">{{cfg.phone}}</p>
         <a class="btn btn-o btn-lg" href="{{telHref}}">Call now</a>
       </div>
       <div class="c-card">
         <p class="mono">/03 · Email</p>
         <h2>Email</h2>
         <p>For tender documents, formal RFQs and anything with attachments.</p>
-        <p class="mono" style="color:var(--ink-2);text-transform:none">{{cfg.email}}</p>
+        <p class="mono ink-2 nocase">{{cfg.email}}</p>
         <a class="btn btn-o btn-lg" href="{{mailHref}}">Send an email</a>
       </div>
     </div>
@@ -50,7 +50,7 @@
   <div class="wrap split">
     <div class="panel">
       <p class="mono">/04 · Business details</p>
-      <h2 class="h-md" id="det-t" style="margin:10px 0 20px">Malepe R and R (Pty) Ltd</h2>
+      <h2 class="h-md my-10-20" id="det-t">Malepe R and R (Pty) Ltd</h2>
       <dl class="dl">
         <dt>Address</dt><dd>{{cfg.address}}</dd>
         <dt>Town</dt><dd>{{cfg.locality}}, Maruleng, {{cfg.region}}</dd>
@@ -69,7 +69,7 @@
 <section class="section" aria-labelledby="tip-t">
   <div class="wrap">
     <p class="eyebrow mono"><span class="n">/05</span>Get a faster quote</p>
-    <h2 class="h-lg" id="tip-t" style="margin-bottom:28px">What to include in your message</h2>
+    <h2 class="h-lg mb-28" id="tip-t">What to include in your message</h2>
     <ol class="steps">
       <li class="step"><span class="mono">01</span><h3>What</h3><p>The service and the job, e.g. "carpentry: built-in cupboards, 2 bedrooms".</p></li>
       <li class="step"><span class="mono">02</span><h3>Where</h3><p>Town, or tap 📎 → Location in WhatsApp to send a pin.</p></li>

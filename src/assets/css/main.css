@@ -329,6 +329,17 @@ a.card:hover .ar{color:var(--accent);transform:translate(2px,-2px)}
   .reg-head{display:grid;background:rgba(77,163,255,.06)}
   .reg-head span{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
 }
+.reg-table{border:1px solid var(--line)}
+.reg-table table{width:100%;border-collapse:collapse;font-size:15px}
+.reg-table th,.reg-table td{text-align:left;vertical-align:top;padding:14px 16px;border-bottom:1px solid var(--line)}
+.reg-table tbody tr:last-child>*{border-bottom:0}
+.reg-table tbody th{font-weight:500;width:46%}
+.reg-table td{color:var(--ink-2)}
+.reg-table thead th,.reg-table .st,.reg-table .st-m{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:400}
+.reg-table thead th{background:rgba(77,163,255,.06)}
+.reg-table .st-m{display:block;margin-top:6px}
+.reg-table .st{display:none}
+@media (min-width:900px){.reg-table th,.reg-table td{padding:16px 22px}.reg-table .st{display:table-cell}.reg-table .st-m{display:none}.reg-table tbody th{width:34%}}
 .reg-mini .reg-row{grid-template-columns:1fr auto;align-items:center}
 
 /* area */
@@ -433,9 +444,9 @@ a.card:hover .ar{color:var(--accent);transform:translate(2px,-2px)}
 .summary{background:#F6F2EC;color:#1A1A1A;max-width:460px}
 .summary .h{background:#1A1A1A;color:var(--accent);padding:10px 14px;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;display:flex;justify-content:space-between}
 .summary .r{display:flex;justify-content:space-between;gap:16px;padding:10px 14px;border-bottom:1px solid #E6DED2;font-size:14px}
-.summary .r span{color:#7c7266;flex:none}
+.summary .r span{color:#655B50;flex:none}
 .summary .r b{font-weight:500;text-align:right;overflow-wrap:anywhere}
-.summary .r b.empty{color:#B0A595;font-weight:400}
+.summary .r b.empty{color:#857A6D;font-weight:400}
 .qb-acts{display:grid;gap:10px;margin-top:16px;max-width:460px}
 .qb-note{margin-top:14px;font-size:13.5px;color:var(--muted);max-width:460px}
 .qb-err{color:var(--warn);font-size:14px;min-height:1.4em}
@@ -477,6 +488,14 @@ a.card:hover .ar{color:var(--accent);transform:translate(2px,-2px)}
   .titleblock>div:first-child{grid-column:auto}
   .titleblock>div:last-child{border-right:0}
 }
+
+/* utilities (no inline styles: keeps the CSP free of 'unsafe-inline') */
+.mt-0{margin-top:0!important}.mt-10{margin-top:10px!important}.mt-12{margin-top:12px!important}.mt-14{margin-top:14px!important}.mt-18{margin-top:18px!important}.mt-20{margin-top:20px!important}.mt-24{margin-top:24px!important}.mt-28{margin-top:28px!important}
+.mb-12{margin-bottom:12px!important}.mb-24{margin-bottom:24px!important}.mb-28{margin-bottom:28px!important}.my-10-20{margin:10px 0 20px!important}.pt-48{padding-top:48px!important}
+.ink-2{color:var(--ink-2)}.nocase{text-transform:none}.note-sm{margin-top:8px;color:var(--ink-3);font-size:14.5px}
+.prose-h{margin:36px 0 12px;color:var(--ink)}
+.dot.warn{background:var(--warn);box-shadow:0 0 12px var(--warn)}
+.lb{max-width:1200px}.lb img{width:100%;height:auto;margin-top:12px}
 
 /* 404 */
 .nf{min-height:60vh;display:flex;flex-direction:column;justify-content:center}

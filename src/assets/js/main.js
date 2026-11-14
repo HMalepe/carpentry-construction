@@ -47,9 +47,8 @@
   var lbLinks = d.querySelectorAll('a[data-lightbox]');
   if (lbLinks.length && typeof HTMLDialogElement === 'function') {
     var lb = d.createElement('dialog');
-    lb.className = 'sheet';
-    lb.style.maxWidth = '1200px';
-    lb.innerHTML = '<div class="sheet-in"><div class="sheet-head"><span class="mono"></span><button class="sheet-x" type="button" aria-label="Close">✕</button></div><img alt="" style="width:100%;height:auto;margin-top:12px"></div>';
+    lb.className = 'sheet lb';
+    lb.innerHTML = '<div class="sheet-in"><div class="sheet-head"><span class="mono"></span><button class="sheet-x" type="button" aria-label="Close">✕</button></div><img alt=""></div>';
     d.body.appendChild(lb);
     lb.addEventListener('click', function (e) { if (e.target === lb || e.target.closest('button')) lb.close(); });
     lbLinks.forEach(function (a) {
@@ -141,7 +140,6 @@
     render();
   });
   form.addEventListener('input', render);
-  form.addEventListener('submit', function (e) { e.preventDefault(); send.click(); });
 
   send.addEventListener('click', function (e) {
     var s = state();

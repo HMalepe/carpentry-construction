@@ -14,7 +14,7 @@
     <div class="page-hero-grid">
       <div>
         <p class="status"><span class="dot" aria-hidden="true"></span>For procurement officers &amp; bid committees</p>
-        <h1 class="h-xl" style="margin-top:24px">Tenders &amp;<br><span class="out">compliance.</span></h1>
+        <h1 class="h-xl mt-24">Tenders &amp;<br><span class="out">compliance.</span></h1>
       </div>
       <p class="lead">Everything needed to add Malepe R&amp;R to a supplier list or evaluate a bid, on one page. Certified copies are available on request.</p>
     </div>
@@ -24,36 +24,41 @@
 <section class="section tight" aria-labelledby="reg-t">
   <div class="wrap">
     <p class="eyebrow mono"><span class="n">/01</span>Compliance register</p>
-    <h2 class="h-md" id="reg-t" style="margin-bottom:24px">Registration &amp; compliance</h2>
-    <div class="register" role="table" aria-label="Compliance register">
-      <div class="reg-row reg-head" role="row"><span role="columnheader">Document</span><span role="columnheader">Reference</span><span role="columnheader">Availability</span></div>
-      <div class="reg-row" role="row"><span class="doc" role="cell">Company registration (CIPC)</span><span class="ref" role="cell">{{cfg.compliance.cipc}}</span><span class="st" role="cell">Certificate on request</span></div>
-      <div class="reg-row" role="row"><span class="doc" role="cell">Central Supplier Database (CSD)</span><span class="ref" role="cell">{{cfg.compliance.csd}}</span><span class="st" role="cell">CSD report on request</span></div>
-      <div class="reg-row" role="row"><span class="doc" role="cell">CIDB grading</span><span class="ref" role="cell">{{cfg.compliance.cidb}}</span><span class="st" role="cell">Verify on CIDB register</span></div>
-      <div class="reg-row" role="row"><span class="doc" role="cell">NHBRC registration</span><span class="ref" role="cell">{{cfg.compliance.nhbrc}}</span><span class="st" role="cell">Certificate on request</span></div>
-      <div class="reg-row" role="row"><span class="doc" role="cell">B-BBEE status</span><span class="ref" role="cell">{{cfg.compliance.bbbee}}</span><span class="st" role="cell">Certificate / affidavit on request</span></div>
-      <div class="reg-row" role="row"><span class="doc" role="cell">COIDA</span><span class="ref" role="cell">{{cfg.compliance.coida}}</span><span class="st" role="cell">Letter on request</span></div>
-      <div class="reg-row" role="row"><span class="doc" role="cell">Tax compliance status (SARS)</span><span class="ref" role="cell">{{cfg.compliance.tax}}</span><span class="st" role="cell">TCS PIN shared with procuring entity</span></div>
+    <h2 class="h-md mb-24" id="reg-t">Registration &amp; compliance</h2>
+    <div class="reg-table">
+      <table>
+        <caption class="vh">Compliance register</caption>
+        <thead><tr><th scope="col">Document</th><th scope="col">Reference</th><th scope="col" class="st">Availability</th></tr></thead>
+        <tbody>
+        <tr><th scope="row">Company registration (CIPC)<small class="st-m">Certificate on request</small></th><td>{{cfg.compliance.cipc}}</td><td class="st">Certificate on request</td></tr>
+        <tr><th scope="row">Central Supplier Database (CSD)<small class="st-m">CSD report on request</small></th><td>{{cfg.compliance.csd}}</td><td class="st">CSD report on request</td></tr>
+        <tr><th scope="row">CIDB grading<small class="st-m">Verify on CIDB register</small></th><td>{{cfg.compliance.cidb}}</td><td class="st">Verify on CIDB register</td></tr>
+        <tr><th scope="row">NHBRC registration<small class="st-m">Certificate on request</small></th><td>{{cfg.compliance.nhbrc}}</td><td class="st">Certificate on request</td></tr>
+        <tr><th scope="row">B-BBEE status<small class="st-m">Certificate / affidavit on request</small></th><td>{{cfg.compliance.bbbee}}</td><td class="st">Certificate / affidavit on request</td></tr>
+        <tr><th scope="row">COIDA<small class="st-m">Letter on request</small></th><td>{{cfg.compliance.coida}}</td><td class="st">Letter on request</td></tr>
+        <tr><th scope="row">Tax compliance status (SARS)<small class="st-m">TCS PIN shared with procuring entity</small></th><td>{{cfg.compliance.tax}}</td><td class="st">TCS PIN shared with procuring entity</td></tr>
+        </tbody>
+      </table>
     </div>
-    <p class="mono" style="margin-top:14px">Ask for certified copies via WhatsApp or email.</p>
+    <p class="mono mt-14">Ask for certified copies via WhatsApp or email.</p>
   </div>
 </section>
 
 <section class="section" id="profile" aria-labelledby="prof-t">
   <div class="wrap split">
-    <div class="frame" style="padding-top:48px">
+    <div class="frame pt-48">
       <div class="dim" aria-hidden="true"><span>COMPANY PROFILE · PDF</span></div>
       <p class="mono">Download</p>
-      <h2 class="h-md" id="prof-t" style="margin-top:10px">Company profile</h2>
-      <p class="prose" style="margin-top:12px">Company overview, services, registration details and contact information in one PDF, ready to attach to a supplier file or bid evaluation.</p>
+      <h2 class="h-md mt-10" id="prof-t">Company profile</h2>
+      <p class="prose mt-12">Company overview, services, registration details and contact information in one PDF, ready to attach to a supplier file or bid evaluation.</p>
       <div class="acts">
         <a class="btn btn-lg" href="{{attr.profilePdf}}" download>Download company profile (PDF)</a>
       </div>
-      <p class="mono" style="margin-top:14px">Placeholder file until the final profile is supplied <span class="ph-tag" data-placeholder>[Replace PDF]</span></p>
+      <p class="mono mt-14">Placeholder file until the final profile is supplied <span class="ph-tag" data-placeholder>[Replace PDF]</span></p>
     </div>
     <div class="panel">
       <p class="mono">/02 · Bid documents</p>
-      <h2 class="h-md" style="margin-top:10px">Standard bidding forms</h2>
+      <h2 class="h-md mt-10">Standard bidding forms</h2>
       <p>Request any of the following, completed for your RFQ or tender:</p>
       <ul class="ticks">
         <li>SBD 1 / MBD 1: invitation to bid</li>
@@ -84,7 +89,7 @@
     <div>
       <p class="eyebrow mono"><span class="n">/04</span>Capacity</p>
       <h2 class="h-lg" id="sect-t">What we tender for</h2>
-      <p class="lead" style="margin-top:20px">Construction, maintenance and carpentry work for public facilities in Maruleng and surrounds.</p>
+      <p class="lead mt-20">Construction, maintenance and carpentry work for public facilities in Maruleng and surrounds.</p>
       <ul class="towns"><li>Building construction</li><li>Facility maintenance</li><li>Renovations &amp; repairs</li><li>Carpentry &amp; roofing</li></ul>
     </div>
     <div class="ph-note" data-placeholder><span class="mono">[Placeholder] Capacity statement</span>Add a short, factual capacity statement: CIDB grade and class, the size of contract you can carry, plant and equipment owned, and the number of permanent staff. Only include what your documents can prove.</div>
@@ -98,7 +103,7 @@
       <div>
         <p class="eyebrow mono"><span class="n">/ TENDER CONTACT</span>Procurement queries</p>
         <h2 class="h-lg" id="tc-t">Need a document for a bid?</h2>
-        <p class="lead" style="margin-top:18px">Tell us the tender or RFQ number and the documents you need. Email: {{cfg.email}}</p>
+        <p class="lead mt-18">Tell us the tender or RFQ number and the documents you need. Email: {{cfg.email}}</p>
       </div>
       <div class="acts">
         <a class="btn btn-lg" data-wa="tender">WhatsApp us <span aria-hidden="true">↗</span></a>

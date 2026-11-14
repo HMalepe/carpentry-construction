@@ -98,8 +98,7 @@ function tabbar(meta) {
   ];
   return `<nav class="tabbar" aria-label="Quick">${t
     .map((x) => `<a class="tab${x.cls || ''}" href="${x.href}"${cur(meta, x.key)}>${x.i}<span>${x.label}</span></a>`)
-    .join('')}</nav>
-<a class="fab" data-wa="general" aria-label="Get a quote on WhatsApp">${icon.wa}</a>`;
+    .join('')}<a class="fab" data-wa="general" aria-label="Get a quote on WhatsApp">${icon.wa}</a></nav>`;
 }
 
 function sheet() {
@@ -135,7 +134,7 @@ function footer(meta) {
         <li>{{cfg.address}}</li>
       </ul></div>
     </div>
-    <div class="titleblock" aria-label="Drawing title block">
+    <div class="titleblock">
       <div><span class="mono">Drawn by</span>${esc(cfg.name)}</div>
       <div><span class="mono">Sheet</span>${esc(meta.title.split('|')[0].trim())}</div>
       <div><span class="mono">Dwg no.</span>${esc(meta.dwg || 'MRR-000')}</div>
@@ -289,7 +288,8 @@ function applyTokens(html) {
   html = html.replace(/\{\{cfg\.([\w.]+)\}\}/g, (_, k) => {
     const v = get(cfg, k);
     if (v === undefined) throw new Error(`Unknown config key: ${k}`);
-    return isPh(v) ? `<span class="ph-tag" data-placeholder>${esc(v)}</span>` : esc(v);
+    if (isPh(v)) return `<span class="ph-tag" data-placeholder>${esc(v)}</span>`;
+    return k === 'phone' ? esc(v).replace(/ /g, '&nbsp;') : esc(v);
   });
   html = html.replace(/\{\{attr\.([\w.]+)\}\}/g, (_, k) => esc(get(cfg, k)));
   const simple = {
