@@ -13,7 +13,12 @@
   /* ---- mobile menu: close on Escape / outside tap / link tap ---- */
   var menu = d.querySelector('.menu');
   if (menu) {
-    d.addEventListener('keydown', function (e) { if (e.key === 'Escape') menu.open = false; });
+    d.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && menu.open) {
+        menu.open = false;
+        menu.querySelector('summary').focus(); // keep keyboard users in place
+      }
+    });
     d.addEventListener('click', function (e) {
       if (menu.open && !menu.contains(e.target)) menu.open = false;
     });
@@ -154,6 +159,8 @@
         copy.textContent = 'Copied ✓';
         copy.classList.add('copy-ok');
         setTimeout(function () { copy.textContent = 'Copy message'; copy.classList.remove('copy-ok'); }, 2000);
+      }, function () {
+        err.textContent = 'Your browser blocked copying. Use “Send on WhatsApp” or “Send by email” instead.';
       });
     });
   }
@@ -161,13 +168,18 @@
   // Pre-select from URL: /quote/?service=carpentry&item=Built-in%20cupboards
   var q = new URLSearchParams(location.search);
   var pre = (q.get('service') || '').toLowerCase();
-  form.querySelectorAll('input[name="service"]').forEach(function (i) {
+  if (!val('service')) form.querySelectorAll('input[name="service"]').forEach(function (i) {
     if (i.value.toLowerCase() === pre) i.checked = true;
   });
   showGroups(val('service'));
   var preItem = q.get('item');
-  if (preItem) form.querySelectorAll('input[name="item"]').forEach(function (i) {
+  if (preItem && !val('item')) form.querySelectorAll('input[name="item"]').forEach(function (i) {
     if (i.value === preItem && !i.closest('[hidden]')) i.checked = true;
   });
   render();
+
+  // On Back/Forward, Chrome restores ticked choices after 'load' but before 'pageshow' (and the
+  // back-forward cache restores them with persisted=true). Re-sync on every pageshow so the visible
+  // job list, the preview card and the WhatsApp message always match what is ticked on screen.
+  window.addEventListener('pageshow', function () { showGroups(val('service')); render(); });
 })();
