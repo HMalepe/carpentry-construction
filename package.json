@@ -1,0 +1,13 @@
+{
+  "name": "malepe-rr-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Website for Malepe R and R (Pty) Ltd: construction, maintenance and carpentry in Hoedspruit, Limpopo.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs && node scripts/serve.mjs",
+    "start": "node scripts/serve.mjs"
+  },
+  "engines": { "node": ">=18" }
+}

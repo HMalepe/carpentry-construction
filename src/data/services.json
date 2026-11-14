@@ -1,0 +1,50 @@
+{
+  "construction": {
+    "label": "Construction",
+    "num": "01",
+    "path": "/services/construction/",
+    "short": "New builds, extensions and structural work.",
+    "items": [
+      { "name": "New builds", "desc": "Residential, commercial and public buildings built to approved drawings." },
+      { "name": "Extensions & additions", "desc": "Extra rooms, storeys and outbuildings tied into the existing structure." },
+      { "name": "Renovations & alterations", "desc": "Internal re-planning, upgrades and refurbishment of existing buildings." },
+      { "name": "Foundations & concrete work", "desc": "Setting out, excavation, footings, slabs and reinforced concrete." },
+      { "name": "Brickwork & plastering", "desc": "Load-bearing and partition walls, plaster and screed." },
+      { "name": "Structural repairs", "desc": "Cracked walls, failed lintels and settlement damage made good." },
+      { "name": "Paving & boundary walls", "desc": "Driveways, walkways, retaining and boundary walls." },
+      { "name": "Ablution facilities", "desc": "New and upgraded toilet and wash facilities for schools, clinics and sites." }
+    ]
+  },
+  "maintenance": {
+    "label": "Maintenance",
+    "num": "02",
+    "path": "/services/maintenance/",
+    "short": "Planned and reactive upkeep for public facilities.",
+    "items": [
+      { "name": "Planned maintenance programmes", "desc": "Scheduled inspections and repairs for facilities, priced per cycle." },
+      { "name": "Reactive repairs", "desc": "Call-out repairs when something breaks between scheduled visits." },
+      { "name": "Painting & waterproofing", "desc": "Interior and exterior painting, roof and wall waterproofing." },
+      { "name": "Roof & gutter repairs", "desc": "Leaks, loose sheeting, flashings, gutters and downpipes." },
+      { "name": "Ceilings & partitions", "desc": "Replacing damaged ceiling boards, cornices and drywall partitions." },
+      { "name": "Doors, windows & ironmongery", "desc": "Re-hanging doors, replacing frames, hinges, locks and glazing." },
+      { "name": "Tiling & floor repairs", "desc": "Cracked tiles, screed repairs and floor finishes." },
+      { "name": "Fencing & gates", "desc": "Palisade, mesh and gate repairs and replacement." }
+    ]
+  },
+  "carpentry": {
+    "label": "Carpentry",
+    "num": "03",
+    "path": "/services/carpentry/",
+    "short": "Roofing, doors, frames, cupboards and fit-outs.",
+    "items": [
+      { "name": "Roof trusses & roofing", "desc": "Timber roof structures, trusses, purlins and roof sheeting." },
+      { "name": "Doors & frames", "desc": "Supplying, fitting and hanging internal and external doors." },
+      { "name": "Built-in cupboards", "desc": "Bedroom cupboards and wardrobes made to measure." },
+      { "name": "Kitchen units", "desc": "Base and wall units, worktops and fitting." },
+      { "name": "Shelving & storage", "desc": "Storerooms, offices, libraries and classrooms." },
+      { "name": "Ceilings & bulkheads", "desc": "Brandering, ceiling boards, bulkheads and trims." },
+      { "name": "Decks & pergolas", "desc": "Timber decks, walkways and shade structures." },
+      { "name": "Office & shop fit-outs", "desc": "Counters, partitions and joinery for commercial spaces." }
+    ]
+  }
+}

@@ -1,0 +1,81 @@
+<!--meta
+{
+  "title": "Contact | Construction Company Hoedspruit | Malepe R&R",
+  "description": "Contact Malepe R and R (Pty) Ltd in Hoedspruit, Limpopo: WhatsApp for quotes, call or email. Construction, maintenance and carpentry.",
+  "nav": "contact",
+  "crumb": "Contact",
+  "dwg": "MRR-500",
+  "schema": ["business"]
+}
+-->
+<section class="page-hero">
+  <div class="wrap">
+    <nav class="crumbs mono" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Contact</span></nav>
+    <div class="page-hero-grid">
+      <h1 class="h-xl">Contact<br><span class="out">the site office.</span></h1>
+      <p class="lead">WhatsApp is the fastest way to reach us. Send photos, plans or a location pin with your message.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section tight" aria-label="Contact options">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div class="c-card hl">
+        <p class="mono">/01 · Fastest</p>
+        <h2>WhatsApp</h2>
+        <p>Quotes, site visits and questions. Your message opens already written: just add the details.</p>
+        <p class="mono" style="color:var(--ink-2)">+{{waNumber}}</p>
+        <a class="btn btn-lg" data-wa="general">Get a Quote on WhatsApp <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="c-card">
+        <p class="mono">/02 · Call</p>
+        <h2>Phone</h2>
+        <p>Talk to us directly during office hours.</p>
+        <p class="mono" style="color:var(--ink-2)">{{cfg.phone}}</p>
+        <a class="btn btn-o btn-lg" href="{{telHref}}">Call now</a>
+      </div>
+      <div class="c-card">
+        <p class="mono">/03 · Email</p>
+        <h2>Email</h2>
+        <p>For tender documents, formal RFQs and anything with attachments.</p>
+        <p class="mono" style="color:var(--ink-2);text-transform:none">{{cfg.email}}</p>
+        <a class="btn btn-o btn-lg" href="{{mailHref}}">Send an email</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="det-t">
+  <div class="wrap split">
+    <div class="panel">
+      <p class="mono">/04 · Business details</p>
+      <h2 class="h-md" id="det-t" style="margin:10px 0 20px">Malepe R and R (Pty) Ltd</h2>
+      <dl class="dl">
+        <dt>Address</dt><dd>{{cfg.address}}</dd>
+        <dt>Town</dt><dd>{{cfg.locality}}, Maruleng, {{cfg.region}}</dd>
+        <dt>Hours</dt><dd>{{cfg.hours}}</dd>
+        <dt>Reg. no.</dt><dd>{{cfg.compliance.cipc}}</dd>
+        <dt>Area</dt><dd>{{areaInline}}</dd>
+      </dl>
+      <div class="acts">
+        <a class="btn btn-o" href="https://www.google.com/maps/search/?api=1&amp;query=Hoedspruit%2C%20Limpopo" target="_blank" rel="noopener">Open in Google Maps <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+    <div class="map">{{> map}}</div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="tip-t">
+  <div class="wrap">
+    <p class="eyebrow mono"><span class="n">/05</span>Get a faster quote</p>
+    <h2 class="h-lg" id="tip-t" style="margin-bottom:28px">What to include in your message</h2>
+    <ol class="steps">
+      <li class="step"><span class="mono">01</span><h3>What</h3><p>The service and the job, e.g. "carpentry: built-in cupboards, 2 bedrooms".</p></li>
+      <li class="step"><span class="mono">02</span><h3>Where</h3><p>Town, or tap 📎 → Location in WhatsApp to send a pin.</p></li>
+      <li class="step"><span class="mono">03</span><h3>Photos / plans</h3><p>A few photos of the site, or your drawings as PDF.</p></li>
+      <li class="step"><span class="mono">04</span><h3>When</h3><p>When you'd like the work to start, or the tender closing date.</p></li>
+    </ol>
+    <div class="acts"><a class="btn btn-lg" href="/quote/">Use the quote builder <span aria-hidden="true">→</span></a></div>
+  </div>
+</section>

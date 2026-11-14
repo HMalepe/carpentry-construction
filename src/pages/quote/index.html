@@ -1,0 +1,98 @@
+<!--meta
+{
+  "title": "Request a Quote on WhatsApp | Malepe R&R Hoedspruit",
+  "description": "Build your construction, maintenance or carpentry quote request in three taps and send it on WhatsApp to Malepe R&R in Hoedspruit.",
+  "nav": "quote",
+  "crumb": "Quote request",
+  "dwg": "MRR-600",
+  "schema": [],
+  "bodyClass": "no-fab"
+}
+-->
+<section class="page-hero">
+  <div class="wrap">
+    <nav class="crumbs mono" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Quote request</span></nav>
+    <div class="page-hero-grid">
+      <h1 class="h-xl">Quote request<br><span class="out">in one thumb.</span></h1>
+      <p class="lead">Tap through the steps, check the summary, and send it on WhatsApp. Nothing is stored on this website: the message goes straight from your phone to ours.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section tight" aria-label="Quote builder">
+  <div class="wrap qb-wrap">
+    <form class="qb" id="qb" action="#" autocomplete="on">
+      <fieldset>
+        <legend><span class="mono">Step 01</span>What do you need?</legend>
+        <div class="chips">
+          <label class="chip big"><input type="radio" name="service" value="Construction"><span><span class="mono">/01</span>Construction</span></label>
+          <label class="chip big"><input type="radio" name="service" value="Maintenance"><span><span class="mono">/02</span>Maintenance</span></label>
+          <label class="chip big"><input type="radio" name="service" value="Carpentry"><span><span class="mono">/03</span>Carpentry</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="mono">Step 02</span>Which job?</legend>
+        <p class="mono" id="item-hint" hidden>Choose a service in step 01 first.</p>
+        {{svc:construction:chips}}
+        {{svc:maintenance:chips}}
+        {{svc:carpentry:chips}}
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="mono">Step 03</span>Where is the site?</legend>
+        <div class="chips">{{locChips}}</div>
+        <div class="field" id="loc-other-wrap">
+          <label for="loc-other">Town / farm / village</label>
+          <input id="loc-other" name="locationOther" type="text" maxlength="80" autocomplete="address-level2">
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="mono">Step 04</span>When, and for whom?</legend>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="timing" value="As soon as possible"><span>As soon as possible</span></label>
+          <label class="chip"><input type="radio" name="timing" value="This month"><span>This month</span></label>
+          <label class="chip"><input type="radio" name="timing" value="In 1–3 months"><span>In 1–3 months</span></label>
+          <label class="chip"><input type="radio" name="timing" value="Planning / budgeting"><span>Planning / budgeting</span></label>
+        </div>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="client" value="Private / homeowner"><span>Private / homeowner</span></label>
+          <label class="chip"><input type="radio" name="client" value="Business / lodge / farm"><span>Business / lodge / farm</span></label>
+          <label class="chip"><input type="radio" name="client" value="Government department"><span>Government department</span></label>
+          <label class="chip"><input type="radio" name="client" value="Municipality"><span>Municipality</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="mono">Step 05 · Optional</span>Anything else?</legend>
+        <div class="field" style="margin-top:0">
+          <label for="qb-name">Your name</label>
+          <input id="qb-name" name="name" type="text" maxlength="60" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="qb-notes">Short description (sizes, quantities, tender number…)</label>
+          <textarea id="qb-notes" name="notes" maxlength="500"></textarea>
+        </div>
+      </fieldset>
+    </form>
+
+    <aside class="qb-out" aria-labelledby="sum-t">
+      <p class="mono" id="sum-t" style="margin-bottom:12px">Your message preview</p>
+      <div class="summary" aria-live="polite">
+        <div class="h"><span>QUOTE REQUEST</span><span>MALEPE R&amp;R</span></div>
+        <div class="r"><span>Service</span><b data-out="service" class="empty">—</b></div>
+        <div class="r"><span>Location</span><b data-out="location" class="empty">—</b></div>
+        <div class="r"><span>Timing</span><b data-out="timing" class="empty">—</b></div>
+        <div class="r"><span>Client</span><b data-out="client" class="empty">—</b></div>
+      </div>
+      <div class="qb-acts">
+        <p class="qb-err" id="qb-err" role="alert"></p>
+        <a class="btn btn-lg" id="qb-send" data-wa="builder">Send on WhatsApp <span aria-hidden="true">↗</span></a>
+        <button class="btn btn-o" type="button" id="qb-copy" hidden>Copy message</button>
+        <a class="btn btn-o" id="qb-mail" href="{{mailHref}}" data-to="{{mailTo}}">Send by email instead</a>
+      </div>
+      <p class="qb-note">WhatsApp opens with the message typed out: you can still edit it, and attach photos or plans, before you press send. See our <a class="link" href="/privacy/">privacy notice</a>.</p>
+    </aside>
+  </div>
+</section>
