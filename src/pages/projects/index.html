@@ -13,7 +13,7 @@
     <nav class="crumbs mono" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Projects</span></nav>
     <div class="page-hero-grid">
       <h1 class="h-xl">Projects<br><span class="out">on record.</span></h1>
-      <p class="lead">Work across construction, maintenance and carpentry. Filter by discipline below.</p>
+      <p class="lead">Completed work across construction, maintenance and carpentry.</p>
     </div>
   </div>
 </section>
@@ -21,7 +21,8 @@
 <section class="section tight" aria-labelledby="gal-t">
   <div class="wrap">
     <h2 class="vh" id="gal-t">Project gallery</h2>
-    <div class="ph-note mb-28"><span class="mono">[Placeholder] Gallery</span>Project photos and details are being added. Every card below is a placeholder slot: no projects are shown until real ones are supplied.</div>
+    <div class="ph-note mb-28" data-placeholder data-optional><span class="mono">[Placeholder] Gallery</span>Project photos and details are being added. Every card below is a placeholder slot: no projects are shown until real ones are supplied.</div>
+    <div data-collection="gallery">
     <input class="f-radio" type="radio" name="pf" id="f-all" checked>
     <input class="f-radio" type="radio" name="pf" id="f-construction">
     <input class="f-radio" type="radio" name="pf" id="f-maintenance">
@@ -36,7 +37,7 @@
          <a class="ph-photo" href="/assets/img/projects/NAME-1600.webp" data-lightbox><img src="/assets/img/projects/NAME-800.webp" alt="What the photo shows" loading="lazy" decoding="async" width="800" height="600"></a>
          and swap each <span class="ph-tag" …>[…]</span> for the real text. Keep data-cat="construction|maintenance|carpentry". -->
     <div class="proj-grid">
-      <article class="proj" data-cat="construction">
+      <article class="proj" data-optional data-item data-cat="construction">
         <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] construction project 01</small></span></div>
         <div class="proj-body">
           <p class="mono">/01 · Construction</p>
@@ -49,7 +50,7 @@
           </dl>
         </div>
       </article>
-      <article class="proj" data-cat="maintenance">
+      <article class="proj" data-optional data-item data-cat="maintenance">
         <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] maintenance project 02</small></span></div>
         <div class="proj-body">
           <p class="mono">/02 · Maintenance</p>
@@ -62,7 +63,7 @@
           </dl>
         </div>
       </article>
-      <article class="proj" data-cat="carpentry">
+      <article class="proj" data-optional data-item data-cat="carpentry">
         <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] carpentry project 03</small></span></div>
         <div class="proj-body">
           <p class="mono">/03 · Carpentry</p>
@@ -75,7 +76,7 @@
           </dl>
         </div>
       </article>
-      <article class="proj" data-cat="construction">
+      <article class="proj" data-optional data-item data-cat="construction">
         <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] construction project 04</small></span></div>
         <div class="proj-body">
           <p class="mono">/04 · Construction</p>
@@ -88,7 +89,7 @@
           </dl>
         </div>
       </article>
-      <article class="proj" data-cat="maintenance">
+      <article class="proj" data-optional data-item data-cat="maintenance">
         <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] maintenance project 05</small></span></div>
         <div class="proj-body">
           <p class="mono">/05 · Maintenance</p>
@@ -101,7 +102,7 @@
           </dl>
         </div>
       </article>
-      <article class="proj" data-cat="carpentry">
+      <article class="proj" data-optional data-item data-cat="carpentry">
         <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] carpentry project 06</small></span></div>
         <div class="proj-body">
           <p class="mono">/06 · Carpentry</p>
@@ -114,7 +115,7 @@
           </dl>
         </div>
       </article>
-      <article class="proj" data-cat="construction">
+      <article class="proj" data-optional data-item data-cat="construction">
         <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] construction project 07</small></span></div>
         <div class="proj-body">
           <p class="mono">/07 · Construction</p>
@@ -127,7 +128,7 @@
           </dl>
         </div>
       </article>
-      <article class="proj" data-cat="maintenance">
+      <article class="proj" data-optional data-item data-cat="maintenance">
         <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] maintenance project 08</small></span></div>
         <div class="proj-body">
           <p class="mono">/08 · Maintenance</p>
@@ -140,7 +141,7 @@
           </dl>
         </div>
       </article>
-      <article class="proj" data-cat="carpentry">
+      <article class="proj" data-optional data-item data-cat="carpentry">
         <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] carpentry project 09</small></span></div>
         <div class="proj-body">
           <p class="mono">/09 · Carpentry</p>
@@ -153,6 +154,13 @@
           </dl>
         </div>
       </article>
+    </div>
+    </div>
+    <div class="empty-state" data-if-empty="gallery">
+      <p class="mono">Gallery · being prepared</p>
+      <h2 class="h-md mt-10">Project photos are on their way.</h2>
+      <p class="lead mt-14">We are putting together photos and details of completed work. In the meantime, ask us on WhatsApp for references or photos of jobs similar to yours.</p>
+      <div class="acts"><a class="btn btn-lg" data-wa="general">Ask on WhatsApp <span aria-hidden="true">↗</span></a></div>
     </div>
   </div>
 </section>

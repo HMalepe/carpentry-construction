@@ -19,7 +19,7 @@
         <a class="btn btn-o btn-lg" href="/tenders/#profile">Download company profile</a>
       </div>
       <div class="spec">
-        <div><span class="mono">Reg. since</span><b>{{cfg.regYear}}</b></div>
+        <div data-optional><span class="mono">Reg. since</span><b>{{cfg.regYear}}</b></div>
         <div><span class="mono">Disciplines</span><b>Build + Carpentry</b></div>
         <div><span class="mono">Sectors</span><b>Gov · Municipal · Private</b></div>
       </div>
@@ -51,7 +51,7 @@
 
 <section class="section" aria-labelledby="svc-t">
   <div class="wrap">
-    <p class="eyebrow mono"><span class="n">/01</span>Services</p>
+    <p class="eyebrow mono"><span class="n"></span>Services</p>
     <div class="sec-head">
       <h2 class="h-lg" id="svc-t">Three disciplines.<br><span class="out">One team on site.</span></h2>
       <p class="lead">From the foundations to the last cupboard door. Pick a service to get a quote on WhatsApp — your message is already written for you.</p>
@@ -99,7 +99,7 @@
 
 <section class="section" aria-labelledby="proc-t">
   <div class="wrap">
-    <p class="eyebrow mono"><span class="n">/02</span>Process</p>
+    <p class="eyebrow mono"><span class="n"></span>Process</p>
     <div class="sec-head">
       <h2 class="h-lg" id="proc-t">How a job runs.</h2>
       <p class="lead">The same four stages whether it's a cupboard or a classroom block — so you always know what happens next.</p>
@@ -116,7 +116,7 @@
 
 <section class="section" aria-labelledby="sec-t">
   <div class="wrap">
-    <p class="eyebrow mono"><span class="n">/03</span>Who we work for</p>
+    <p class="eyebrow mono"><span class="n"></span>Who we work for</p>
     <div class="sec-head">
       <h2 class="h-lg" id="sec-t">Public sector ready.<br><span class="out">Private client friendly.</span></h2>
       <p class="lead">Procurement officers get the paperwork they need. Homeowners get a straight answer on WhatsApp.</p>
@@ -129,28 +129,28 @@
   </div>
 </section>
 
-<section class="section" aria-labelledby="proj-t">
+<section class="section" aria-labelledby="proj-t" data-collection="home-projects">
   <div class="wrap">
-    <p class="eyebrow mono"><span class="n">/04</span>Projects</p>
+    <p class="eyebrow mono"><span class="n"></span>Projects</p>
     <div class="sec-head">
       <h2 class="h-lg" id="proj-t">Recent work.</h2>
-      <p class="lead">Project photos are being added. <a class="link" href="/projects/">See all projects →</a></p>
+      <p class="lead">A selection of recent work. <a class="link" href="/projects/">See all projects →</a></p>
     </div>
     <div class="proj-grid">
-      <article class="proj"><div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] project photo</small></span></div><div class="proj-body"><p class="mono">Construction</p><h3><span class="ph-tag" data-placeholder>[Project title]</span></h3></div></article>
-      <article class="proj"><div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] project photo</small></span></div><div class="proj-body"><p class="mono">Maintenance</p><h3><span class="ph-tag" data-placeholder>[Project title]</span></h3></div></article>
-      <article class="proj"><div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] project photo</small></span></div><div class="proj-body"><p class="mono">Carpentry</p><h3><span class="ph-tag" data-placeholder>[Project title]</span></h3></div></article>
+      <article class="proj" data-optional data-item><div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] project photo</small></span></div><div class="proj-body"><p class="mono">Construction</p><h3><span class="ph-tag" data-placeholder>[Project title]</span></h3></div></article>
+      <article class="proj" data-optional data-item><div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] project photo</small></span></div><div class="proj-body"><p class="mono">Maintenance</p><h3><span class="ph-tag" data-placeholder>[Project title]</span></h3></div></article>
+      <article class="proj" data-optional data-item><div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] project photo</small></span></div><div class="proj-body"><p class="mono">Carpentry</p><h3><span class="ph-tag" data-placeholder>[Project title]</span></h3></div></article>
     </div>
   </div>
 </section>
 
-<section class="section" aria-labelledby="tst-t">
+<section class="section" aria-labelledby="tst-t" data-collection="testimonials">
   <div class="wrap">
-    <p class="eyebrow mono"><span class="n">/05</span>Client feedback</p>
+    <p class="eyebrow mono"><span class="n"></span>Client feedback</p>
     <div class="sec-head"><h2 class="h-lg" id="tst-t">What clients say.</h2><p class="lead">Real feedback only — added with each client's written permission.</p></div>
     <div class="quotes">
-      <figure class="quote-ph" data-placeholder><span class="mono">[Placeholder] Testimonial slot 1</span><blockquote>“Client's own words about the project go here.”</blockquote><p>— [Client name], [Organisation / town] · [Project]</p></figure>
-      <figure class="quote-ph" data-placeholder><span class="mono">[Placeholder] Testimonial slot 2</span><blockquote>“Client's own words about the project go here.”</blockquote><p>— [Client name], [Organisation / town] · [Project]</p></figure>
+      <figure class="quote-ph" data-placeholder data-optional data-item><span class="mono">[Placeholder] Testimonial slot 1</span><blockquote>“Client's own words about the project go here.”</blockquote><p>— [Client name], [Organisation / town] · [Project]</p></figure>
+      <figure class="quote-ph" data-placeholder data-optional data-item><span class="mono">[Placeholder] Testimonial slot 2</span><blockquote>“Client's own words about the project go here.”</blockquote><p>— [Client name], [Organisation / town] · [Project]</p></figure>
     </div>
   </div>
 </section>
@@ -158,7 +158,7 @@
 <section class="section" aria-labelledby="cmp-t">
   <div class="wrap split">
     <div>
-      <p class="eyebrow mono"><span class="n">/06</span>Tenders &amp; compliance</p>
+      <p class="eyebrow mono"><span class="n"></span>Tenders &amp; compliance</p>
       <h2 class="h-lg" id="cmp-t">Paperwork, sorted.</h2>
       <p class="lead mt-20">Procuring through an RFQ or tender? Our registration and compliance details are listed in one place, with the company profile ready to download.</p>
       <div class="acts">
@@ -166,20 +166,21 @@
         <a class="btn btn-o" href="/tenders/#profile">Company profile (PDF)</a>
       </div>
     </div>
-    <div class="register reg-mini">
-      <div class="reg-row"><span class="doc">CIPC registration</span><span class="st">{{cfg.compliance.cipc}}</span></div>
-      <div class="reg-row"><span class="doc">CSD supplier number</span><span class="st">{{cfg.compliance.csd}}</span></div>
-      <div class="reg-row"><span class="doc">CIDB grading</span><span class="st">{{cfg.compliance.cidb}}</span></div>
-      <div class="reg-row"><span class="doc">B-BBEE status</span><span class="st">{{cfg.compliance.bbbee}}</span></div>
-      <div class="reg-row"><span class="doc">Tax compliance</span><span class="st">{{cfg.compliance.tax}}</span></div>
+    <div class="register reg-mini" data-collection="home-reg">
+      <div class="reg-row" data-optional data-item><span class="doc">CIPC registration</span><span class="st">{{cfg.compliance.cipc}}</span></div>
+      <div class="reg-row" data-optional data-item><span class="doc">CSD supplier number</span><span class="st">{{cfg.compliance.csd}}</span></div>
+      <div class="reg-row" data-optional data-item><span class="doc">CIDB grading</span><span class="st">{{cfg.compliance.cidb}}</span></div>
+      <div class="reg-row" data-optional data-item><span class="doc">B-BBEE status</span><span class="st">{{cfg.compliance.bbbee}}</span></div>
+      <div class="reg-row" data-optional data-item><span class="doc">Tax compliance</span><span class="st">{{cfg.compliance.tax}}</span></div>
     </div>
+    <div class="panel" data-if-empty="home-reg"><p class="mono">Compliance documents</p><p>CIPC, CSD, CIDB, B-BBEE, COIDA and tax compliance documents are available on request for RFQs and tenders.</p></div>
   </div>
 </section>
 
 <section class="section" aria-labelledby="area-t">
   <div class="wrap area">
     <div>
-      <p class="eyebrow mono"><span class="n">/07</span>Area served</p>
+      <p class="eyebrow mono"><span class="n"></span>Area served</p>
       <h2 class="h-lg" id="area-t">Based in Hoedspruit.<br><span class="out">Working across Maruleng.</span></h2>
       <p class="lead mt-20">We're a local construction company serving Hoedspruit, the Maruleng Local Municipality and the surrounding Mopani district. Not sure if we cover your site? Send your location on WhatsApp.</p>
       <ul class="towns">{{areaChips}}</ul>

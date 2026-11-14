@@ -1,0 +1,33 @@
+{
+  "name": "Malepe R and R (Pty) Ltd",
+  "shortName": "Malepe R&R",
+  "siteUrl": "https://example.co.za",
+  "whatsapp": "27000000000",
+  "phone": "[+27 XX XXX XXXX]",
+  "email": "office@example.co.za",
+  "address": "[Business address — TO CONFIRM]",
+  "locality": "Hoedspruit",
+  "region": "Limpopo",
+  "hours": "[Office hours — TO CONFIRM]",
+  "regYear": "[2019 — VERIFY]",
+  "informationOfficer": "Test Officer",
+  "areaServed": [
+    "Hoedspruit",
+    "Kampersrus",
+    "Maruleng",
+    "Tzaneen",
+    "Phalaborwa",
+    "Acornhoek"
+  ],
+  "compliance": {
+    "cipc": "[CIPC reg. no. — TO CONFIRM]",
+    "csd": "[CSD supplier no. MAAA… — TO CONFIRM]",
+    "cidb": "[CIDB grade & class — TO CONFIRM]",
+    "nhbrc": "[NHBRC reg. — TO CONFIRM or remove]",
+    "bbbee": "[B-BBEE level — TO CONFIRM]",
+    "coida": "[COIDA letter of good standing — TO CONFIRM]",
+    "tax": "[Tax compliance status — TO CONFIRM]"
+  },
+  "profilePdf": "/assets/docs/malepe-rr-company-profile.pdf",
+  "profilePdfIsPlaceholder": false
+}

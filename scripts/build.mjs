@@ -5,19 +5,27 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { isPh, esc, get, waDigits, waMessage as msg, waHref as href, applyPlaceholderPolicy, criticalProblems } from './lib.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'src');
-const OUT = path.join(ROOT, 'dist');
+const OUT = path.resolve(ROOT, process.env.OUT_DIR || 'dist');
 const read = (p) => fs.readFileSync(p, 'utf8');
+if (OUT === ROOT || OUT === SRC || !OUT.startsWith(ROOT + path.sep)) throw new Error(`Refusing to build into ${OUT}`);
 
-const cfg = JSON.parse(read(path.join(ROOT, 'site.config.json')));
+const cfg = JSON.parse(read(path.resolve(ROOT, process.env.SITE_CONFIG || 'site.config.json')));
 const services = JSON.parse(read(path.join(SRC, 'data', 'services.json')));
 
-// A config value is a placeholder if it is wrapped in [brackets] or contains XXX.
-const isPh = (v) => typeof v === 'string' && (/^\[[\s\S]*\]$/.test(v.trim()) || /X{3,}/.test(v));
-const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const get = (obj, key) => key.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
+// STRICT = production. Vercel sets VERCEL_ENV=production only for production deployments, so
+// preview deployments keep showing placeholders while production refuses to ship them.
+const STRICT = process.env.STRICT === '1' || process.env.VERCEL_ENV === 'production';
+if (STRICT) {
+  const problems = criticalProblems(cfg);
+  if (problems.length) {
+    console.error(`✖ Production build blocked. Fix these in site.config.json first:\n  - ${problems.join('\n  - ')}`);
+    process.exit(1);
+  }
+}
 
 const siteUrl = (
   cfg.siteUrl ||
@@ -26,24 +34,13 @@ const siteUrl = (
 ).replace(/\/$/, '');
 
 const year = new Date().getFullYear();
-const waNumber = String(cfg.whatsapp).replace(/[^\dX]/g, '');
+const waNumber = waDigits(cfg.whatsapp);
 const phoneDigits = isPh(cfg.phone) ? waNumber : String(cfg.phone).replace(/[^\d]/g, '');
 const telHref = `tel:+${phoneDigits}`;
 const mailHref = isPh(cfg.email) ? 'mailto:' : `mailto:${cfg.email}`;
 
-/* ---------- WhatsApp messages ---------- */
-// Keep this format in sync with buildMessage() in src/assets/js/main.js.
-function waMessage(serviceKey, item) {
-  if (serviceKey === 'tender')
-    return [`Hi ${cfg.shortName}, I'm contacting you about a tender / RFQ.`, 'Tender / RFQ no.: ', 'Organisation: ', 'Documents needed: '].join('\n');
-  const lines = [`Hi ${cfg.shortName}, I'd like a quote.`];
-  const svc = services[serviceKey];
-  if (!svc) lines.push('Service: (Construction / Maintenance / Carpentry)');
-  else lines.push(`Service: ${svc.label}${item ? ` › ${item}` : ''}`);
-  lines.push('Location: ', 'Details: ');
-  return lines.join('\n');
-}
-const waHref = (serviceKey, item) => `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage(serviceKey, item))}`;
+/* ---------- WhatsApp messages (format lives in lib.mjs) ---------- */
+const waHref = (serviceKey, item) => href(waNumber, msg(cfg.shortName, services, serviceKey, item));
 
 /* ---------- icons ---------- */
 const icon = {
@@ -111,6 +108,7 @@ function sheet() {
     <h2 id="sheet-t">What do you need?</h2>
     <div class="sheet-opts">${opts}</div>
     <a class="sheet-more" href="/quote/">Build a detailed request (location, timing, client type) <span aria-hidden="true">→</span></a>
+    <p class="sheet-alt">No WhatsApp on this device? <a href="/contact/">Call or email us instead</a>.</p>
   </div>
 </dialog>`;
 }
@@ -128,10 +126,11 @@ function footer(meta) {
       <div><p class="mono">Company</p><ul><li><a href="/projects/">Projects</a></li><li><a href="/about/">About</a></li><li><a href="/tenders/">Tenders &amp; Compliance</a></li><li><a href="/contact/">Contact</a></li><li><a href="/privacy/">Privacy (POPIA)</a></li></ul></div>
       <div><p class="mono">Contact</p><ul>
         <li><a data-wa="general">WhatsApp: +{{waNumber}}</a></li>
-        <li>Tel: {{cfg.phone}}</li>
+        <li data-optional>Tel: {{cfg.phone}}</li>
         <li>Email: {{cfg.email}}</li>
-        <li>{{cfg.hours}}</li>
-        <li>{{cfg.address}}</li>
+        <li data-optional>{{cfg.hours}}</li>
+        <li data-optional>{{cfg.address}}</li>
+        <li><a data-wa="site">Report a website problem</a></li>
       </ul></div>
     </div>
     <div class="titleblock">
@@ -349,7 +348,7 @@ for (const page of pages) {
     .replace('{{footer}}', () => footer(meta))
     .replace('{{tabbar}}', () => tabbar(meta))
     .replace('{{sheet}}', () => sheet());
-  html = applyTokens(html);
+  html = applyPlaceholderPolicy(applyTokens(html), { strict: STRICT });
   const out = path.join(OUT, page.rel);
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, html);
@@ -396,11 +395,13 @@ const pagePh = outPages
   .map((f) => [path.relative(OUT, f), (read(f).match(/data-placeholder/g) || []).length])
   .filter(([, n]) => n);
 
-console.log(`Built ${pages.length} pages → dist/  (site URL: ${siteUrl})`);
-console.log(`\nLAUNCH CHECKLIST — ${cfgPh.length} config placeholders:`);
+console.log(`Built ${pages.length} pages → ${path.relative(ROOT, OUT)}/  (site URL: ${siteUrl}, mode: ${STRICT ? 'PRODUCTION (strict)' : 'preview'})`);
+console.log(`\nLAUNCH CHECKLIST — ${cfgPh.length} config placeholders${STRICT ? " (hidden from the live site until filled in)" : ""}:`);
 cfgPh.forEach((p) => console.log(`  [ ] ${p}`));
 console.log(`\nPlaceholder blocks still visible on pages:`);
 pagePh.forEach(([f, n]) => console.log(`  ${String(n).padStart(3)}  ${f}`));
+if (STRICT && pagePh.length)
+  errors.push(...pagePh.map(([f, n]) => `${f} → ${n} placeholder(s) would ship to production (fill them in, or mark the block data-optional)`));
 if (errors.length) {
   console.error(`\n✖ ${errors.length} problem(s):\n  ${errors.join('\n  ')}`);
   process.exit(1);

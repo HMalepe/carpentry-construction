@@ -10,7 +10,15 @@
   "region": "Limpopo",
   "hours": "[Office hours — TO CONFIRM]",
   "regYear": "[2019 — VERIFY]",
-  "areaServed": ["Hoedspruit", "Kampersrus", "Maruleng", "Tzaneen", "Phalaborwa", "Acornhoek"],
+  "informationOfficer": "[Information Officer name — usually the director]",
+  "areaServed": [
+    "Hoedspruit",
+    "Kampersrus",
+    "Maruleng",
+    "Tzaneen",
+    "Phalaborwa",
+    "Acornhoek"
+  ],
   "compliance": {
     "cipc": "[CIPC reg. no. — TO CONFIRM]",
     "csd": "[CSD supplier no. MAAA… — TO CONFIRM]",
