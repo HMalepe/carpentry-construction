@@ -16,7 +16,7 @@
     "check": "npm run lint && npm test"
   },
   "engines": {
-    "node": ">=18"
+    "node": "22.x"
   },
   "devDependencies": {
     "axe-core": "4.11.0",
