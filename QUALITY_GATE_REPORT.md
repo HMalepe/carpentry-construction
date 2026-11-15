@@ -14,7 +14,7 @@
 
 - The code, tests and deployment configuration pass every applicable item that can be verified from this environment: **29/29 automated tests**, **0 axe-core violations**, **0 HTML validation errors** and **0 npm vulnerabilities**.
 - The site cannot go live until the owner supplies four facts: the WhatsApp number, a business email, the POPIA Information Officer, and the company profile PDF. This is now *enforced*: a production build on Vercel fails until they're real (section 6).
-- Three things were not tested from here and should be done before launch: a real phone, Safari/Firefox, and the headers on the actual deployed Vercel URL (section 5).
+- Two things were not tested from here and should be done before launch: a real phone, and Safari/Firefox (section 5). The headers have since been verified on the live Vercel preview.
 
 The initial build looked finished but had two **High** defects:
 
@@ -71,7 +71,7 @@ Both are fixed and covered by tests.
 | O2 | High | Accuracy of copy: service item lists, About page "four rules", FAQ answers, towns served, "Now accepting projects" pill | Written from the design concepts; code can't verify business truth | Owner reads every page and confirms or edits |
 | O3 | Medium | POPIA privacy notice | Plain-language draft; **not legal advice, and completing this checklist is not proof of POPIA compliance** | Qualified review |
 | O4 | Medium | Real devices and other browser engines | Only Chromium (desktop + mobile emulation) was tested | iPhone Safari + Android Chrome walkthrough; Firefox smoke test |
-| O5 | Medium | Deployed headers and performance | No Vercel deploy from this session; Lighthouse was blocked here | After first deploy: securityheaders.com + PageSpeed Insights on the live URL |
+| O5 | Low | Performance on the live URL | Headers **verified live** on the Vercel preview (`main`, 2026-11-15): CSP, HSTS, nosniff, DENY, COOP, Permissions-Policy all served exactly as configured. Lighthouse was blocked here | PageSpeed Insights on the production URL after launch |
 | O6 | Low | Uptime monitoring | Needs the owner's account | Free uptime monitor on `/` (e.g. UptimeRobot) with SMS / email alert |
 | O7 | Low | Hero photo is a licensed stock image (cropped to remove a third-party logo and face) | Authenticity | Replace with an own site photo |
 | O8 | Low | Optional business details (phone, address, hours, registration year, compliance numbers) | Hidden automatically in production until real | Fill in as available |
@@ -103,7 +103,7 @@ npm audit      → found 0 vulnerabilities
 
 Measured performance (not a Lighthouse score): home page first visit on mobile is **≈64 KB** in total (gzip HTML + CSS + JS + both fonts + 480w hero), CLS 0.000 on every page.
 
-**NOT TESTED, and why:** real iOS / Android devices and the Safari / Firefox engines (no devices or engines available here); headers on the live Vercel URL (not deployed from this session); Lighthouse / PageSpeed (blocked in this environment); a manual screen-reader pass (VoiceOver / TalkBack); sending a real WhatsApp message (needs the real number, and live messages need the owner's approval).
+**NOT TESTED, and why:** real iOS / Android devices and the Safari / Firefox engines (no devices or engines available here); Lighthouse / PageSpeed (blocked in this environment); a manual screen-reader pass (VoiceOver / TalkBack); sending a real WhatsApp message (needs the real number, and live messages need the owner's approval).
 
 ## 6. Production guard: how launch is enforced
 
@@ -168,7 +168,7 @@ Measured performance (not a Lighthouse score): home page first visit on mobile i
 - HTTPS: **PASS** (Vercel + HSTS header)
 - XSS: **PASS** (build-time escaping, `textContent` only, strict CSP)
 - CSRF / insecure direct object references: N/A
-- Headers and CSP: **PASS** locally; **NOT TESTED** on the live URL (O5)
+- Headers and CSP: **PASS** locally and on the live Vercel preview (2026-11-15)
 - Dependencies: **PASS** (0 runtime dependencies, 0 advisories)
 - Rate limiting: N/A (no endpoints)
 - Privacy documentation: **PASS** as a draft; **legal review needed** (O3)
@@ -198,7 +198,7 @@ Measured performance (not a Lighthouse score): home page first visit on mobile i
 - Separate environments: **PASS** (Vercel preview vs production, with the guard tied to `VERCEL_ENV`)
 - Env vars documented without values: **PASS**
 - Repeatable deploy: **PASS** (`vercel.json` + CI)
-- Verify the deployed commit: **NOT TESTED** (not deployed from here)
+- Verify the deployed commit: **PASS** (Vercel preview `2e63d39` on `main` READY; production on the old branch correctly blocked by the guard)
 - Domain / DNS: **NOT TESTED** (owner's domain)
 - Monitoring: **NOT TESTED** (O6)
 - Bug-report route: **PASS** (footer "Report a website problem")
