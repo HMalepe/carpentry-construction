@@ -49,7 +49,7 @@
       <div class="dimline"><span>Company profile · PDF</span></div>
       <h2 class="h-m" id="prof-t">Company profile</h2>
       <p class="mt-14 muted">Company overview, services, registration details and contact information in one PDF, ready for a supplier file or bid evaluation.</p>
-      <div class="acts"><a class="btn btn-primary" href="{{attr.profilePdf}}" download>Download (PDF) <span class="arr" aria-hidden="true">↓</span></a></div>
+      <div class="acts" data-optional {{pdfPh}}><a class="btn btn-primary" href="{{attr.profilePdf}}" download>Download (PDF) <span class="arr" aria-hidden="true">↓</span></a></div>
       <p class="mono mt-14" data-optional>Placeholder file until the final profile is supplied <span class="ph-tag" data-placeholder>[Replace PDF]</span></p>
     </div>
     <div class="panel"><p class="lbl">Bid documents</p><h2>Standard bidding forms</h2><p>Request any of the following, completed for your RFQ or tender:</p><div class="mt-20"><ul class="ticks">
@@ -84,6 +84,6 @@
 <section class="sec tone-dark cta-band" aria-labelledby="tc-t">
   <div class="wrap grid">
     <h2 class="h-xl" id="tc-t">Need a document <em>for a bid?</em></h2>
-    <div class="cta-side"><p class="lead">Tell us the tender or RFQ number and the documents you need. Email: {{cfg.email}}</p><div class="acts"><a class="btn btn-primary" data-wa="tender">WhatsApp us <span class="arr" aria-hidden="true">→</span></a><a class="btn-text" href="{{mailHref}}">Email</a></div></div>
+    <div class="cta-side"><p class="lead">Tell us the tender or RFQ number and the documents you need. <span data-optional>Email: {{cfg.email}}</span></p><div class="acts"><a class="btn btn-primary" data-wa="tender">WhatsApp us <span class="arr" aria-hidden="true">→</span></a><a class="btn-text" href="{{mailHref}}" data-optional {{emailPh}}>Email</a></div></div>
   </div>
 </section>

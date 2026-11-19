@@ -2,8 +2,8 @@
   "name": "Malepe R and R (Pty) Ltd",
   "shortName": "Malepe R&R",
   "siteUrl": "",
-  "whatsapp": "27XXXXXXXXX",
-  "phone": "[+27 XX XXX XXXX]",
+  "whatsapp": "27729172803",
+  "phone": "072 917 2803",
   "email": "[info@your-domain.co.za]",
   "address": "[Business address — TO CONFIRM]",
   "locality": "Hoedspruit",
@@ -11,6 +11,7 @@
   "hours": "[Office hours — TO CONFIRM]",
   "regYear": "[2019 — VERIFY]",
   "informationOfficer": "[Information Officer name — usually the director]",
+  "releaseGuard": "warn",
   "areaServed": [
     "Hoedspruit",
     "Kampersrus",

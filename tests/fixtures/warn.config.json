@@ -1,0 +1,34 @@
+{
+  "name": "Malepe R and R (Pty) Ltd",
+  "shortName": "Malepe R&R",
+  "siteUrl": "",
+  "whatsapp": "27729172803",
+  "phone": "072 917 2803",
+  "email": "[info@your-domain.co.za]",
+  "address": "[Business address — TO CONFIRM]",
+  "locality": "Hoedspruit",
+  "region": "Limpopo",
+  "hours": "[Office hours — TO CONFIRM]",
+  "regYear": "[2019 — VERIFY]",
+  "informationOfficer": "[Information Officer name — usually the director]",
+  "releaseGuard": "warn",
+  "areaServed": [
+    "Hoedspruit",
+    "Kampersrus",
+    "Maruleng",
+    "Tzaneen",
+    "Phalaborwa",
+    "Acornhoek"
+  ],
+  "compliance": {
+    "cipc": "[CIPC reg. no. — TO CONFIRM]",
+    "csd": "[CSD supplier no. MAAA… — TO CONFIRM]",
+    "cidb": "[CIDB grade & class — TO CONFIRM]",
+    "nhbrc": "[NHBRC reg. — TO CONFIRM or remove]",
+    "bbbee": "[B-BBEE level — TO CONFIRM]",
+    "coida": "[COIDA letter of good standing — TO CONFIRM]",
+    "tax": "[Tax compliance status — TO CONFIRM]"
+  },
+  "profilePdf": "/assets/docs/malepe-rr-company-profile.pdf",
+  "profilePdfIsPlaceholder": true
+}

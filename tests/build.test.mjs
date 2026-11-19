@@ -20,13 +20,13 @@ test('preview build succeeds and reports the launch checklist', () => {
 });
 
 test('production build is blocked while critical details are placeholders', () => {
-  const r = build({ STRICT: '1', OUT_DIR: '.tmp-test-blocked' });
+  const r = build({ STRICT: '1', OUT_DIR: '.tmp-test-blocked', SITE_CONFIG: 'tests/fixtures/placeholders-enforced.config.json' });
   assert.equal(r.status, 1);
   for (const k of ['whatsapp', 'email', 'informationOfficer', 'profilePdf']) assert.match(r.stderr, new RegExp(`- ${k}:`));
 });
 
 test('VERCEL_ENV=production triggers the same guard (preview deploys do not)', () => {
-  assert.equal(build({ VERCEL_ENV: 'production', OUT_DIR: '.tmp-test-blocked' }).status, 1);
+  assert.equal(build({ VERCEL_ENV: 'production', OUT_DIR: '.tmp-test-blocked', SITE_CONFIG: 'tests/fixtures/placeholders-enforced.config.json' }).status, 1);
   assert.equal(build({ VERCEL_ENV: 'preview', OUT_DIR: '.tmp-test-preview' }).status, 0);
 });
 
@@ -75,4 +75,17 @@ test('shared-element names: each data-vt appears at most once per page, and ever
       assert.ok(css.includes(`[data-vt="${n}"]{view-transition-name:vt-${n}}`), `${n}: no generated CSS`);
     }
   }
+});
+
+test('release-guard override ("warn"): production builds, warns loudly, and still ships zero placeholders or dead links', () => {
+  const r = build({ STRICT: '1', OUT_DIR: '.tmp-test-warn', SITE_CONFIG: 'tests/fixtures/warn.config.json' });
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stderr, /RELEASE GUARD OVERRIDDEN/);
+  const out = path.join(ROOT, '.tmp-test-warn');
+  for (const f of walk(out).filter((f) => f.endsWith('.html'))) {
+    const h = fs.readFileSync(f, 'utf8');
+    assert.doesNotMatch(h, /data-placeholder|TO CONFIRM|PHOTO PENDING|27XXXXXXXXX|href="mailto:"/i, path.relative(out, f));
+  }
+  assert.match(fs.readFileSync(path.join(out, 'contact/index.html'), 'utf8'), /wa\.me\/27729172803/, 'real WhatsApp number is used');
+  assert.doesNotMatch(fs.readFileSync(path.join(out, 'tenders/index.html'), 'utf8'), /malepe-rr-company-profile\.pdf/, 'placeholder PDF is not offered');
 });

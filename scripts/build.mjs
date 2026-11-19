@@ -128,7 +128,11 @@ function projectTokens(html) {
 const STRICT = process.env.STRICT === '1' || process.env.VERCEL_ENV === 'production';
 if (STRICT) {
   const problems = criticalProblems(cfg);
-  if (problems.length) {
+  if (problems.length && cfg.releaseGuard === 'warn') {
+    // TEMPORARY OVERRIDE (releaseGuard: "warn" in site.config.json). The build proceeds; anything that depends on a
+    // missing detail is hidden from the live site (data-optional), never shown as a placeholder or a dead link.
+    console.warn(`⚠ RELEASE GUARD OVERRIDDEN: shipping without these (set "releaseGuard": "enforce" before the real launch):\n  - ${problems.join('\n  - ')}`);
+  } else if (problems.length) {
     console.error(`✖ Production build blocked. Fix these in site.config.json first:\n  - ${problems.join('\n  - ')}`);
     process.exit(1);
   }
@@ -225,7 +229,7 @@ function footer(meta) {
       <div><p class="lbl">Site office</p><ul>
         <li><a data-wa="general">WhatsApp +{{waNumber}}</a></li>
         <li data-optional>Tel {{cfg.phone}}</li>
-        <li>{{cfg.email}}</li>
+        <li data-optional>{{cfg.email}}</li>
         <li data-optional>{{cfg.hours}}</li>
         <li data-optional>{{cfg.address}}</li>
         <li><a data-wa="site">Report a website problem</a></li>
@@ -404,6 +408,8 @@ function applyTokens(html) {
   const simple = {
     waNumber, telHref, mailHref, year, siteUrl,
     mailTo: isPh(cfg.email) ? '' : esc(cfg.email),
+    emailPh: isPh(cfg.email) ? 'data-placeholder' : '',        // lets data-optional strip email-dependent links in production
+    pdfPh: cfg.profilePdfIsPlaceholder ? 'data-placeholder' : '',
     areaInline: esc(cfg.areaServed.join(' · ')),
     areaCount: String(cfg.areaServed.length),
     areaChips: cfg.areaServed.map((a) => `<li>${esc(a)}</li>`).join(''),

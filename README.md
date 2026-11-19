@@ -131,6 +131,8 @@ These were written from the design concepts and need a human check:
 - `areaServed` in `site.config.json`: the towns you actually work in.
 - The About page company story and team.
 
+> **Temporary override in place:** `site.config.json` has `"releaseGuard": "warn"`, so production builds pass while the business email, Information Officer and company profile PDF are missing (anything depending on them is hidden from the live site, and the Vercel log lists what is missing). **Set it back to `"enforce"` before the real launch.**
+
 ## 6. Deploy on Vercel
 
 1. Push this repo to GitHub.
