@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { isPh, esc, waDigits, waMessage, waHref, findElements, applyPlaceholderPolicy, criticalProblems } from '../scripts/lib.mjs';
+import { isPh, esc, waDigits, waMessage, waHref, findElements, applyPlaceholderPolicy, criticalProblems, CATEGORIES, validateProjects, projectCard, projectFilters } from '../scripts/lib.mjs';
 
 const services = JSON.parse(fs.readFileSync(new URL('../src/data/services.json', import.meta.url), 'utf8'));
 const BRAND = 'Malepe R&R';
@@ -81,4 +81,41 @@ test('criticalProblems blocks production until the essentials are real', () => {
   assert.deepEqual(criticalProblems(ok), []);
   assert.equal(criticalProblems({ ...ok, whatsapp: '0821234567' }).length, 1, 'local 0-prefixed number is rejected');
   assert.equal(criticalProblems({ ...ok, email: 'not-an-email' }).length, 1);
+});
+
+const sampleProject = { slug: 'oak-kitchen', category: 'kitchens', title: 'Oak & white kitchen', alt: 'Oak-finish kitchen with white tops and island', w: 720, h: 540 };
+
+test('projects.json is valid and every photo exists in both sizes', () => {
+  const list = JSON.parse(fs.readFileSync(new URL('../src/data/projects.json', import.meta.url), 'utf8'));
+  validateProjects(list);
+  for (const p of list)
+    for (const size of ['sm', 'lg']) assert.ok(fs.existsSync(new URL(`../src/assets/img/projects/${p.slug}-${size}.webp`, import.meta.url)), `${p.slug}-${size}.webp missing`);
+  assert.equal(list.filter((p) => p.featured).length, 3, 'exactly three featured projects for the home page');
+});
+
+test('validateProjects rejects bad entries with a clear message', () => {
+  assert.throws(() => validateProjects([{ ...sampleProject, category: 'garages' }]), /unknown category "garages"/);
+  assert.throws(() => validateProjects([sampleProject, sampleProject]), /duplicate slug/);
+  assert.throws(() => validateProjects([{ ...sampleProject, alt: 'kitchen' }]), /alt text too short/);
+  assert.throws(() => validateProjects([{ ...sampleProject, slug: 'Bad Slug' }]), /slug must be/);
+});
+
+test('projectCard: escaped text, lightbox link, optional placeholder until details are known', () => {
+  const card = projectCard(sampleProject, 3);
+  assert.match(card, /<h3>Oak &amp; white kitchen<\/h3>/);
+  assert.match(card, /href="\/assets\/img\/projects\/oak-kitchen-lg\.webp" data-lightbox/);
+  assert.match(card, /src="\/assets\/img\/projects\/oak-kitchen-sm\.webp"[^>]*width="720" height="540" loading="lazy"/);
+  assert.match(card, /\/03 · Kitchens/);
+  assert.match(card, /<div data-optional><dt>Details<\/dt><dd><span class="ph-tag" data-placeholder>/);
+  const known = projectCard({ ...sampleProject, location: 'Hoedspruit', year: '2025' }, 1);
+  assert.match(known, /<dd>Hoedspruit · 2025<\/dd>/);
+  assert.doesNotMatch(known, /data-placeholder/);
+  assert.doesNotMatch(applyPlaceholderPolicy(card, { strict: true }), /data-placeholder/, 'production strips only the unknown details, keeps the card');
+  assert.match(applyPlaceholderPolicy(card, { strict: true }), /oak-kitchen-sm\.webp/);
+});
+
+test('projectFilters only offers categories that have projects', () => {
+  const f = projectFilters([sampleProject], [{ key: 'construction', label: 'Construction' }]);
+  assert.deepEqual([...f.matchAll(/for="f-([a-z-]+)"/g)].map((m) => m[1]), ['all', 'kitchens', 'construction']);
+  assert.ok(Object.keys(CATEGORIES).length >= 5);
 });

@@ -13,7 +13,7 @@
     <nav class="crumbs mono" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Projects</span></nav>
     <div class="page-hero-grid">
       <h1 class="h-xl">Projects<br><span class="out">on record.</span></h1>
-      <p class="lead">Completed work across construction, maintenance and carpentry.</p>
+      <p class="lead">{{projects:count}} carpentry jobs: kitchens, wardrobes, TV walls, ceilings and bathrooms. Tap a photo to see it full size, or filter by type.</p>
     </div>
   </div>
 </section>
@@ -21,139 +21,12 @@
 <section class="section tight" aria-labelledby="gal-t">
   <div class="wrap">
     <h2 class="vh" id="gal-t">Project gallery</h2>
-    <div class="ph-note mb-28" data-placeholder data-optional><span class="mono">[Placeholder] Gallery</span>Project photos and details are being added. Every card below is a placeholder slot: no projects are shown until real ones are supplied.</div>
-    <div data-collection="gallery">
-    <input class="f-radio" type="radio" name="pf" id="f-all" checked>
-    <input class="f-radio" type="radio" name="pf" id="f-construction">
-    <input class="f-radio" type="radio" name="pf" id="f-maintenance">
-    <input class="f-radio" type="radio" name="pf" id="f-carpentry">
-    <div class="filters" role="group" aria-label="Filter projects">
-      <label for="f-all">All</label>
-      <label for="f-construction">Construction</label>
-      <label for="f-maintenance">Maintenance</label>
-      <label for="f-carpentry">Carpentry</label>
-    </div>
-    <!-- HOW TO ADD A REAL PROJECT: replace a card's <div class="ph-photo">…</div> with
-         <a class="ph-photo" href="/assets/img/projects/NAME-1600.webp" data-lightbox><img src="/assets/img/projects/NAME-800.webp" alt="What the photo shows" loading="lazy" decoding="async" width="800" height="600"></a>
-         and swap each <span class="ph-tag" …>[…]</span> for the real text. Keep data-cat="construction|maintenance|carpentry". -->
+    <div class="ph-note mb-28" data-placeholder data-optional><span class="mono">[Placeholder] Gallery</span>Town, sector and year for each job, and photos of construction and maintenance work, are still to be added. These placeholders are hidden on the live site.</div>
+    <div class="gallery" data-collection="gallery">
+    {{projects:filters}}
+    <!-- Projects are generated from src/data/projects.json (see README "Add project photos"). -->
     <div class="proj-grid">
-      <article class="proj" data-optional data-item data-cat="construction">
-        <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] construction project 01</small></span></div>
-        <div class="proj-body">
-          <p class="mono">/01 · Construction</p>
-          <h3><span class="ph-tag" data-placeholder>[Project title]</span></h3>
-          <dl class="proj-spec">
-            <dt>Location</dt><dd><span class="ph-tag" data-placeholder>[Town]</span></dd>
-            <dt>Sector</dt><dd><span class="ph-tag" data-placeholder>[Gov / Municipal / Private]</span></dd>
-            <dt>Scope</dt><dd><span class="ph-tag" data-placeholder>[What was done]</span></dd>
-            <dt>Year</dt><dd><span class="ph-tag" data-placeholder>[Year]</span></dd>
-          </dl>
-        </div>
-      </article>
-      <article class="proj" data-optional data-item data-cat="maintenance">
-        <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] maintenance project 02</small></span></div>
-        <div class="proj-body">
-          <p class="mono">/02 · Maintenance</p>
-          <h3><span class="ph-tag" data-placeholder>[Project title]</span></h3>
-          <dl class="proj-spec">
-            <dt>Location</dt><dd><span class="ph-tag" data-placeholder>[Town]</span></dd>
-            <dt>Sector</dt><dd><span class="ph-tag" data-placeholder>[Gov / Municipal / Private]</span></dd>
-            <dt>Scope</dt><dd><span class="ph-tag" data-placeholder>[What was done]</span></dd>
-            <dt>Year</dt><dd><span class="ph-tag" data-placeholder>[Year]</span></dd>
-          </dl>
-        </div>
-      </article>
-      <article class="proj" data-optional data-item data-cat="carpentry">
-        <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] carpentry project 03</small></span></div>
-        <div class="proj-body">
-          <p class="mono">/03 · Carpentry</p>
-          <h3><span class="ph-tag" data-placeholder>[Project title]</span></h3>
-          <dl class="proj-spec">
-            <dt>Location</dt><dd><span class="ph-tag" data-placeholder>[Town]</span></dd>
-            <dt>Sector</dt><dd><span class="ph-tag" data-placeholder>[Gov / Municipal / Private]</span></dd>
-            <dt>Scope</dt><dd><span class="ph-tag" data-placeholder>[What was done]</span></dd>
-            <dt>Year</dt><dd><span class="ph-tag" data-placeholder>[Year]</span></dd>
-          </dl>
-        </div>
-      </article>
-      <article class="proj" data-optional data-item data-cat="construction">
-        <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] construction project 04</small></span></div>
-        <div class="proj-body">
-          <p class="mono">/04 · Construction</p>
-          <h3><span class="ph-tag" data-placeholder>[Project title]</span></h3>
-          <dl class="proj-spec">
-            <dt>Location</dt><dd><span class="ph-tag" data-placeholder>[Town]</span></dd>
-            <dt>Sector</dt><dd><span class="ph-tag" data-placeholder>[Gov / Municipal / Private]</span></dd>
-            <dt>Scope</dt><dd><span class="ph-tag" data-placeholder>[What was done]</span></dd>
-            <dt>Year</dt><dd><span class="ph-tag" data-placeholder>[Year]</span></dd>
-          </dl>
-        </div>
-      </article>
-      <article class="proj" data-optional data-item data-cat="maintenance">
-        <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] maintenance project 05</small></span></div>
-        <div class="proj-body">
-          <p class="mono">/05 · Maintenance</p>
-          <h3><span class="ph-tag" data-placeholder>[Project title]</span></h3>
-          <dl class="proj-spec">
-            <dt>Location</dt><dd><span class="ph-tag" data-placeholder>[Town]</span></dd>
-            <dt>Sector</dt><dd><span class="ph-tag" data-placeholder>[Gov / Municipal / Private]</span></dd>
-            <dt>Scope</dt><dd><span class="ph-tag" data-placeholder>[What was done]</span></dd>
-            <dt>Year</dt><dd><span class="ph-tag" data-placeholder>[Year]</span></dd>
-          </dl>
-        </div>
-      </article>
-      <article class="proj" data-optional data-item data-cat="carpentry">
-        <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] carpentry project 06</small></span></div>
-        <div class="proj-body">
-          <p class="mono">/06 · Carpentry</p>
-          <h3><span class="ph-tag" data-placeholder>[Project title]</span></h3>
-          <dl class="proj-spec">
-            <dt>Location</dt><dd><span class="ph-tag" data-placeholder>[Town]</span></dd>
-            <dt>Sector</dt><dd><span class="ph-tag" data-placeholder>[Gov / Municipal / Private]</span></dd>
-            <dt>Scope</dt><dd><span class="ph-tag" data-placeholder>[What was done]</span></dd>
-            <dt>Year</dt><dd><span class="ph-tag" data-placeholder>[Year]</span></dd>
-          </dl>
-        </div>
-      </article>
-      <article class="proj" data-optional data-item data-cat="construction">
-        <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] construction project 07</small></span></div>
-        <div class="proj-body">
-          <p class="mono">/07 · Construction</p>
-          <h3><span class="ph-tag" data-placeholder>[Project title]</span></h3>
-          <dl class="proj-spec">
-            <dt>Location</dt><dd><span class="ph-tag" data-placeholder>[Town]</span></dd>
-            <dt>Sector</dt><dd><span class="ph-tag" data-placeholder>[Gov / Municipal / Private]</span></dd>
-            <dt>Scope</dt><dd><span class="ph-tag" data-placeholder>[What was done]</span></dd>
-            <dt>Year</dt><dd><span class="ph-tag" data-placeholder>[Year]</span></dd>
-          </dl>
-        </div>
-      </article>
-      <article class="proj" data-optional data-item data-cat="maintenance">
-        <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] maintenance project 08</small></span></div>
-        <div class="proj-body">
-          <p class="mono">/08 · Maintenance</p>
-          <h3><span class="ph-tag" data-placeholder>[Project title]</span></h3>
-          <dl class="proj-spec">
-            <dt>Location</dt><dd><span class="ph-tag" data-placeholder>[Town]</span></dd>
-            <dt>Sector</dt><dd><span class="ph-tag" data-placeholder>[Gov / Municipal / Private]</span></dd>
-            <dt>Scope</dt><dd><span class="ph-tag" data-placeholder>[What was done]</span></dd>
-            <dt>Year</dt><dd><span class="ph-tag" data-placeholder>[Year]</span></dd>
-          </dl>
-        </div>
-      </article>
-      <article class="proj" data-optional data-item data-cat="carpentry">
-        <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] carpentry project 09</small></span></div>
-        <div class="proj-body">
-          <p class="mono">/09 · Carpentry</p>
-          <h3><span class="ph-tag" data-placeholder>[Project title]</span></h3>
-          <dl class="proj-spec">
-            <dt>Location</dt><dd><span class="ph-tag" data-placeholder>[Town]</span></dd>
-            <dt>Sector</dt><dd><span class="ph-tag" data-placeholder>[Gov / Municipal / Private]</span></dd>
-            <dt>Scope</dt><dd><span class="ph-tag" data-placeholder>[What was done]</span></dd>
-            <dt>Year</dt><dd><span class="ph-tag" data-placeholder>[Year]</span></dd>
-          </dl>
-        </div>
-      </article>
+      {{projects:gallery}}
     </div>
     </div>
     <div class="empty-state" data-if-empty="gallery">

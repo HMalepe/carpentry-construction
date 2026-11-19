@@ -104,3 +104,63 @@ export function criticalProblems(cfg) {
   if (cfg.profilePdfIsPlaceholder) p.push('profilePdf: replace the placeholder company profile PDF and set profilePdfIsPlaceholder to false.');
   return p;
 }
+
+/* ---------- project gallery (data: src/data/projects.json) ---------- */
+
+/** Gallery categories. Every project's `category` must be one of these (CSS filters exist for each). */
+export const CATEGORIES = {
+  kitchens: { label: 'Kitchens', scope: 'Kitchen units' },
+  wardrobes: { label: 'Wardrobes', scope: 'Built-in cupboards' },
+  'tv-units': { label: 'TV units', scope: 'TV units & feature walls' },
+  ceilings: { label: 'Ceilings', scope: 'Ceilings & bulkheads' },
+  bathrooms: { label: 'Bathrooms', scope: 'Bathroom vanities' },
+};
+
+/** Throws with a clear message if projects.json is malformed. */
+export function validateProjects(projects) {
+  const seen = new Set();
+  for (const [i, p] of projects.entries()) {
+    const where = `projects.json[${i}] (${p.slug || 'no slug'})`;
+    for (const k of ['slug', 'category', 'title', 'alt', 'w', 'h']) if (!p[k]) throw new Error(`${where}: missing "${k}"`);
+    if (!CATEGORIES[p.category]) throw new Error(`${where}: unknown category "${p.category}" (use one of ${Object.keys(CATEGORIES).join(', ')})`);
+    if (!/^[a-z0-9-]+$/.test(p.slug)) throw new Error(`${where}: slug must be lowercase letters, digits and dashes`);
+    if (seen.has(p.slug)) throw new Error(`${where}: duplicate slug`);
+    if (p.alt.length < 20) throw new Error(`${where}: alt text too short; describe what the photo shows`);
+    seen.add(p.slug);
+  }
+  return projects;
+}
+
+const img = (p) =>
+  `<img src="/assets/img/projects/${p.slug}-sm.webp" alt="${esc(p.alt)}" width="${p.w}" height="${p.h}" loading="lazy" decoding="async">`;
+
+/** Full gallery card. Unknown details (town, sector, year) become an optional placeholder: hidden in production. */
+export function projectCard(p, n) {
+  const c = CATEGORIES[p.category];
+  const known = [p.location, p.sector, p.year].filter(Boolean).map(esc).join(' · ');
+  const details = known
+    ? `<div><dt>Details</dt><dd>${known}</dd></div>`
+    : `<div data-optional><dt>Details</dt><dd><span class="ph-tag" data-placeholder>[Town · sector · year]</span></dd></div>`;
+  return `<article class="proj" data-item data-cat="${p.category}">
+        <a class="ph-photo has-photo" href="/assets/img/projects/${p.slug}-lg.webp" data-lightbox>${img(p)}</a>
+        <div class="proj-body">
+          <p class="mono">/${String(n).padStart(2, '0')} · ${c.label}${p.inProgress ? ' · In progress' : ''}</p>
+          <h3>${esc(p.title)}</h3>
+          <dl class="proj-spec"><div><dt>Scope</dt><dd>${esc(c.scope)}</dd></div>${details}</dl>
+        </div>
+      </article>`;
+}
+
+/** Compact card (home page, service pages) linking to the gallery. */
+export function projectTeaser(p) {
+  return `<article class="proj" data-item><a class="ph-photo has-photo" href="/projects/">${img(p)}</a><div class="proj-body"><p class="mono">${CATEGORIES[p.category].label}</p><h3>${esc(p.title)}</h3></div></article>`;
+}
+
+/** Filter radios + buttons for the categories that actually have projects (no dead filters). */
+export function projectFilters(projects, extra = []) {
+  const cats = [...Object.keys(CATEGORIES).filter((k) => projects.some((p) => p.category === k)), ...extra.map((e) => e.key)];
+  const label = (k) => CATEGORIES[k]?.label || extra.find((e) => e.key === k).label;
+  const radios = ['all', ...cats].map((k) => `<input class="f-radio" type="radio" name="pf" id="f-${k}"${k === 'all' ? ' checked' : ''}>`).join('\n    ');
+  const buttons = ['all', ...cats].map((k) => `<label for="f-${k}">${k === 'all' ? 'All' : label(k)}</label>`).join('');
+  return `${radios}\n    <div class="filters" role="group" aria-label="Filter projects">${buttons}</div>`;
+}

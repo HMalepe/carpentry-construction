@@ -95,6 +95,10 @@ h1,h2,h3,h4{font-weight:500;line-height:1.08;letter-spacing:-.02em}
 .ph-photo>span{background:var(--bg);border:1px solid var(--line-2);padding:8px 12px;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--warn);text-align:center}
 .ph-photo>span small{display:block;color:var(--muted);letter-spacing:1px;font-size:10px;margin-top:2px}
 .ph-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ph-photo.has-photo{border-style:solid;background:var(--bg-2)}
+a.ph-photo.has-photo img{transition:transform .3s}
+a.ph-photo.has-photo:hover img{transform:scale(1.03)}
+.proj-spec>div{display:contents}
 .ph-note{border:1px dashed rgba(255,181,71,.55);background:rgba(255,181,71,.05);padding:20px;color:var(--ink-2);font-size:15px}
 .ph-note .mono{color:var(--warn);display:block;margin-bottom:8px}
 
@@ -304,12 +308,19 @@ a.card:hover .ar{color:var(--accent);transform:translate(2px,-2px)}
 .filters input{position:absolute;opacity:0;pointer-events:none}
 .filters label{cursor:pointer;border:1px solid var(--line-2);padding:10px 14px;font-size:14px;color:var(--nav);min-height:44px;display:inline-flex;align-items:center}
 .filters input:focus-visible+label{outline:2px solid var(--accent);outline-offset:2px}
-#f-all:checked~.filters [for=f-all],#f-construction:checked~.filters [for=f-construction],#f-maintenance:checked~.filters [for=f-maintenance],#f-carpentry:checked~.filters [for=f-carpentry]{color:#fff;background:var(--accent-soft);border-color:var(--accent)}
+#f-all:checked~.filters [for=f-all],#f-kitchens:checked~.filters [for=f-kitchens],#f-wardrobes:checked~.filters [for=f-wardrobes],#f-tv-units:checked~.filters [for=f-tv-units],#f-ceilings:checked~.filters [for=f-ceilings],#f-bathrooms:checked~.filters [for=f-bathrooms],#f-construction:checked~.filters [for=f-construction],#f-maintenance:checked~.filters [for=f-maintenance]{color:#fff;background:var(--accent-soft);border-color:var(--accent)}
+#f-kitchens:checked~.proj-grid .proj:not([data-cat=kitchens]),
+#f-wardrobes:checked~.proj-grid .proj:not([data-cat=wardrobes]),
+#f-tv-units:checked~.proj-grid .proj:not([data-cat=tv-units]),
+#f-ceilings:checked~.proj-grid .proj:not([data-cat=ceilings]),
+#f-bathrooms:checked~.proj-grid .proj:not([data-cat=bathrooms]),
 #f-construction:checked~.proj-grid .proj:not([data-cat=construction]),
-#f-maintenance:checked~.proj-grid .proj:not([data-cat=maintenance]),
-#f-carpentry:checked~.proj-grid .proj:not([data-cat=carpentry]){display:none}
+#f-maintenance:checked~.proj-grid .proj:not([data-cat=maintenance]){display:none}
 .f-radio{position:absolute;opacity:0;pointer-events:none}
-#f-all:focus-visible~.filters [for=f-all],#f-construction:focus-visible~.filters [for=f-construction],#f-maintenance:focus-visible~.filters [for=f-maintenance],#f-carpentry:focus-visible~.filters [for=f-carpentry]{outline:2px solid var(--accent);outline-offset:2px}
+/* no dead filters: in production, hide the button of a discipline whose placeholder slot was removed */
+.gallery:not(:has(.proj[data-cat=construction])) [for=f-construction],
+.gallery:not(:has(.proj[data-cat=maintenance])) [for=f-maintenance]{display:none}
+#f-all:focus-visible~.filters [for=f-all],#f-kitchens:focus-visible~.filters [for=f-kitchens],#f-wardrobes:focus-visible~.filters [for=f-wardrobes],#f-tv-units:focus-visible~.filters [for=f-tv-units],#f-ceilings:focus-visible~.filters [for=f-ceilings],#f-bathrooms:focus-visible~.filters [for=f-bathrooms],#f-construction:focus-visible~.filters [for=f-construction],#f-maintenance:focus-visible~.filters [for=f-maintenance]{outline:2px solid var(--accent);outline-offset:2px}
 
 /* testimonials placeholder */
 .quotes{display:grid;gap:14px}

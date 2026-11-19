@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { isPh, esc, get, waDigits, waMessage as msg, waHref as href, applyPlaceholderPolicy, criticalProblems } from './lib.mjs';
+import { isPh, esc, get, waDigits, waMessage as msg, waHref as href, applyPlaceholderPolicy, criticalProblems, validateProjects, projectCard, projectTeaser, projectFilters } from './lib.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'src');
@@ -15,6 +15,29 @@ if (OUT === ROOT || OUT === SRC || !OUT.startsWith(ROOT + path.sep)) throw new E
 
 const cfg = JSON.parse(read(path.resolve(ROOT, process.env.SITE_CONFIG || 'site.config.json')));
 const services = JSON.parse(read(path.join(SRC, 'data', 'services.json')));
+const projects = validateProjects(JSON.parse(read(path.join(SRC, 'data', 'projects.json'))));
+
+// Disciplines with no photos yet get one placeholder slot each (hidden in production).
+const PENDING = [{ key: 'construction', label: 'Construction' }, { key: 'maintenance', label: 'Maintenance' }];
+const pendingCard = (e, n) => `<article class="proj" data-optional data-item data-cat="${e.key}">
+        <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] ${e.label.toLowerCase()} project</small></span></div>
+        <div class="proj-body">
+          <p class="mono">/${String(n).padStart(2, '0')} · ${e.label}</p>
+          <h3><span class="ph-tag" data-placeholder>[Project title]</span></h3>
+        </div>
+      </article>`;
+function projectTokens(html) {
+  return html
+    .replace('{{projects:filters}}', () => projectFilters(projects, PENDING))
+    .replace('{{projects:gallery}}', () => [...projects.map((p, i) => projectCard(p, i + 1)), ...PENDING.map((e, i) => pendingCard(e, projects.length + i + 1))].join('\n      '))
+    .replace('{{projects:featured}}', () => projects.filter((p) => p.featured).map(projectTeaser).join('\n      '))
+    .replace(/\{\{projects:card:([a-z0-9-]+)\}\}/g, (_, slug) => {
+      const p = projects.find((x) => x.slug === slug);
+      if (!p) throw new Error(`Unknown project slug: ${slug}`);
+      return projectTeaser(p);
+    })
+    .replace('{{projects:count}}', String(projects.length));
+}
 
 // STRICT = production. Vercel sets VERCEL_ENV=production only for production deployments, so
 // preview deployments keep showing placeholders while production refuses to ship them.
@@ -280,6 +303,7 @@ function applyTokens(html) {
     if (!(n in partials)) throw new Error(`Unknown partial: ${n}`);
     return partials[n];
   });
+  html = projectTokens(html);
   html = html.replace(/\{\{svc:(\w+):(scope|chips)\}\}/g, (_, k, kind) => {
     if (!services[k]) throw new Error(`Unknown service: ${k}`);
     return kind === 'scope' ? scopeList(k) : itemChips(k);

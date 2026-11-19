@@ -29,7 +29,7 @@ test('VERCEL_ENV=production triggers the same guard (preview deploys do not)', (
   assert.equal(build({ VERCEL_ENV: 'preview', OUT_DIR: '.tmp-test-preview' }).status, 0);
 });
 
-test('production build with the essentials ships zero placeholders and shows fallbacks', () => {
+test('production build with the essentials ships zero placeholders, keeps real projects', () => {
   const out = path.join(ROOT, '.tmp-test-prod');
   const r = build({ STRICT: '1', OUT_DIR: '.tmp-test-prod', SITE_CONFIG: 'tests/fixtures/launch-minimum.config.json' });
   assert.equal(r.status, 0, r.stderr);
@@ -40,7 +40,11 @@ test('production build with the essentials ships zero placeholders and shows fal
     assert.doesNotMatch(s, /data-placeholder|PHOTO PENDING|TO CONFIRM|\[Placeholder\]/i, path.relative(out, f));
     assert.doesNotMatch(s, /27XXXXXXXXX/, `${path.relative(out, f)} still links to the placeholder WhatsApp number`);
   }
-  assert.match(fs.readFileSync(path.join(out, 'projects/index.html'), 'utf8'), /Project photos are on their way/);
+  const projects = fs.readFileSync(path.join(out, 'projects/index.html'), 'utf8');
+  const expected = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/projects.json'), 'utf8')).length;
+  assert.equal(new Set(projects.match(/\/assets\/img\/projects\/[\w-]+-sm\.webp/g)).size, expected, `all ${expected} real project photos ship`);
+  assert.doesNotMatch(projects, /data-cat="(construction|maintenance)"/, 'empty discipline slots are removed');
+  assert.doesNotMatch(projects, /Project photos are on their way/, 'empty-state fallback is not shown when real projects exist');
   assert.doesNotMatch(fs.readFileSync(path.join(out, 'index.html'), 'utf8'), /What clients say/, 'empty testimonials section is removed');
 });
 

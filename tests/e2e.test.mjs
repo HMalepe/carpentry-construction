@@ -235,7 +235,12 @@ test('production build: no placeholders on screen, empty states shown, still no 
     assert.equal(await p.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0, u);
   }
   await p.goto(PROD + '/projects/');
-  assert.equal(await p.isVisible('text=Project photos are on their way'), true);
+  const projects = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/projects.json'), 'utf8'));
+  assert.equal(await p.locator('.proj').count(), projects.length, 'only real projects remain');
+  for (const dead of ['construction', 'maintenance']) assert.equal(await p.isVisible(`label[for=f-${dead}]`), false, `no dead ${dead} filter`);
+  await p.click('label[for=f-kitchens]');
+  const kitchens = projects.filter((x) => x.category === 'kitchens').length;
+  assert.equal(await p.locator('.proj:visible').count(), kitchens, 'kitchens filter shows exactly the kitchens');
   await p.goto(PROD + '/');
   // Section numbers come from a CSS counter (so removing a block cannot leave a gap): none may be
   // hard-coded, and each must actually render. Visual check: /01, /02, /03 … confirmed by screenshot.
@@ -244,6 +249,42 @@ test('production build: no placeholders on screen, empty states shown, still no 
   assert.ok(auto.length >= 4, `found ${auto.length} auto-numbered sections`);
   assert.ok(eyebrows.every((e) => !/\/\d/.test(e.text)), 'no hard-coded section numbers');
   assert.ok(auto.every((e) => e.w > 10), 'every counter renders');
+  assert.deepEqual(p.problems, []);
+  await p.context().close();
+});
+
+test('project photos: alt text, intrinsic size, lazy loading, all load', async () => {
+  const p = await open({ viewport: { width: 1440, height: 900 } });
+  for (const u of ['/', '/projects/', '/services/carpentry/']) {
+    await p.goto(BASE + u);
+    await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 600) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 20)); } });
+    await p.evaluate(async () => { for (const i of document.querySelectorAll('.has-photo img')) { i.loading = 'eager'; await i.decode().catch(() => {}); } });
+    const imgs = await p.$$eval('.has-photo img', (is) => is.map((i) => ({ src: i.getAttribute('src'), alt: i.alt, w: i.getAttribute('width'), h: i.getAttribute('height'), nat: i.naturalWidth })));
+    assert.ok(imgs.length > 0, u);
+    for (const i of imgs) {
+      assert.ok(i.alt.length > 20, `${u} ${i.src} needs descriptive alt text`);
+      assert.ok(+i.w > 0 && +i.h > 0, `${u} ${i.src} needs width/height (no layout shift)`);
+      assert.ok(i.nat > 0, `${u} ${i.src} failed to load`);
+    }
+  }
+  await p.context().close();
+});
+
+test('project lightbox: opens full photo, Escape closes and returns focus', async () => {
+  const p = await open();
+  await p.goto(BASE + '/projects/');
+  const first = p.locator('a[data-lightbox]').first();
+  await first.focus();
+  await p.keyboard.press('Enter');
+  const box = p.locator('dialog.lb');
+  assert.equal(await box.evaluate((d) => d.open), true);
+  assert.match(await box.locator('img').getAttribute('src'), /\/assets\/img\/projects\/.+-lg\.webp$/, 'lightbox shows the large version');
+  await box.locator('img').evaluate((i) => i.decode());
+  assert.ok(await box.locator('img').evaluate((i) => i.naturalWidth > 0), 'large image loads');
+  assert.ok((await box.locator('img').getAttribute('alt')).length > 20);
+  await p.keyboard.press('Escape');
+  assert.equal(await box.evaluate((d) => d.open), false);
+  assert.equal(await p.evaluate(() => document.activeElement.hasAttribute('data-lightbox')), true);
   assert.deepEqual(p.problems, []);
   await p.context().close();
 });

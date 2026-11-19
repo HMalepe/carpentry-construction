@@ -12,7 +12,7 @@
 
 **Readiness: Production Candidate.** The software meets the gate. **The launch is blocked on business inputs, not code.**
 
-- The code, tests and deployment configuration pass every applicable item that can be verified from this environment: **29/29 automated tests**, **0 axe-core violations**, **0 HTML validation errors** and **0 npm vulnerabilities**.
+- The code, tests and deployment configuration pass every applicable item that can be verified from this environment: **35/35 automated tests**, **0 axe-core violations**, **0 HTML validation errors** and **0 npm vulnerabilities**.
 - The site cannot go live until the owner supplies four facts: the WhatsApp number, a business email, the POPIA Information Officer, and the company profile PDF. This is now *enforced*: a production build on Vercel fails until they're real (section 6).
 - Two things were not tested from here and should be done before launch: a real phone, and Safari/Firefox (section 5). The headers have since been verified on the live Vercel preview.
 
@@ -73,7 +73,8 @@ Both are fixed and covered by tests.
 | O4 | Medium | Real devices and other browser engines | Only Chromium (desktop + mobile emulation) was tested | iPhone Safari + Android Chrome walkthrough; Firefox smoke test |
 | O5 | Low | Performance on the live URL | Headers **verified live** on the Vercel preview (`main`, 2026-11-15): CSP, HSTS, nosniff, DENY, COOP, Permissions-Policy all served exactly as configured. Lighthouse was blocked here | PageSpeed Insights on the production URL after launch |
 | O6 | Low | Uptime monitoring | Needs the owner's account | Free uptime monitor on `/` (e.g. UptimeRobot) with SMS / email alert |
-| O7 | Low | Hero photo is a licensed stock image (cropped to remove a third-party logo and face) | Authenticity | Replace with an own site photo |
+| O7 | Low | Hero photo is a licensed stock image (cropped to remove a third-party logo and face) | Authenticity | Replace with an own site photo, now that 38 real project photos exist |
+| O9 | Medium | 38 project photos published from the owner's WhatsApp exports | Ownership and client consent can't be verified in code. Metadata stripped; 7 TV screens (broadcast content, incl. TV actors and cartoon characters) and 1 bystander blurred; 1 photo with a "Was R23000" advert overlay excluded | Owner confirms every photo is their own job and that clients agree; adds town / sector / year |
 | O8 | Low | Optional business details (phone, address, hours, registration year, compliance numbers) | Hidden automatically in production until real | Fill in as available |
 
 ## 4. Changes implemented
@@ -91,7 +92,7 @@ Run on Node 22.23 with Chromium (Playwright 1.63.0).
 
 ```
 npm run lint   → html-validate (recommended rules): 0 errors; node --check: OK      exit 0
-npm test       → tests 29 · pass 29 · fail 0 · duration ≈18 s                         exit 0
+npm test       → tests 35 · pass 35 · fail 0 · duration ≈25 s                         exit 0
 npm audit      → found 0 vulnerabilities
 ```
 

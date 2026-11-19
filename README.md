@@ -87,12 +87,28 @@ Overwrite `src/assets/docs/malepe-rr-company-profile.pdf` with the real one (kee
 
 ## 3. Add project photos
 
-1. Resize each photo and export it as WebP at two widths: 800px and 1600px. [squoosh.app](https://squoosh.app) does this in the browser. Aim for quality around 70 and under 120 KB for the 800px file.
-2. Save them as `src/assets/img/projects/<name>-800.webp` and `<name>-1600.webp`.
-3. In `src/pages/projects/index.html`, follow the comment above the grid: swap a card's `<div class="ph-photo">…</div>` for the `<a … data-lightbox><img …></a>` version, then replace each `[placeholder]` tag with real text.
-4. Always write `alt` text describing what's in the photo. It helps both Google and screen readers.
+The gallery is generated from **`src/data/projects.json`**. There are 38 carpentry projects so far, sorted into Kitchens, Wardrobes, TV units, Ceilings and Bathrooms. To add one:
 
-Do the same on the home page (`/04 Projects`) and on each service page's "Related" section.
+1. Keep the untouched original in `media/originals/<slug>.jpg`. This folder is not published.
+2. Make two WebP versions with all metadata removed. Phone photos can carry the GPS location of a client's house, and `-strip` deletes it:
+   ```bash
+   convert media/originals/<slug>.jpg -auto-orient -strip -resize '720x720>' -quality 74 src/assets/img/projects/<slug>-sm.webp
+   ```
+   ```bash
+   convert media/originals/<slug>.jpg -auto-orient -strip -resize '1600x1600>' -quality 78 src/assets/img/projects/<slug>-lg.webp
+   ```
+3. Add an entry to `projects.json`: `slug`, `category` (`kitchens` | `wardrobes` | `tv-units` | `ceilings` | `bathrooms`), `title`, `alt` (describe what the photo shows), and `w` / `h` (size of the `-sm` file). Optional fields:
+   - `location`, `sector`, `year`
+   - `"inProgress": true` for work-in-progress shots
+   - `"featured": true` to show it on the home page (keep exactly three)
+4. Run `npm run check`. The build refuses unknown categories, duplicate slugs, missing images and alt text that's too short.
+
+**Rules for photos:**
+- Only your own jobs.
+- Blur TV screens that show broadcast content, plus any faces or vehicle number plates.
+- Ask the client before publishing photos of their home.
+
+Until a project has `location` / `sector` / `year`, a placeholder appears in preview. It's removed automatically on the live site.
 
 ## 4. Testimonials
 

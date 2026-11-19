@@ -57,7 +57,9 @@
         var img = lb.querySelector('img');
         img.src = a.href;
         img.alt = (a.querySelector('img') || {}).alt || '';
-        lb.querySelector('.mono').textContent = img.alt;
+        var card = a.closest('.proj');
+        var title = card && card.querySelector('h3');
+        lb.querySelector('.mono').textContent = title ? title.textContent : img.alt;
         lb.showModal();
       });
     });
