@@ -105,7 +105,8 @@ test('projectCard: escaped text, lightbox link, optional placeholder until detai
   assert.match(card, /<h3>Oak &amp; white kitchen<\/h3>/);
   assert.match(card, /href="\/assets\/img\/projects\/oak-kitchen-lg\.webp" data-lightbox/);
   assert.match(card, /src="\/assets\/img\/projects\/oak-kitchen-sm\.webp"[^>]*width="720" height="540" loading="lazy"/);
-  assert.match(card, /\/03 · Kitchens/);
+  assert.match(card, /<p class="mono">Kitchens<\/p>/);
+  assert.doesNotMatch(card, /\/\d\d/, 'no numbered labels');
   assert.match(card, /<div data-optional><dt>Details<\/dt><dd><span class="ph-tag" data-placeholder>/);
   const known = projectCard({ ...sampleProject, location: 'Hoedspruit', year: '2025' }, 1);
   assert.match(known, /<dd>Hoedspruit · 2025<\/dd>/);

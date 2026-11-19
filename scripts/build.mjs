@@ -33,7 +33,6 @@ const pimg = (p, size = 'sm', extra = 'loading="lazy" decoding="async"') =>
 
 function showcase() {
   return projects.filter((p) => p.featured).map((p, i) => `<a class="sc sc-${i + 1}" href="${linkFor(p.slug)}">
-        <span class="sc-n num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
         <span class="ph ph-zoom reveal-img"${caseOf(p.slug) ? ` data-vt="${caseOf(p.slug).slug}"` : ''}>${respImg(p, '(min-width:900px) 46vw, 92vw')}</span>
         <div class="sc-body"><h3>${esc(p.title)}</h3><span class="lbl">${esc(CATEGORY_LABEL[p.category])}</span></div>
       </a>`).join('\n      ');
@@ -49,7 +48,7 @@ function caseFeatures() {
     const p = pBy[c.cover];
     return `<a class="feature" href="/projects/${c.slug}/">
         <span class="ph ph-zoom reveal-img" data-vt="${c.slug}">${respImg(p, '(min-width:900px) 58vw, 92vw')}</span>
-        <div class="feature-txt"><span class="feature-n num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span><span class="lbl">${esc(c.kicker)} · Case study</span><h2 class="mt-12">${esc(c.title)}</h2><p>${esc(c.intro)}</p><span class="btn-text mt-20">Read the project</span></div>
+        <div class="feature-txt"><span class="lbl">${esc(c.kicker)} · Case study</span><h2 class="mt-12">${esc(c.title)}</h2><p>${esc(c.intro)}</p><span class="btn-text mt-20">Read the project</span></div>
       </a>`;
   }).join('\n      ');
 }
@@ -68,12 +67,11 @@ function caseBody(c, i) {
   <div class="wrap case-hero-grid">
     <div class="case-hero-txt">
       <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/projects/">Work</a><span aria-hidden="true">/</span><span aria-current="page">${esc(c.title)}</span></nav>
-      <span class="num case-n" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
       <p class="lbl">${esc(c.kicker)} · Case study</p>
       <h1 class="h-xl mt-20 lines"><span class="ln"><span>${esc(c.title)}</span></span></h1>
     </div>
     <figure class="case-cover">
-      <div class="dimline" aria-hidden="true"><span>DWG ${String(i + 1).padStart(2, '0')} · ${esc(c.title)}</span></div>
+      <div class="dimline" aria-hidden="true"><span>${esc(c.title)}</span></div>
       <span class="ph reveal-img" data-vt="${c.slug}">${respImg(p, '(min-width:900px) 40vw, 92vw', 'fetchpriority="high" decoding="async"')}</span>
     </figure>
   </div>
@@ -102,7 +100,7 @@ const PENDING = [{ key: 'construction', label: 'Construction' }, { key: 'mainten
 const pendingCard = (e, n) => `<article class="proj" data-optional data-item data-cat="${e.key}">
         <div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] ${e.label.toLowerCase()} project</small></span></div>
         <div class="proj-body">
-          <p class="mono">/${String(n).padStart(2, '0')} · ${e.label}</p>
+          <p class="mono">${e.label}</p>
           <h3><span class="ph-tag" data-placeholder>[Project title]</span></h3>
         </div>
       </article>`;
@@ -176,7 +174,7 @@ const cur = (meta, key) => (meta.nav === key ? ' aria-current="page"' : '');
 function header(meta) {
   const links = NAV.map((n) => `<a href="${n.href}"${cur(meta, n.key)}>${n.label}</a>`).join('');
   const menuLinks = [{ key: 'home', href: '/', label: 'Home' }, ...NAV, { key: 'quote', href: '/quote/', long: 'Quote request' }]
-    .map((n, i) => `<a href="${n.href}"${cur(meta, n.key)}><span class="mono">${String(i + 1).padStart(2, '0')}</span>${esc(n.long || n.label)}</a>`)
+    .map((n, i) => `<a href="${n.href}"${cur(meta, n.key)}>${esc(n.long || n.label)}</a>`)
     .join('');
   return `<header class="site-head">
   <div class="head-in">
@@ -201,7 +199,7 @@ function tabbar() {
 
 function sheet() {
   const opts = Object.entries(services)
-    .map(([k, s]) => `<a class="sheet-opt" data-wa="${k}"><span class="mono">${s.num}</span><span><b>${esc(s.label)}</b><small>${esc(s.short)}</small></span><span class="ar" aria-hidden="true">↗</span></a>`)
+    .map(([k, s]) => `<a class="sheet-opt" data-wa="${k}"><span><b>${esc(s.label)}</b><small>${esc(s.short)}</small></span><span class="ar" aria-hidden="true">↗</span></a>`)
     .join('');
   return `<dialog class="sheet" id="quote-sheet" aria-labelledby="sheet-t">
   <div class="sheet-in">
@@ -255,7 +253,7 @@ function scopeList(key) {
       const p = it.photo && projects.find((x) => x.slug === it.photo);
       if (it.photo && !p) throw new Error(`services.json: unknown photo slug ${it.photo}`);
       const thumb = p ? `<span class="index-thumb ph"><img src="/assets/img/projects/${p.slug}-sm.webp" alt="" width="${p.w}" height="${p.h}" loading="lazy" decoding="async"></span>` : '';
-      return `<li><span class="num">${String(i + 1).padStart(2, '0')}</span>${thumb}<h3>${esc(it.name)}</h3><p>${esc(it.desc)}</p><a class="scope-q idx-act" data-wa="${key}" data-wa-item="${esc(it.name)}" aria-label="Get a quote for ${esc(it.name)} on WhatsApp">Quote <span aria-hidden="true">↗</span></a></li>`;
+      return `<li>${thumb}<h3>${esc(it.name)}</h3><p>${esc(it.desc)}</p><a class="scope-q idx-act" data-wa="${key}" data-wa-item="${esc(it.name)}" aria-label="Get a quote for ${esc(it.name)} on WhatsApp">Quote <span aria-hidden="true">↗</span></a></li>`;
     })
     .join('')}</ol>`;
 }

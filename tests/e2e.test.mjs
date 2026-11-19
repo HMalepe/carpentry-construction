@@ -246,13 +246,12 @@ test('production build: no placeholders on screen, empty states shown, still no 
   const kitchens = projects.filter((x) => x.category === 'kitchens').length;
   assert.equal(await p.locator('.proj:visible').count(), kitchens, 'kitchens filter shows exactly the kitchens');
   await p.goto(PROD + '/');
-  // Section numbers come from a CSS counter (so removing a block cannot leave a gap): none may be
-  // hard-coded, and each must actually render. Visual check: /01, /02, /03 … confirmed by screenshot.
-  const eyebrows = await p.$$eval('main .eyebrow .n', (ns) => ns.map((n) => ({ text: n.textContent, w: n.getBoundingClientRect().width })));
-  const auto = eyebrows.filter((e) => e.text === '');
-  assert.ok(auto.length >= 4, `found ${auto.length} auto-numbered sections`);
-  assert.ok(eyebrows.every((e) => !/\/\d/.test(e.text)), 'no hard-coded section numbers');
-  assert.ok(auto.every((e) => e.w > 10), 'every counter renders');
+  // Design rule: no numbered-section furniture ("01 / 02 / 03", counters, big numerals). Glyphs carry the sequence instead.
+  const nums = await p.$$eval('main .eyebrow .n', (ns) => ns.filter((n) => n.getBoundingClientRect().width > 0).length);
+  assert.equal(nums, 0, 'eyebrow counters must not render');
+  const numerals = await p.$$eval('main h2, main h3, main .eyebrow, main .lbl', (els) => els.filter((e) => /^\s*\/?0?\d{1,2}\s*(\/|·|$)/.test(e.textContent)).length);
+  assert.equal(numerals, 0, 'no leading 01/02/03 numerals on headings or labels');
+  assert.ok((await p.locator('main .glyph').count()) >= 7, 'process and principles are drawn with glyphs');
   assert.deepEqual(p.problems, []);
   await p.context().close();
 });

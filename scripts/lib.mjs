@@ -156,7 +156,7 @@ export function projectCard(p, n) {
   return `<article class="proj ${orientation(p)}${wide}" data-item data-cat="${p.category}">
         <a class="ph-photo has-photo" href="/assets/img/projects/${p.slug}-lg.webp" data-lightbox>${img(p)}</a>
         <div class="proj-body">
-          <p class="mono">/${String(n).padStart(2, '0')} · ${c.label}${p.inProgress ? ' · In progress' : ''}</p>
+          <p class="mono">${c.label}${p.inProgress ? ' · In progress' : ''}</p>
           <h3>${esc(p.title)}</h3>
           <dl class="proj-spec"><div><dt>Scope</dt><dd>${esc(c.scope)}</dd></div>${details}</dl>
         </div>
