@@ -8,70 +8,48 @@
   "schema": []
 }
 -->
-<section class="page-hero">
+<section class="page-hero tone-dark" aria-labelledby="hero-t">
   <div class="wrap">
-    <nav class="crumbs mono" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Services</span></nav>
-    <div class="page-hero-grid">
-      <h1 class="h-xl">Services<br><span class="out">built to scope.</span></h1>
-      <p class="lead">Construction, maintenance and carpentry from one contractor in Hoedspruit. Each service ends in a WhatsApp quote with the service already filled in.</p>
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Services</span></nav>
+    <div class="ph-grid">
+      <h1 class="h-xl lines" id="hero-t"><span class="ln"><span>Three disciplines,</span></span><span class="ln"><em>one site office.</em></span></h1>
+      <p class="lead" data-reveal>Joinery, building construction and facility maintenance from one company in Hoedspruit. Each service ends in a WhatsApp message with the job already written in.</p>
     </div>
   </div>
 </section>
 
-<section class="section tight">
-  <div class="wrap">
-    <div class="svc-grid">
-      <article class="svc">
-        <div class="svc-draw">{{> draw-construction}}</div>
-        <div class="svc-body">
-          <p class="mono">/01 · Construction</p>
-          <h2 class="h-md">Construction</h2>
-          <p>New builds, extensions and structural work, built to approved drawings.</p>
-          <ul><li>New builds &amp; extensions</li><li>Renovations &amp; alterations</li><li>Foundations, brickwork &amp; plaster</li><li>Paving &amp; boundary walls</li></ul>
-          <div class="svc-acts"><a class="btn" data-wa="construction">Get a Quote <span aria-hidden="true">↗</span></a><a class="btn btn-o" href="/services/construction/">Full scope</a></div>
-        </div>
-      </article>
-      <article class="svc">
-        <div class="svc-draw">{{> draw-maintenance}}</div>
-        <div class="svc-body">
-          <p class="mono">/02 · Maintenance</p>
-          <h2 class="h-md">Maintenance</h2>
-          <p>Planned and reactive upkeep for public facilities and private property.</p>
-          <ul><li>Planned maintenance programmes</li><li>Reactive repairs</li><li>Painting &amp; waterproofing</li><li>Roofs, ceilings, doors &amp; fencing</li></ul>
-          <div class="svc-acts"><a class="btn" data-wa="maintenance">Get a Quote <span aria-hidden="true">↗</span></a><a class="btn btn-o" href="/services/maintenance/">Full scope</a></div>
-        </div>
-      </article>
-      <article class="svc">
-        <div class="svc-draw">{{> draw-carpentry}}</div>
-        <div class="svc-body">
-          <p class="mono">/03 · Carpentry</p>
-          <h2 class="h-md">Carpentry</h2>
-          <p>Roofing, doors, frames, cupboards and fit-outs, measured on site.</p>
-          <ul><li>Roof trusses &amp; roofing</li><li>Doors &amp; frames</li><li>Built-in cupboards &amp; kitchens</li><li>Decks, pergolas &amp; fit-outs</li></ul>
-          <div class="svc-acts"><a class="btn" data-wa="carpentry">Get a Quote <span aria-hidden="true">↗</span></a><a class="btn btn-o" href="/services/carpentry/">Full scope</a></div>
-        </div>
-      </article>
-    </div>
+<section class="sec sec-tight tone-dark" aria-label="Services">
+  <div class="wrap svc-hub">
+    <article class="svc-row">
+      <span class="num">01</span>
+      <div class="txt"><p class="lbl">Joinery &amp; carpentry</p><h2 class="mt-12"><a href="/services/carpentry/">Carpentry</a></h2><ul><li>Kitchens &amp; built-in cupboards</li><li>TV units &amp; feature walls</li><li>Ceilings, bulkheads, doors &amp; trusses</li></ul><div class="acts"><a class="btn btn-primary" data-wa="carpentry">Get a quote <span class="arr" aria-hidden="true">→</span></a><a class="btn-text" href="/services/carpentry/">The service</a></div></div>
+      <a class="vis ph ph-zoom reveal-img" href="/services/carpentry/" tabindex="-1" aria-hidden="true"><img src="/assets/img/projects/charcoal-kitchen-red-glass-lg.webp" alt="" width="676" height="1470" loading="lazy" decoding="async"></a>
+    </article>
+    <article class="svc-row">
+      <span class="num">02</span>
+      <div class="txt"><p class="lbl">Building construction</p><h2 class="mt-12"><a href="/services/construction/">Construction</a></h2><ul><li>New builds &amp; extensions</li><li>Renovations &amp; structural repairs</li><li>Paving, boundary walls &amp; ablutions</li></ul><div class="acts"><a class="btn btn-primary" data-wa="construction">Get a quote <span class="arr" aria-hidden="true">→</span></a><a class="btn-text" href="/services/construction/">The service</a></div></div>
+      <a class="vis exp-drawing draw-in" href="/services/construction/" tabindex="-1" aria-hidden="true">{{> draw-construction}}</a>
+    </article>
+    <article class="svc-row">
+      <span class="num">03</span>
+      <div class="txt"><p class="lbl">Facility maintenance</p><h2 class="mt-12"><a href="/services/maintenance/">Maintenance</a></h2><ul><li>Planned maintenance programmes</li><li>Reactive repairs</li><li>Roofs, paint, ceilings, doors &amp; fencing</li></ul><div class="acts"><a class="btn btn-primary" data-wa="maintenance">Get a quote <span class="arr" aria-hidden="true">→</span></a><a class="btn-text" href="/services/maintenance/">The service</a></div></div>
+      <a class="vis exp-drawing" href="/services/maintenance/" tabindex="-1" aria-hidden="true">{{> draw-maintenance}}</a>
+    </article>
   </div>
 </section>
 
-<section class="section" aria-labelledby="guide-t">
+<section class="sec tone-paper" aria-labelledby="guide-t">
   <div class="wrap">
-    <p class="eyebrow mono"><span class="n"></span>Not sure which one?</p>
-    <div class="sec-head">
-      <h2 class="h-lg" id="guide-t">Which service do I need?</h2>
-      <p class="lead">Find your job below. If it's not listed, pick the closest one — we'll sort out the details on WhatsApp.</p>
-    </div>
-    <div class="guide">
-      <div><b>Building a new house, office, classroom or outbuilding</b><a href="/services/construction/">Construction →</a></div>
-      <div><b>Adding a room, a garage or a second storey</b><a href="/services/construction/">Construction →</a></div>
-      <div><b>Cracks in walls, a failed lintel, a sagging slab</b><a href="/services/construction/">Construction →</a></div>
-      <div><b>A leaking roof, blocked gutters or peeling paint</b><a href="/services/maintenance/">Maintenance →</a></div>
-      <div><b>Looking after a school, clinic or municipal building all year</b><a href="/services/maintenance/">Maintenance →</a></div>
-      <div><b>New roof trusses or a roof replacement</b><a href="/services/carpentry/">Carpentry →</a></div>
-      <div><b>Cupboards, a kitchen, doors or shelving</b><a href="/services/carpentry/">Carpentry →</a></div>
+    <p class="eyebrow"><span class="n"></span>Not sure which?</p>
+    <h2 class="h-l mb-48" id="guide-t">Find your job, <em>find the service.</em></h2>
+    <div class="index">
+      <a href="/services/construction/"><span class="num">01</span><h3>Building a new house, office, classroom or outbuilding</h3><p>Construction</p><span class="scope-q idx-act" aria-hidden="true">→</span></a>
+      <a href="/services/construction/"><span class="num">02</span><h3>Adding a room, a garage or a second storey</h3><p>Construction</p><span class="scope-q idx-act" aria-hidden="true">→</span></a>
+      <a href="/services/construction/"><span class="num">03</span><h3>Cracks in walls, a failed lintel, a sagging slab</h3><p>Construction</p><span class="scope-q idx-act" aria-hidden="true">→</span></a>
+      <a href="/services/maintenance/"><span class="num">04</span><h3>A leaking roof, blocked gutters or peeling paint</h3><p>Maintenance</p><span class="scope-q idx-act" aria-hidden="true">→</span></a>
+      <a href="/services/maintenance/"><span class="num">05</span><h3>Looking after a school, clinic or municipal building all year</h3><p>Maintenance</p><span class="scope-q idx-act" aria-hidden="true">→</span></a>
+      <a href="/services/carpentry/"><span class="num">06</span><h3>New roof trusses or a roof replacement</h3><p>Carpentry</p><span class="scope-q idx-act" aria-hidden="true">→</span></a>
+      <a href="/services/carpentry/"><span class="num">07</span><h3>Cupboards, a kitchen, doors or shelving</h3><p>Carpentry</p><span class="scope-q idx-act" aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
-
-{{> cta}}

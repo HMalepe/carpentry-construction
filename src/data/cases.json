@@ -1,0 +1,43 @@
+[
+  {
+    "slug": "charcoal-kitchen",
+    "title": "The charcoal kitchen",
+    "kicker": "Kitchens",
+    "cover": "charcoal-kitchen-island",
+    "description": "A charcoal high-gloss kitchen with a working island, white stone-look tops and red-framed glass display cabinets, by Malepe R&R.",
+    "intro": "A dark, reflective kitchen with a working island at its centre: hob and oven set into the island, charcoal high-gloss doors and white stone-look tops. One run of red-framed glass display cabinets is the only colour in the room.",
+    "body": ["Gloss this dark shows every misaligned door and every uneven gap, so the joinery has to be exact. Long bar handles run in one line across the base units; the tall unit beside the window closes the composition.", "The island carries its own cooking zone, so the room works as a kitchen and a place to stand and talk."],
+    "specs": [["Scope", "Kitchen units & island"], ["Doors", "Charcoal high-gloss"], ["Worktops", "White stone-look"], ["Feature", "Red-framed glass display cabinets"], ["Island", "Hob with built-in oven below"], ["Sink", "Black double bowl"]],
+    "photos": [{ "slug": "charcoal-kitchen-red-glass", "caption": "Display cabinets above the sink run" }],
+    "service": "carpentry",
+    "item": "Kitchen units"
+  },
+  {
+    "slug": "white-u-kitchen",
+    "title": "White gloss U-kitchen",
+    "kicker": "Kitchens",
+    "cover": "white-gloss-u-kitchen",
+    "description": "A white high-gloss U-shaped kitchen photographed during installation and at handover, by Malepe R&R.",
+    "intro": "Photographed twice: once with the window still under plastic, and again at handover. The same U-shaped run of white high-gloss doors and drawers, from fitted carcasses to a clean room.",
+    "body": ["A white gloss kitchen is unforgiving in the other direction: every scuff and every fingerprint shows. The drawer bank under the window and the full-height units on the right are set out to the same lines as the ceiling."],
+    "specs": [["Scope", "Kitchen units"], ["Layout", "U-shaped"], ["Doors", "White high-gloss"], ["Storage", "Drawer bank and tall units"], ["Worktops", "Light stone-look"]],
+    "pair": { "before": "white-u-kitchen-installation", "after": "white-gloss-u-kitchen" },
+    "photos": [],
+    "service": "carpentry",
+    "item": "Kitchen units"
+  },
+  {
+    "slug": "white-gloss-kitchen",
+    "title": "White gloss kitchen with breakfast bar",
+    "kicker": "Kitchens",
+    "cover": "white-gloss-kitchen-breakfast-bar",
+    "description": "A white high-gloss kitchen with built-in oven, tall units and a breakfast counter, from installation to handover, by Malepe R&R.",
+    "intro": "Tall units frame a built-in oven and hob, with a breakfast counter returning into the room. During installation the shelving was still open and the floor covered in offcuts; at handover, stools at the counter.",
+    "body": ["Two photographs, the same room: the record of a job going from carcass to kitchen."],
+    "specs": [["Scope", "Kitchen units"], ["Doors", "White high-gloss"], ["Tall units", "Oven housing and pantry"], ["Feature", "Breakfast counter"]],
+    "pair": { "before": "white-kitchen-installation", "after": "white-gloss-kitchen-breakfast-bar" },
+    "photos": [],
+    "service": "carpentry",
+    "item": "Kitchen units"
+  }
+]

@@ -1,0 +1,184 @@
+{
+  "_doc": "Art-directed crops made by scripts/photos.mjs from media/originals (source blurs applied first). rect = [x0,y0,x1,y1] as fractions.",
+  "crops": [
+    {
+      "name": "hero-kitchen-desktop",
+      "from": "charcoal-kitchen-island",
+      "rect": [
+        0,
+        0.17,
+        1,
+        0.97
+      ],
+      "width": 900,
+      "w": 677,
+      "h": 1176
+    },
+    {
+      "name": "hero-kitchen-mobile",
+      "from": "charcoal-kitchen-island",
+      "rect": [
+        0,
+        0.2,
+        1,
+        0.78
+      ],
+      "width": 800,
+      "w": 677,
+      "h": 853
+    },
+    {
+      "name": "invite-installers",
+      "from": "kitchen-install-led-ceiling",
+      "rect": [
+        0,
+        0.03,
+        1,
+        0.72
+      ],
+      "width": 1600,
+      "grade": "dark",
+      "w": 1600,
+      "h": 828
+    },
+    {
+      "name": "invite-installers-mobile",
+      "from": "kitchen-install-led-ceiling",
+      "rect": [
+        0.12,
+        0,
+        0.72,
+        0.85
+      ],
+      "width": 800,
+      "grade": "dark",
+      "w": 800,
+      "h": 850
+    },
+    {
+      "name": "detail-slats-led",
+      "from": "tv-wall-red-led",
+      "rect": [
+        0.6,
+        0.05,
+        0.98,
+        0.6
+      ],
+      "width": 700,
+      "w": 272,
+      "h": 487
+    },
+    {
+      "name": "detail-oak-door",
+      "from": "light-oak-wardrobes-open-bay",
+      "rect": [
+        0.05,
+        0.1,
+        0.47,
+        0.95
+      ],
+      "width": 800,
+      "w": 672,
+      "h": 1020
+    },
+    {
+      "name": "exp-joinery",
+      "from": "concrete-look-corner-wardrobes",
+      "rect": [
+        0,
+        0,
+        1,
+        0.92
+      ],
+      "width": 900,
+      "w": 900,
+      "h": 1104
+    }
+  ],
+  "swatches": [
+    {
+      "name": "charcoal-gloss",
+      "label": "Charcoal gloss",
+      "from": "charcoal-kitchen-island",
+      "rect": [
+        0.26,
+        0.82,
+        0.46,
+        0.94
+      ],
+      "seen": "charcoal-kitchen-island"
+    },
+    {
+      "name": "grey-oak",
+      "label": "Grey oak",
+      "from": "grey-oak-wardrobes-dressing-table",
+      "rect": [
+        0.075,
+        0.15,
+        0.135,
+        0.6
+      ],
+      "seen": "grey-oak-wardrobes-dressing-table"
+    },
+    {
+      "name": "concrete-look",
+      "label": "Concrete-look",
+      "from": "concrete-look-corner-wardrobes",
+      "rect": [
+        0.11,
+        0.39,
+        0.27,
+        0.59
+      ],
+      "seen": "concrete-look-corner-wardrobes"
+    },
+    {
+      "name": "espresso-woodgrain",
+      "label": "Espresso woodgrain",
+      "from": "sliding-mirror-wardrobe",
+      "rect": [
+        0.7,
+        0.18,
+        0.91,
+        0.68
+      ],
+      "seen": "sliding-mirror-wardrobe"
+    },
+    {
+      "name": "marble-look",
+      "label": "Marble-look panel",
+      "from": "tv-wall-marble-slats",
+      "rect": [
+        0.66,
+        0.23,
+        0.72,
+        0.63
+      ],
+      "seen": "tv-wall-marble-slats"
+    },
+    {
+      "name": "timber-slats",
+      "label": "Timber slats",
+      "from": "tv-wall-marble-slats",
+      "rect": [
+        0.74,
+        0.08,
+        0.98,
+        0.74
+      ],
+      "seen": "tv-wall-marble-slats"
+    },
+    {
+      "name": "gloss-white",
+      "label": "High-gloss white",
+      "from": "gloss-white-wardrobe",
+      "rect": [
+        0.135,
+        0.12,
+        0.195,
+        0.45
+      ],
+      "seen": "gloss-white-wardrobe"
+    }
+  ]
+}

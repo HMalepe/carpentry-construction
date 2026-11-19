@@ -5,61 +5,58 @@
   "nav": "services",
   "crumb": "Construction",
   "dwg": "MRR-101",
-  "schema": ["service:construction"]
+  "schema": [
+    "service:construction"
+  ],
+  "bodyClass": "has-cta head-paper"
 }
 -->
-<section class="page-hero">
-  <div class="wrap">
-    <nav class="crumbs mono" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/services/">Services</a><span aria-hidden="true">/</span><span aria-current="page">Construction</span></nav>
-    <div class="page-hero-grid">
-      <div>
-        <p class="status"><span class="dot" aria-hidden="true"></span>Service /01 · Hoedspruit &amp; Maruleng</p>
-        <h1 class="h-xl mt-24">Construction<br><span class="out">in Hoedspruit.</span></h1>
-        <p class="lead">New builds, extensions, renovations and structural work for government, municipal and private clients — set out from your drawings and built to the approved scope.</p>
-        <div class="acts">
-          <a class="btn btn-lg" data-wa="construction">Get a Construction Quote <span aria-hidden="true">↗</span></a>
-          <a class="btn btn-o btn-lg" href="/quote/?service=construction">Detailed request</a>
-        </div>
-      </div>
-      <div class="frame pt-48">
-        <div class="dim" aria-hidden="true"><span>DWG MRR-101 · CONSTRUCTION</span></div>
-        {{> draw-construction}}
-      </div>
+<section class="drawing-hero tone-paper" aria-labelledby="hero-t">
+  <div class="wrap grid">
+    <div class="txt">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/services/">Services</a><span aria-hidden="true">/</span><span aria-current="page">Construction</span></nav>
+      <p class="lbl">Service 02 · Building construction</p>
+      <h1 class="h-xl mt-20 lines" id="hero-t"><span class="ln"><span>From the</span></span><span class="ln"><span>pegs in the</span></span><span class="ln"><em>ground up.</em></span></h1>
+      <p class="lead mt-24">New builds, extensions, renovations and structural repairs for government, municipal and private clients, set out from your drawings and built to the approved scope.</p>
+      <div class="acts"><a class="btn btn-primary" data-wa="construction">Get a construction quote <span class="arr" aria-hidden="true">→</span></a><a class="btn-text" href="/tenders/">Tender documents</a></div>
     </div>
+    <figure class="sheet draw-in">{{> draw-construction}}<span class="mono">Sheet MRR-101 · Elevation</span></figure>
   </div>
 </section>
 
-<section class="section" aria-labelledby="scope-t">
+<section class="sec tone-paper" aria-labelledby="stg-t">
   <div class="wrap">
-    <p class="eyebrow mono"><span class="n"></span>Scope of work</p>
-    <div class="sec-head">
-      <h2 class="h-lg" id="scope-t">From setting out to roof level.</h2>
-      <p class="lead">We take a building from the pegs in the ground to the roof — or pick up a defined part of the work. Tell us what you're building and where; send your plans if you have them. Tap <b>Quote</b> on any item to open WhatsApp with that job already filled in.</p>
-    </div>
+    <p class="eyebrow"><span class="n"></span>Sequence</p>
+    <h2 class="h-l mb-48" id="stg-t">Five stages, <em>one drawing set.</em></h2>
+    <ol class="stages" data-reveal>
+      <li><span class="num">01</span><h3>Setting out</h3><p>Pegs, profiles and levels taken from the approved drawings.</p></li>
+      <li><span class="num">02</span><h3>Foundations</h3><p>Excavation, footings, slab and reinforcement.</p></li>
+      <li><span class="num">03</span><h3>Walls</h3><p>Brickwork to wall plate, lintels and openings.</p></li>
+      <li><span class="num">04</span><h3>Roof</h3><p>Timber trusses, purlins and sheeting.</p></li>
+      <li><span class="num">05</span><h3>Finishes</h3><p>Plaster, ceilings, joinery, paint and snag list.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="sec tone-dark" aria-labelledby="scope-t">
+  <div class="wrap">
+    <p class="eyebrow"><span class="n"></span>Scope of work</p>
+    <div class="ph-grid mb-48"><h2 class="h-l" id="scope-t">What we take on.</h2><p class="lead">Tap <strong>Quote</strong> on any line to open WhatsApp with that job already written into the message.</p></div>
     {{svc:construction:scope}}
+    <div class="ph-note mt-48" data-placeholder data-optional><span class="mono">[Placeholder] Construction photography</span>Add photographs of building work (set-out, foundations, wall plate, roof) to the gallery; this page then shows them alongside the drawings.</div>
   </div>
 </section>
 
-<section class="section" aria-labelledby="price-t">
+<section class="sec tone-paper" aria-labelledby="price-t">
   <div class="wrap split">
-    <div class="panel">
-      <p class="mono">/02 · Pricing</p>
-      <h2 class="h-md mt-10" id="price-t">How we price it</h2>
-      <ul class="ticks"><li>Priced from approved drawings, a site visit, or the bill of quantities issued with a tender.</li><li>Itemised quote so you can see what each part of the work costs.</li><li>Scope changes are priced and agreed before the work is done.</li></ul>
-    </div>
-    <div class="panel">
-      <p class="mono">/03 · Before you message</p>
-      <h2 class="h-md mt-10">What to send us</h2>
-      <ul class="ticks"><li>Approved plans (PDF or photos of the sheets)</li><li>Site location — a WhatsApp location pin is perfect</li><li>Photos of the site or the existing building</li><li>Your target start date</li></ul>
-      <p>Everything above can be sent straight into the WhatsApp chat.</p>
-    </div>
+    <div class="panel"><p class="lbl">Pricing</p><h2 id="price-t">How we price it</h2><ul class="ticks"><li>Priced from approved drawings, a site visit, or the bill of quantities issued with a tender.</li><li>Itemised quote so you can see what each part of the work costs.</li><li>Scope changes are priced and agreed before the work is done.</li></ul></div>
+    <div class="panel"><p class="lbl">Before you message</p><h2>What to send us</h2><ul class="ticks"><li>Approved plans (PDF or photos of the sheets)</li><li>Site location — a WhatsApp location pin is perfect</li><li>Photos of the site or the existing building</li><li>Your target start date</li></ul><p class="mt-20">Everything above can be sent straight into the WhatsApp chat.</p></div>
   </div>
 </section>
 
-<section class="section" aria-labelledby="faq-t">
-  <div class="wrap">
-    <p class="eyebrow mono"><span class="n"></span>Questions</p>
-    <div class="sec-head"><h2 class="h-lg" id="faq-t">Construction FAQ</h2><p class="lead">Short answers. Anything else, ask on WhatsApp.</p></div>
+<section class="sec tone-dark" aria-labelledby="faq-t">
+  <div class="wrap split">
+    <div><p class="eyebrow"><span class="n"></span>Questions</p><h2 class="h-l" id="faq-t">Asked <em>often.</em></h2></div>
     <div class="faqs">
       <details class="faq"><summary>Can you build from my architect's plans?</summary><div><p>Yes. Send the drawings on WhatsApp — PDFs or clear photos of each sheet — and we'll price from them. If the plans aren't approved yet, tell us; that affects the programme.</p></div></details>
       <details class="faq"><summary>Do you do government and municipal building work?</summary><div><p>Yes. We quote on RFQs and tenders for public buildings. Registration and compliance details are on our <a href="/tenders/">Tenders &amp; Compliance</a> page.</p></div></details>
@@ -69,15 +66,9 @@
   </div>
 </section>
 
-<section class="section" aria-labelledby="rel-t">
-  <div class="wrap">
-    <p class="eyebrow mono"><span class="n"></span>Related</p>
-    <h2 class="h-md mb-24" id="rel-t">Projects &amp; other services</h2>
-    <div class="proj-grid">
-      <article class="proj" data-optional><div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] construction project</small></span></div><div class="proj-body"><p class="mono">Construction</p><h3><span class="ph-tag" data-placeholder>[Project title]</span></h3><p class="mt-10"><a class="link" href="/projects/">All projects →</a></p></div></article>
-      <a class="card" href="/services/maintenance/"><span class="n">/02</span><span class="ar" aria-hidden="true">↗</span><h3>Maintenance</h3><p>Planned, or when it breaks.</p></a><a class="card" href="/services/carpentry/"><span class="n">/03</span><span class="ar" aria-hidden="true">↗</span><h3>Carpentry</h3><p>Structural timber to finished joinery.</p></a>
-    </div>
+<section class="sec tone-raised cta-band" aria-labelledby="cta-t">
+  <div class="wrap grid">
+    <h2 class="h-xl" id="cta-t">Tell us about <em>the construction job.</em></h2>
+    <div class="cta-side"><p class="lead">Photos, plans and a location pin are all you need to start.</p><div class="acts"><a class="btn btn-primary" data-wa="construction">Get a construction quote <span class="arr" aria-hidden="true">→</span></a><a class="btn-text" href="/quote/?service=construction">Detailed request</a></div></div>
   </div>
 </section>
-
-{{> cta}}

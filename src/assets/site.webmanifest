@@ -3,8 +3,8 @@
   "short_name": "Malepe R&R",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0B1622",
-  "theme_color": "#0B1622",
+  "background_color": "#111110",
+  "theme_color": "#111110",
   "icons": [
     { "src": "/assets/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
     { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png" }

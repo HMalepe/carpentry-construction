@@ -36,6 +36,11 @@ npm run check
 ```
 site.config.json        ← business details: WhatsApp number, phone, email, compliance numbers
 src/data/services.json  ← the service lists (used on service pages, quote builder and Google schema)
+src/data/projects.json  ← every project photo: category, title, alt text, blur regions
+src/data/cases.json     ← case studies (generate /projects/<slug>/ pages)
+src/data/art.json       ← art-directed crops and material swatches
+media/originals/        ← untouched original photos (never published)
+scripts/photos.mjs      ← photo pipeline: strip metadata, blur, grade, resize (npm run photos)
 src/pages/              ← one file per page (the folder = the URL)
 src/partials/           ← reusable blocks: CTA band, blueprint drawings, area map
 src/layout.html         ← <head>, SEO tags, page shell
@@ -85,27 +90,28 @@ Overwrite `src/assets/docs/malepe-rr-company-profile.pdf` with the real one (kee
 
 **Never put the director's ID number or a personal email in the PDF or anywhere on the site.**
 
-## 3. Add project photos
+## 3. Add project photos and case studies
 
-The gallery is generated from **`src/data/projects.json`**. There are 38 carpentry projects so far, sorted into Kitchens, Wardrobes, TV units, Ceilings and Bathrooms. To add one:
+The visual system is documented in [`ART_DIRECTION.md`](ART_DIRECTION.md). It covers the palette, type, grid, image strategy and a photographer's shot list.
 
-1. Keep the untouched original in `media/originals/<slug>.jpg`. This folder is not published.
-2. Make two WebP versions with all metadata removed. Phone photos can carry the GPS location of a client's house, and `-strip` deletes it:
+**A photo** (needs ImageMagick installed):
+1. Put the untouched original in `media/originals/<slug>.jpg`. This folder is never published.
+2. Add an entry to `src/data/projects.json`:
+   - required: `slug`, `category` (`kitchens` | `wardrobes` | `tv-units` | `ceilings` | `bathrooms`), `title`, `alt` (describe what the photo shows);
+   - optional: `location`, `sector`, `year`, `"inProgress": true`, `"featured": true` (exactly three, for the home page), `"focus": "b"` (keep the bottom of a tall photo in frame), and `"blur": [[x0,y0,x1,y1]]` (fractions of the image) to blur a TV screen, face or number plate.
+3. Run the pipeline. It removes metadata (including GPS), applies the blurs and the house colour grade, and writes the gallery and lightbox sizes with their dimensions:
    ```bash
-   convert media/originals/<slug>.jpg -auto-orient -strip -resize '720x720>' -quality 74 src/assets/img/projects/<slug>-sm.webp
+   npm run photos
    ```
-   ```bash
-   convert media/originals/<slug>.jpg -auto-orient -strip -resize '1600x1600>' -quality 78 src/assets/img/projects/<slug>-lg.webp
-   ```
-3. Add an entry to `projects.json`: `slug`, `category` (`kitchens` | `wardrobes` | `tv-units` | `ceilings` | `bathrooms`), `title`, `alt` (describe what the photo shows), and `w` / `h` (size of the `-sm` file). Optional fields:
-   - `location`, `sector`, `year`
-   - `"inProgress": true` for work-in-progress shots
-   - `"featured": true` to show it on the home page (keep exactly three)
 4. Run `npm run check`. The build refuses unknown categories, duplicate slugs, missing images and alt text that's too short.
+
+**A case study:** add an entry to `src/data/cases.json` with a cover photo, specification rows, text, and an optional `pair` (`before` / `after`, for "During installation / At handover"). The page `/projects/<slug>/` is generated automatically.
+
+**Art crops and material swatches** (hero, invitation, sample board) are defined in `src/data/art.json` and made by the same `npm run photos`.
 
 **Rules for photos:**
 - Only your own jobs.
-- Blur TV screens that show broadcast content, plus any faces or vehicle number plates.
+- Blur broadcast TV content, faces and number plates.
 - Ask the client before publishing photos of their home.
 
 Until a project has `location` / `sector` / `year`, a placeholder appears in preview. It's removed automatically on the live site.

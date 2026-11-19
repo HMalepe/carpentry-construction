@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const build = (env) => spawnSync(process.execPath, ['scripts/build.mjs'], { cwd: ROOT, env: { ...process.env, VERCEL_ENV: '', ...env }, encoding: 'utf8' });
+const CASES = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/cases.json'), 'utf8')).length;
 const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]));
 
 test('preview build succeeds and reports the launch checklist', () => {
@@ -34,7 +35,7 @@ test('production build with the essentials ships zero placeholders, keeps real p
   const r = build({ STRICT: '1', OUT_DIR: '.tmp-test-prod', SITE_CONFIG: 'tests/fixtures/launch-minimum.config.json' });
   assert.equal(r.status, 0, r.stderr);
   const html = walk(out).filter((f) => f.endsWith('.html'));
-  assert.equal(html.length, 12);
+  assert.equal(html.length, 12 + CASES, '12 static pages + one per case study');
   for (const f of html) {
     const s = fs.readFileSync(f, 'utf8');
     assert.doesNotMatch(s, /data-placeholder|PHOTO PENDING|TO CONFIRM|\[Placeholder\]/i, path.relative(out, f));
@@ -57,7 +58,7 @@ test('build refuses to write outside the project', () => {
 test('sitemap and robots are generated with absolute URLs', () => {
   const out = path.join(ROOT, '.tmp-test-prod');
   const sm = fs.readFileSync(path.join(out, 'sitemap.xml'), 'utf8');
-  assert.equal((sm.match(/<loc>https:\/\/example\.co\.za\//g) || []).length, 11);
+  assert.equal((sm.match(/<loc>https:\/\/example\.co\.za\//g) || []).length, 11 + CASES);
   assert.doesNotMatch(sm, /404/);
   assert.match(fs.readFileSync(path.join(out, 'robots.txt'), 'utf8'), /Sitemap: https:\/\/example\.co\.za\/sitemap\.xml/);
 });

@@ -5,26 +5,23 @@
   "nav": "tenders",
   "crumb": "Tenders & Compliance",
   "dwg": "MRR-400",
-  "schema": []
+  "schema": [],
+  "bodyClass": "has-cta head-paper"
 }
 -->
-<section class="page-hero">
+<section class="page-hero tone-paper" aria-labelledby="hero-t">
   <div class="wrap">
-    <nav class="crumbs mono" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Tenders &amp; Compliance</span></nav>
-    <div class="page-hero-grid">
-      <div>
-        <p class="status"><span class="dot" aria-hidden="true"></span>For procurement officers &amp; bid committees</p>
-        <h1 class="h-xl mt-24">Tenders &amp;<br><span class="out">compliance.</span></h1>
-      </div>
-      <p class="lead">Everything needed to add Malepe R&amp;R to a supplier list or evaluate a bid, on one page. Certified copies are available on request.</p>
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Tenders &amp; Compliance</span></nav>
+    <div class="ph-grid">
+      <div><p class="lbl">For procurement officers &amp; bid committees</p><h1 class="h-xl mt-20 lines" id="hero-t"><span class="ln"><span>Tenders &amp;</span></span><span class="ln"><em>compliance.</em></span></h1></div>
+      <p class="lead" data-reveal>Everything needed to add Malepe R&amp;R to a supplier list or evaluate a bid, on one page. Certified copies are available on request.</p>
     </div>
   </div>
 </section>
 
-<section class="section tight" aria-labelledby="reg-t">
+<section class="sec sec-tight tone-paper" aria-labelledby="reg-t">
   <div class="wrap">
-    <p class="eyebrow mono"><span class="n"></span>Compliance register</p>
-    <h2 class="h-md mb-24" id="reg-t">Registration &amp; compliance</h2>
+    <p class="eyebrow" id="reg-t"><span class="n"></span>Compliance register</p>
     <div class="reg-table" data-collection="register">
       <table>
         <caption class="vh">Compliance register</caption>
@@ -41,75 +38,52 @@
       </table>
     </div>
     <div class="panel" data-if-empty="register"><p>Registration and compliance documents (CIPC, CSD, CIDB, B-BBEE, COIDA and tax compliance status) are available on request for RFQs and tenders.</p></div>
-    <p class="mono mt-14">Ask for certified copies via WhatsApp or email.</p>
+    <div class="muted mt-24" data-if-empty="register"><p>Registration and compliance documents (CIPC, CSD, CIDB, B-BBEE, COIDA and tax compliance status) are available on request for RFQs and tenders.</p></div>
+    <p class="lbl lbl-mute mt-20">Ask for certified copies via WhatsApp or email.</p>
   </div>
 </section>
 
-<section class="section" id="profile" aria-labelledby="prof-t">
+<section class="sec tone-paper" id="profile" aria-labelledby="prof-t">
   <div class="wrap split">
-    <div class="frame pt-48">
-      <div class="dim" aria-hidden="true"><span>COMPANY PROFILE · PDF</span></div>
-      <p class="mono">Download</p>
-      <h2 class="h-md mt-10" id="prof-t">Company profile</h2>
-      <p class="prose mt-12">Company overview, services, registration details and contact information in one PDF, ready to attach to a supplier file or bid evaluation.</p>
-      <div class="acts">
-        <a class="btn btn-lg" href="{{attr.profilePdf}}" download>Download company profile (PDF)</a>
-      </div>
+    <div class="doc-card">
+      <div class="dimline"><span>Company profile · PDF</span></div>
+      <h2 class="h-m" id="prof-t">Company profile</h2>
+      <p class="mt-14 muted">Company overview, services, registration details and contact information in one PDF, ready for a supplier file or bid evaluation.</p>
+      <div class="acts"><a class="btn btn-primary" href="{{attr.profilePdf}}" download>Download (PDF) <span class="arr" aria-hidden="true">↓</span></a></div>
       <p class="mono mt-14" data-optional>Placeholder file until the final profile is supplied <span class="ph-tag" data-placeholder>[Replace PDF]</span></p>
     </div>
-    <div class="panel">
-      <p class="mono">/02 · Bid documents</p>
-      <h2 class="h-md mt-10">Standard bidding forms</h2>
-      <p>Request any of the following, completed for your RFQ or tender:</p>
-      <ul class="ticks">
+    <div class="panel"><p class="lbl">Bid documents</p><h2>Standard bidding forms</h2><p>Request any of the following, completed for your RFQ or tender:</p><div class="mt-20"><ul class="ticks">
         <li>SBD 1 / MBD 1: invitation to bid</li>
         <li>SBD 4 / MBD 4: bidder's disclosure</li>
         <li>SBD 6.1 / MBD 6.1: preference points claim</li>
         <li>MBD 8 &amp; MBD 9: past supply chain practices &amp; independent bid determination</li>
         <li>Banking confirmation letter</li>
         <li>Municipal rates clearance (where required)</li>
-      </ul>
-    </div>
+      </ul></div></div>
   </div>
 </section>
 
-<section class="section" aria-labelledby="ver-t">
-  <div class="wrap">
-    <p class="eyebrow mono"><span class="n"></span>Verify independently</p>
-    <div class="sec-head"><h2 class="h-lg" id="ver-t">Don't take our word for it.</h2><p class="lead">Our key registrations can be checked on the issuing body's own system.</p></div>
-    <div class="sectors">
-      <a class="card" href="https://www.cidb.org.za/" target="_blank" rel="noopener"><span class="n">CIDB</span><span class="ar" aria-hidden="true">↗</span><h3>Register of Contractors</h3><p>Grading, class of works and expiry date.</p></a>
-      <a class="card" href="https://secure.csd.gov.za/" target="_blank" rel="noopener"><span class="n">CSD</span><span class="ar" aria-hidden="true">↗</span><h3>Central Supplier Database</h3><p>Supplier status for organs of state.</p></a>
-      <a class="card" href="https://www.cipc.co.za/" target="_blank" rel="noopener"><span class="n">CIPC</span><span class="ar" aria-hidden="true">↗</span><h3>Company registration</h3><p>Company status and directors.</p></a>
-    </div>
-  </div>
-</section>
-
-<section class="section" aria-labelledby="sect-t">
+<section class="sec tone-paper" aria-labelledby="ver-t">
   <div class="wrap split">
-    <div>
-      <p class="eyebrow mono"><span class="n"></span>Capacity</p>
-      <h2 class="h-lg" id="sect-t">What we tender for</h2>
-      <p class="lead mt-20">Construction, maintenance and carpentry work for public facilities in Maruleng and surrounds.</p>
-      <ul class="towns"><li>Building construction</li><li>Facility maintenance</li><li>Renovations &amp; repairs</li><li>Carpentry &amp; roofing</li></ul>
+    <div><p class="eyebrow"><span class="n"></span>Verify independently</p><h2 class="h-l" id="ver-t">Don't take <em>our word for it.</em></h2><p class="lead mt-24">Our key registrations can be checked on the issuing body's own system.</p></div>
+    <div class="verify">
+      <a href="https://www.cidb.org.za/" target="_blank" rel="noopener"><span class="num">CIDB</span><h3>Register of Contractors</h3><span aria-hidden="true">↗</span><p>Grading, class of works and expiry date.</p></a>
+      <a href="https://secure.csd.gov.za/" target="_blank" rel="noopener"><span class="num">CSD</span><h3>Central Supplier Database</h3><span aria-hidden="true">↗</span><p>Supplier status for organs of state.</p></a>
+      <a href="https://www.cipc.co.za/" target="_blank" rel="noopener"><span class="num">CIPC</span><h3>Company registration</h3><span aria-hidden="true">↗</span><p>Company status and directors.</p></a>
     </div>
+  </div>
+</section>
+
+<section class="sec tone-paper" aria-labelledby="cap-t">
+  <div class="wrap split">
+    <div><p class="eyebrow"><span class="n"></span>Capacity</p><h2 class="h-l" id="cap-t">What we <em>tender for.</em></h2><ul class="towns"><li>Building construction</li><li>Facility maintenance</li><li>Renovations &amp; repairs</li><li>Carpentry &amp; roofing</li></ul></div>
     <div class="ph-note" data-placeholder data-optional><span class="mono">[Placeholder] Capacity statement</span>Add a short, factual capacity statement: CIDB grade and class, the size of contract you can carry, plant and equipment owned, and the number of permanent staff. Only include what your documents can prove.</div>
   </div>
 </section>
 
-<section class="section" aria-labelledby="tc-t">
-  <div class="wrap">
-    <div class="cta">
-      <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
-      <div>
-        <p class="eyebrow mono"><span class="n">/ TENDER CONTACT</span>Procurement queries</p>
-        <h2 class="h-lg" id="tc-t">Need a document for a bid?</h2>
-        <p class="lead mt-18">Tell us the tender or RFQ number and the documents you need. Email: {{cfg.email}}</p>
-      </div>
-      <div class="acts">
-        <a class="btn btn-lg" data-wa="tender">WhatsApp us <span aria-hidden="true">↗</span></a>
-        <a class="btn btn-o btn-lg" href="{{mailHref}}">Email</a>
-      </div>
-    </div>
+<section class="sec tone-dark cta-band" aria-labelledby="tc-t">
+  <div class="wrap grid">
+    <h2 class="h-xl" id="tc-t">Need a document <em>for a bid?</em></h2>
+    <div class="cta-side"><p class="lead">Tell us the tender or RFQ number and the documents you need. Email: {{cfg.email}}</p><div class="acts"><a class="btn btn-primary" data-wa="tender">WhatsApp us <span class="arr" aria-hidden="true">→</span></a><a class="btn-text" href="{{mailHref}}">Email</a></div></div>
   </div>
 </section>

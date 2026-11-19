@@ -134,6 +134,14 @@ export function validateProjects(projects) {
 const img = (p) =>
   `<img src="/assets/img/projects/${p.slug}-sm.webp" alt="${esc(p.alt)}" width="${p.w}" height="${p.h}" loading="lazy" decoding="async">`;
 
+export const CATEGORY_LABEL = Object.fromEntries(Object.entries(CATEGORIES).map(([k, v]) => [k, v.label]));
+
+/** Layout class from the photo's proportions: portraits stand tall, wide shots span more columns. */
+export function orientation(p) {
+  const r = p.w / p.h;
+  return r < 0.9 ? 'o-portrait' : r > 1.9 ? 'o-pano' : 'o-landscape';
+}
+
 /** Full gallery card. Unknown details (town, sector, year) become an optional placeholder: hidden in production. */
 export function projectCard(p, n) {
   const c = CATEGORIES[p.category];
@@ -141,7 +149,8 @@ export function projectCard(p, n) {
   const details = known
     ? `<div><dt>Details</dt><dd>${known}</dd></div>`
     : `<div data-optional><dt>Details</dt><dd><span class="ph-tag" data-placeholder>[Town · sector · year]</span></dd></div>`;
-  return `<article class="proj" data-item data-cat="${p.category}">
+  const wide = orientation(p) === 'o-landscape' && n % 5 === 1 ? ' wide' : '';
+  return `<article class="proj ${orientation(p)}${wide}" data-item data-cat="${p.category}">
         <a class="ph-photo has-photo" href="/assets/img/projects/${p.slug}-lg.webp" data-lightbox>${img(p)}</a>
         <div class="proj-body">
           <p class="mono">/${String(n).padStart(2, '0')} · ${c.label}${p.inProgress ? ' · In progress' : ''}</p>

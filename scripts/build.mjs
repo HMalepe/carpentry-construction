@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { isPh, esc, get, waDigits, waMessage as msg, waHref as href, applyPlaceholderPolicy, criticalProblems, validateProjects, projectCard, projectTeaser, projectFilters } from './lib.mjs';
+import { isPh, esc, get, waDigits, waMessage as msg, waHref as href, applyPlaceholderPolicy, criticalProblems, validateProjects, projectCard, projectTeaser, projectFilters, CATEGORY_LABEL } from './lib.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'src');
@@ -16,6 +16,86 @@ if (OUT === ROOT || OUT === SRC || !OUT.startsWith(ROOT + path.sep)) throw new E
 const cfg = JSON.parse(read(path.resolve(ROOT, process.env.SITE_CONFIG || 'site.config.json')));
 const services = JSON.parse(read(path.join(SRC, 'data', 'services.json')));
 const projects = validateProjects(JSON.parse(read(path.join(SRC, 'data', 'projects.json'))));
+const art = JSON.parse(read(path.join(SRC, 'data', 'art.json')));
+const cases = JSON.parse(read(path.join(SRC, 'data', 'cases.json')));
+const pBy = Object.fromEntries(projects.map((p) => [p.slug, p]));
+for (const c of cases) for (const s of [c.cover, ...c.photos.map((x) => x.slug), c.pair?.before, c.pair?.after].filter(Boolean))
+  if (!pBy[s]) throw new Error(`cases.json (${c.slug}): unknown project photo "${s}"`);
+const caseOf = (slug) => cases.find((c) => c.cover === slug || c.photos.some((x) => x.slug === slug) || c.pair?.after === slug || c.pair?.before === slug);
+const linkFor = (slug) => (caseOf(slug) ? `/projects/${caseOf(slug).slug}/` : '/projects/');
+const artAttrs = (name) => {
+  const c = art.crops.find((x) => x.name === name);
+  if (!c) throw new Error(`Unknown art crop: ${name}`);
+  return `src="/assets/img/art/${name}.webp" width="${c.w}" height="${c.h}"`;
+};
+const pimg = (p, size = 'sm', extra = 'loading="lazy" decoding="async"') =>
+  `<img src="/assets/img/projects/${p.slug}-${size}.webp" alt="${esc(p.alt)}" width="${p.w}" height="${p.h}"${p.focus ? ` class="fx-${p.focus}"` : ''} ${extra}>`;
+
+function showcase() {
+  return projects.filter((p) => p.featured).map((p, i) => `<a class="sc sc-${i + 1}" href="${linkFor(p.slug)}">
+        <span class="sc-n num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+        <span class="ph ph-zoom reveal-img">${pimg(p, 'lg')}</span>
+        <div class="sc-body"><h3>${esc(p.title)}</h3><span class="lbl">${esc(CATEGORY_LABEL[p.category])}</span></div>
+      </a>`).join('\n      ');
+}
+function swatches() {
+  return `<div class="board">${art.swatches.map((s) => {
+    const p = pBy[s.seen];
+    return `<a class="swatch" href="${linkFor(s.seen)}"><span class="swatch-tag" aria-hidden="true">${esc(s.label)}</span><span class="ph"><img src="/assets/img/art/swatch-${s.name}.webp" alt="${esc(s.label)} finish, photographed on one of our installations" width="480" height="640" loading="lazy" decoding="async"></span><div class="swatch-meta"><h3>${esc(s.label)}</h3><span class="seen">Seen in: <b>${esc(p.title)}</b></span></div></a>`;
+  }).join('')}</div>`;
+}
+function caseFeatures() {
+  return cases.map((c, i) => {
+    const p = pBy[c.cover];
+    return `<a class="feature" href="/projects/${c.slug}/">
+        <span class="ph ph-zoom reveal-img">${pimg(p, 'lg')}</span>
+        <div class="feature-txt"><span class="feature-n num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span><span class="lbl">${esc(c.kicker)} · Case study</span><h2 class="mt-12">${esc(c.title)}</h2><p>${esc(c.intro)}</p><span class="btn-text mt-20">Read the project</span></div>
+      </a>`;
+  }).join('\n      ');
+}
+function caseBody(c, i) {
+  const p = pBy[c.cover];
+  const next = cases[(i + 1) % cases.length];
+  const specs = c.specs.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')
+    + `<div data-optional><dt>Location</dt><dd><span class="ph-tag" data-placeholder>[Town]</span></dd></div><div data-optional><dt>Year</dt><dd><span class="ph-tag" data-placeholder>[Year]</span></dd></div>`;
+  const pair = c.pair ? `<div class="diptych" data-reveal>
+          <figure><span class="ph reveal-img">${pimg(pBy[c.pair.before], 'lg')}</span><figcaption class="cap"><span>A — During installation</span></figcaption></figure>
+          <figure><span class="ph reveal-img">${pimg(pBy[c.pair.after], 'lg')}</span><figcaption class="cap"><span>B — At handover</span></figcaption></figure>
+        </div>` : '';
+  const figs = c.photos.map((x) => `<figure><span class="ph reveal-img">${pimg(pBy[x.slug], 'lg')}</span><figcaption class="cap"><span>${esc(x.caption)}</span></figcaption></figure>`).join('');
+  return `
+<section class="case-hero tone-dark">
+  <div class="wrap case-hero-grid">
+    <div class="case-hero-txt">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/projects/">Work</a><span aria-hidden="true">/</span><span aria-current="page">${esc(c.title)}</span></nav>
+      <span class="num case-n" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+      <p class="lbl">${esc(c.kicker)} · Case study</p>
+      <h1 class="h-xl mt-20 lines"><span class="ln"><span>${esc(c.title)}</span></span></h1>
+    </div>
+    <figure class="case-cover">
+      <div class="dimline" aria-hidden="true"><span>DWG ${String(i + 1).padStart(2, '0')} · ${esc(c.title)}</span></div>
+      <span class="ph reveal-img">${pimg(p, 'lg', 'fetchpriority="high" decoding="async"')}</span>
+    </figure>
+  </div>
+</section>
+<section class="sec tone-dark">
+  <div class="wrap case-body">
+    <div class="case-aside"><div class="case-aside-in">
+      <p class="eyebrow"><span class="n"></span>Specification</p>
+      <dl class="case-meta">${specs}</dl>
+      <div class="acts"><a class="btn btn-primary" data-wa="${c.service}" data-wa-item="${esc(c.item)} (like: ${esc(c.title)})">Quote something similar <span class="arr" aria-hidden="true">→</span></a></div>
+    </div></div>
+    <div class="case-main">
+      <p class="h-s" data-reveal>${esc(c.intro)}</p>
+      <div class="prose mt-28" data-reveal="2">${c.body.map((b) => `<p>${esc(b)}</p>`).join('')}</div>
+      <div class="case-figs">${pair}${figs}</div>
+    </div>
+  </div>
+</section>
+<section class="tone-raised">
+  <div class="wrap"><a class="next-case" href="/projects/${next.slug}/"><span class="lbl">Next project</span><h2 class="h-l">${esc(next.title)} →</h2></a></div>
+</section>`;
+}
 
 // Disciplines with no photos yet get one placeholder slot each (hidden in production).
 const PENDING = [{ key: 'construction', label: 'Construction' }, { key: 'maintenance', label: 'Maintenance' }];
@@ -28,6 +108,10 @@ const pendingCard = (e, n) => `<article class="proj" data-optional data-item dat
       </article>`;
 function projectTokens(html) {
   return html
+    .replace('{{projects:showcase}}', showcase)
+    .replace('{{swatches}}', swatches)
+    .replace('{{cases:features}}', caseFeatures)
+    .replace(/\{\{art:([a-z0-9-]+)\}\}/g, (_, n) => artAttrs(n))
     .replace('{{projects:filters}}', () => projectFilters(projects, PENDING))
     .replace('{{projects:gallery}}', () => [...projects.map((p, i) => projectCard(p, i + 1)), ...PENDING.map((e, i) => pendingCard(e, projects.length + i + 1))].join('\n      '))
     .replace('{{projects:featured}}', () => projects.filter((p) => p.featured).map(projectTeaser).join('\n      '))
@@ -36,7 +120,7 @@ function projectTokens(html) {
       if (!p) throw new Error(`Unknown project slug: ${slug}`);
       return projectTeaser(p);
     })
-    .replace('{{projects:count}}', String(projects.length));
+    .replaceAll('{{projects:count}}', String(projects.length));
 }
 
 // STRICT = production. Vercel sets VERCEL_ENV=production only for production deployments, so
@@ -67,70 +151,59 @@ const waHref = (serviceKey, item) => href(waNumber, msg(cfg.shortName, services,
 
 /* ---------- icons ---------- */
 const icon = {
-  home: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>',
-  grid: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/></svg>',
-  image: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14"/><path d="m3 16 5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.5"/></svg>',
-  chat: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>',
   wa: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5 5.6 16A8 8 0 1 1 8.4 18.6z"/><path d="M9.2 8.6c.3-.6.8-.6 1-.2l.7 1.5c.1.3 0 .6-.2.8l-.4.4c.5 1.1 1.4 2 2.5 2.5l.4-.4c.2-.2.5-.3.8-.2l1.5.7c.4.2.4.7-.2 1-1 .6-2.3.6-3.6-.2a8 8 0 0 1-2.7-2.7c-.8-1.3-.8-2.6-.2-3.6z"/></svg>',
-  menu: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
   close: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>',
 };
+// Brand mark: a drawn frame (brass, animates on load) around a monogram built from straight joinery lines.
+const mark = '<svg class="logo-mark" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28"/><path d="M7 22V8l5 8 5-8v14M20 8v14M20 8h3.5a3 3 0 0 1 0 6H20m2.5 0 3 8"/></svg>';
+const logo = `<a class="logo" href="/" aria-label="${esc(cfg.shortName)} — home">${mark}<span class="logo-word">Malepe R&amp;R<small>Construction · Joinery</small></span></a>`;
 
 /* ---------- shared chrome ---------- */
 const NAV = [
-  { key: 'home', href: '/', label: 'Overview' },
+  { key: 'projects', href: '/projects/', label: 'Work' },
   { key: 'services', href: '/services/', label: 'Services' },
-  { key: 'projects', href: '/projects/', label: 'Projects' },
-  { key: 'about', href: '/about/', label: 'About' },
-  { key: 'tenders', href: '/tenders/', label: 'Compliance', long: 'Tenders & Compliance' },
+  { key: 'about', href: '/about/', label: 'Studio' },
+  { key: 'tenders', href: '/tenders/', label: 'Tenders', long: 'Tenders & Compliance' },
   { key: 'contact', href: '/contact/', label: 'Contact' },
 ];
 const cur = (meta, key) => (meta.nav === key ? ' aria-current="page"' : '');
 
 function header(meta) {
   const links = NAV.map((n) => `<a href="${n.href}"${cur(meta, n.key)}>${n.label}</a>`).join('');
-  const menuLinks = [...NAV, { key: 'quote', href: '/quote/', long: 'Quote request builder' }]
-    .map((n, i) => `<a href="${n.href}"${cur(meta, n.key)}><span class="mono">/${String(i + 1).padStart(2, '0')}</span>${esc(n.long || n.label)}</a>`)
+  const menuLinks = [{ key: 'home', href: '/', label: 'Home' }, ...NAV, { key: 'quote', href: '/quote/', long: 'Quote request' }]
+    .map((n, i) => `<a href="${n.href}"${cur(meta, n.key)}><span class="mono">${String(i + 1).padStart(2, '0')}</span>${esc(n.long || n.label)}</a>`)
     .join('');
   return `<header class="site-head">
   <div class="head-in">
-    <a class="logo" href="/" aria-label="${esc(cfg.shortName)} — home"><span class="logo-m" aria-hidden="true">MR</span><span class="logo-t">Malepe R&amp;R</span><span class="mono logo-s">(PTY) LTD</span></a>
+    ${logo}
     <nav class="nav-d" aria-label="Main">${links}</nav>
-    <a class="btn btn-sm head-q" data-wa="general">Get a Quote <span aria-hidden="true">↗</span></a>
+    <a class="btn btn-ghost btn-sm head-q" data-wa="general">Start a project <span class="arr" aria-hidden="true">→</span></a>
     <details class="menu">
-      <summary aria-label="Open menu"><span class="i-open">${icon.menu}</span><span class="i-close">${icon.close}</span></summary>
+      <summary aria-label="Open menu"><span class="m-open">Menu</span><span class="m-close">Close</span><span class="burger" aria-hidden="true"></span></summary>
       <div class="menu-panel">
         <nav aria-label="Mobile">${menuLinks}</nav>
-        <a class="btn btn-lg btn-block" data-wa="general">Get a Quote on WhatsApp <span aria-hidden="true">↗</span></a>
-        <p class="mono menu-foot">${esc(cfg.locality)} · ${esc(cfg.region)} · Maruleng &amp; surrounds</p>
+        <a class="btn btn-primary btn-block" data-wa="general">Start a project on WhatsApp <span class="arr" aria-hidden="true">→</span></a>
+        <div class="menu-foot"><p class="lbl lbl-mute">${esc(cfg.locality)} · Maruleng · ${esc(cfg.region)}</p></div>
       </div>
     </details>
   </div>
 </header>`;
 }
 
-function tabbar(meta) {
-  const t = [
-    { key: 'home', href: '/', label: 'Home', i: icon.home },
-    { key: 'services', href: '/services/', label: 'Services', i: icon.grid },
-    { key: 'projects', href: '/projects/', label: 'Projects', i: icon.image },
-    { key: 'quote', href: '/quote/', label: 'Quote', i: icon.chat, cls: ' tab-q' },
-  ];
-  return `<nav class="tabbar" aria-label="Quick">${t
-    .map((x) => `<a class="tab${x.cls || ''}" href="${x.href}"${cur(meta, x.key)}>${x.i}<span>${x.label}</span></a>`)
-    .join('')}<a class="fab" data-wa="general" aria-label="Get a quote on WhatsApp">${icon.wa}</a></nav>`;
+function tabbar() {
+  return `<aside aria-label="Quick contact"><a class="fab" data-wa="general" aria-label="Start a project on WhatsApp">${icon.wa}<span aria-hidden="true">WhatsApp</span></a></aside>`;
 }
 
 function sheet() {
   const opts = Object.entries(services)
-    .map(([k, s]) => `<a class="sheet-opt" data-wa="${k}"><span class="mono">/${s.num}</span><span><b>${esc(s.label)}</b><small>${esc(s.short)}</small></span><span class="ar" aria-hidden="true">↗</span></a>`)
+    .map(([k, s]) => `<a class="sheet-opt" data-wa="${k}"><span class="mono">${s.num}</span><span><b>${esc(s.label)}</b><small>${esc(s.short)}</small></span><span class="ar" aria-hidden="true">↗</span></a>`)
     .join('');
   return `<dialog class="sheet" id="quote-sheet" aria-labelledby="sheet-t">
   <div class="sheet-in">
-    <div class="sheet-head"><span class="mono">GET A QUOTE · WHATSAPP</span><button class="sheet-x" type="button" data-close aria-label="Close">${icon.close}</button></div>
-    <h2 id="sheet-t">What do you need?</h2>
+    <div class="sheet-head"><span class="lbl">Start a project · WhatsApp</span><button class="sheet-x" type="button" data-close aria-label="Close">${icon.close}</button></div>
+    <h2 id="sheet-t">What are we building?</h2>
     <div class="sheet-opts">${opts}</div>
-    <a class="sheet-more" href="/quote/">Build a detailed request (location, timing, client type) <span aria-hidden="true">→</span></a>
+    <a class="sheet-more" href="/quote/">Build a detailed request (location, timing, client type) →</a>
     <p class="sheet-alt">No WhatsApp on this device? <a href="/contact/">Call or email us instead</a>.</p>
   </div>
 </dialog>`;
@@ -140,17 +213,18 @@ function footer(meta) {
   const svcLinks = Object.values(services).map((s) => `<li><a href="${s.path}">${esc(s.label)}</a></li>`).join('');
   return `<footer class="site-foot">
   <div class="wrap">
+    <p class="foot-sign">Bring us the drawing. <em>We’ll bring the tools.</em></p>
+    <div class="acts"><a class="btn btn-primary" data-wa="general">Start a project <span class="arr" aria-hidden="true">→</span></a><a class="btn-text" href="/quote/">Detailed quote request</a></div>
     <div class="foot-grid">
-      <div class="foot-brand">
-        <a class="logo" href="/"><span class="logo-m" aria-hidden="true">MR</span><span class="logo-t">Malepe R&amp;R</span><span class="mono logo-s">(PTY) LTD</span></a>
-        <p>Building construction, maintenance and carpentry for government departments, municipalities and private clients in ${esc(cfg.locality)}, Maruleng and surrounds.</p>
+      <div class="foot-brand">${logo}
+        <p>Construction, maintenance and joinery for government departments, municipalities and private clients in ${esc(cfg.locality)}, Maruleng and surrounds.</p>
       </div>
-      <div><p class="mono">Services</p><ul>${svcLinks}<li><a href="/quote/">Quote request</a></li></ul></div>
-      <div><p class="mono">Company</p><ul><li><a href="/projects/">Projects</a></li><li><a href="/about/">About</a></li><li><a href="/tenders/">Tenders &amp; Compliance</a></li><li><a href="/contact/">Contact</a></li><li><a href="/privacy/">Privacy (POPIA)</a></li></ul></div>
-      <div><p class="mono">Contact</p><ul>
-        <li><a data-wa="general">WhatsApp: +{{waNumber}}</a></li>
-        <li data-optional>Tel: {{cfg.phone}}</li>
-        <li>Email: {{cfg.email}}</li>
+      <div><p class="lbl">Services</p><ul>${svcLinks}<li><a href="/quote/">Quote request</a></li></ul></div>
+      <div><p class="lbl">Studio</p><ul><li><a href="/projects/">Work</a></li><li><a href="/about/">Studio</a></li><li><a href="/tenders/">Tenders &amp; Compliance</a></li><li><a href="/contact/">Contact</a></li><li><a href="/privacy/">Privacy (POPIA)</a></li></ul></div>
+      <div><p class="lbl">Site office</p><ul>
+        <li><a data-wa="general">WhatsApp +{{waNumber}}</a></li>
+        <li data-optional>Tel {{cfg.phone}}</li>
+        <li>{{cfg.email}}</li>
         <li data-optional>{{cfg.hours}}</li>
         <li data-optional>{{cfg.address}}</li>
         <li><a data-wa="site">Report a website problem</a></li>
@@ -160,7 +234,7 @@ function footer(meta) {
       <div><span class="mono">Drawn by</span>${esc(cfg.name)}</div>
       <div><span class="mono">Sheet</span>${esc(meta.title.split('|')[0].trim())}</div>
       <div><span class="mono">Dwg no.</span>${esc(meta.dwg || 'MRR-000')}</div>
-      <div><span class="mono">Scale · Rev</span>1:100 · A</div>
+      <div><span class="mono">Scale · Rev</span>1:100 · B</div>
       <div><span class="mono">©</span>${year}</div>
     </div>
   </div>
@@ -170,8 +244,14 @@ function footer(meta) {
 /* ---------- service list renderers ---------- */
 function scopeList(key) {
   const s = services[key];
-  return `<ol class="scope">${s.items
-    .map((it, i) => `<li><span class="mono n">${s.num}.${String(i + 1).padStart(2, '0')}</span><div><h3>${esc(it.name)}</h3><p>${esc(it.desc)}</p></div><a class="scope-q" data-wa="${key}" data-wa-item="${esc(it.name)}" aria-label="Get a quote for ${esc(it.name)} on WhatsApp">Quote <span aria-hidden="true">↗</span></a></li>`)
+  const thumbs = s.items.some((it) => it.photo);
+  return `<ol class="index${thumbs ? ' has-thumbs' : ''}">${s.items
+    .map((it, i) => {
+      const p = it.photo && projects.find((x) => x.slug === it.photo);
+      if (it.photo && !p) throw new Error(`services.json: unknown photo slug ${it.photo}`);
+      const thumb = p ? `<span class="index-thumb ph"><img src="/assets/img/projects/${p.slug}-sm.webp" alt="" width="${p.w}" height="${p.h}" loading="lazy" decoding="async"></span>` : '';
+      return `<li><span class="num">${String(i + 1).padStart(2, '0')}</span>${thumb}<h3>${esc(it.name)}</h3><p>${esc(it.desc)}</p><a class="scope-q idx-act" data-wa="${key}" data-wa-item="${esc(it.name)}" aria-label="Get a quote for ${esc(it.name)} on WhatsApp">Quote <span aria-hidden="true">↗</span></a></li>`;
+    })
     .join('')}</ol>`;
 }
 function itemChips(key) {
@@ -264,6 +344,11 @@ const pages = walk(pagesDir).map((file) => {
   const url = rel === 'index.html' ? '/' : rel.endsWith('/index.html') ? `/${rel.slice(0, -10)}` : `/${rel}`;
   return { rel, url, meta, body: raw.slice(m[0].length) };
 });
+cases.forEach((c, i) => pages.push({
+  rel: `projects/${c.slug}/index.html`, url: `/projects/${c.slug}/`,
+  meta: { title: `${c.title} | Malepe R&R`, description: c.description, nav: 'projects', crumb: c.title, dwg: `MRR-2${String(i + 1).padStart(2, '0')}` },
+  body: caseBody(c, i),
+}));
 const byUrl = Object.fromEntries(pages.map((p) => [p.url, p]));
 
 function breadcrumbLD(page) {
@@ -319,6 +404,7 @@ function applyTokens(html) {
     waNumber, telHref, mailHref, year, siteUrl,
     mailTo: isPh(cfg.email) ? '' : esc(cfg.email),
     areaInline: esc(cfg.areaServed.join(' · ')),
+    areaCount: String(cfg.areaServed.length),
     areaChips: cfg.areaServed.map((a) => `<li>${esc(a)}</li>`).join(''),
     locChips: [...cfg.areaServed, 'Other']
       .map((a) => `<label class="chip"><input type="radio" name="location" value="${esc(a)}"><span>${esc(a)}</span></label>`)
@@ -370,7 +456,7 @@ for (const page of pages) {
     .replace('{{header}}', () => header(meta))
     .replace('{{content}}', () => page.body)
     .replace('{{footer}}', () => footer(meta))
-    .replace('{{tabbar}}', () => tabbar(meta))
+    .replace('{{tabbar}}', () => tabbar())
     .replace('{{sheet}}', () => sheet());
   html = applyPlaceholderPolicy(applyTokens(html), { strict: STRICT });
   const out = path.join(OUT, page.rel);

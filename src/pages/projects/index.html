@@ -1,41 +1,52 @@
 <!--meta
 {
-  "title": "Projects | Construction Work in Hoedspruit | Malepe R&R",
-  "description": "Construction, maintenance and carpentry projects by Malepe R&R in Hoedspruit, Maruleng and surrounds, for government, municipal and private clients.",
+  "title": "Our Work: Kitchens & Joinery in Hoedspruit | Malepe R&R",
+  "description": "Kitchens, wardrobes, TV walls, ceilings and bathroom joinery by Malepe R&R in Hoedspruit and Maruleng: case studies and a photographed record of our work.",
   "nav": "projects",
-  "crumb": "Projects",
+  "crumb": "Work",
   "dwg": "MRR-200",
   "schema": []
 }
 -->
-<section class="page-hero">
+<section class="page-hero tone-dark">
   <div class="wrap">
-    <nav class="crumbs mono" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Projects</span></nav>
-    <div class="page-hero-grid">
-      <h1 class="h-xl">Projects<br><span class="out">on record.</span></h1>
-      <p class="lead">{{projects:count}} carpentry jobs: kitchens, wardrobes, TV walls, ceilings and bathrooms. Tap a photo to see it full size, or filter by type.</p>
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Work</span></nav>
+    <div class="ph-grid">
+      <h1 class="h-xl lines"><span class="ln"><span>The work,</span></span><span class="ln"><em>on record.</em></span></h1>
+      <p class="lead" data-reveal>{{projects:count}} photographed installations across kitchens, wardrobes, TV walls, ceilings and bathrooms. Three are written up as case studies; the rest are below, unretouched apart from a consistent colour grade.</p>
     </div>
   </div>
 </section>
 
-<section class="section tight" aria-labelledby="gal-t">
+<section class="sec sec-tight tone-dark" aria-labelledby="cases-t">
   <div class="wrap">
-    <h2 class="vh" id="gal-t">Project gallery</h2>
-    <div class="ph-note mb-28" data-placeholder data-optional><span class="mono">[Placeholder] Gallery</span>Town, sector and year for each job, and photos of construction and maintenance work, are still to be added. These placeholders are hidden on the live site.</div>
+    <p class="eyebrow" id="cases-t"><span class="n"></span>Case studies</p>
+    <div class="features">
+      {{cases:features}}
+    </div>
+  </div>
+</section>
+
+<section class="sec tone-raised" aria-labelledby="gal-t">
+  <div class="wrap">
+    <p class="eyebrow"><span class="n"></span>Index</p>
+    <div class="gallery-head">
+      <h2 class="h-l" id="gal-t">Every job, <em>by type.</em></h2>
+      <p class="lead">Tap any photograph to open it full size; use the arrow keys or swipe to move through the set.</p>
+    </div>
+    <div class="ph-note mb-48" data-placeholder data-optional><span class="mono">[Placeholder] Gallery details</span>Town, sector and year for each job, and photographs of construction and maintenance work, are still to be added. These placeholders are hidden on the live site.</div>
+    <!-- Projects are generated from src/data/projects.json (see README "Add project photos"). -->
     <div class="gallery" data-collection="gallery">
     {{projects:filters}}
-    <!-- Projects are generated from src/data/projects.json (see README "Add project photos"). -->
     <div class="proj-grid">
       {{projects:gallery}}
     </div>
     </div>
     <div class="empty-state" data-if-empty="gallery">
-      <p class="mono">Gallery · being prepared</p>
-      <h2 class="h-md mt-10">Project photos are on their way.</h2>
-      <p class="lead mt-14">We are putting together photos and details of completed work. In the meantime, ask us on WhatsApp for references or photos of jobs similar to yours.</p>
-      <div class="acts"><a class="btn btn-lg" data-wa="general">Ask on WhatsApp <span aria-hidden="true">↗</span></a></div>
+      <p class="lbl">Gallery · being prepared</p>
+      <h2 class="h-m mt-12">Project photographs are on their way.</h2>
+      <p class="lead mt-14">Ask us on WhatsApp for references or photographs of jobs similar to yours.</p>
+      <div class="acts"><a class="btn btn-primary" data-wa="general">Ask on WhatsApp <span class="arr" aria-hidden="true">→</span></a></div>
     </div>
   </div>
 </section>
-
-{{> cta}}

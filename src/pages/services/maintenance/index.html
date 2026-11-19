@@ -5,61 +5,67 @@
   "nav": "services",
   "crumb": "Maintenance",
   "dwg": "MRR-102",
-  "schema": ["service:maintenance"]
+  "schema": [
+    "service:maintenance"
+  ],
+  "bodyClass": "has-cta"
 }
 -->
-<section class="page-hero">
+<section class="page-hero tone-concrete" aria-labelledby="hero-t">
   <div class="wrap">
-    <nav class="crumbs mono" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/services/">Services</a><span aria-hidden="true">/</span><span aria-current="page">Maintenance</span></nav>
-    <div class="page-hero-grid">
-      <div>
-        <p class="status"><span class="dot" aria-hidden="true"></span>Service /02 · Hoedspruit &amp; Maruleng</p>
-        <h1 class="h-xl mt-24">Maintenance<br><span class="out">that keeps up.</span></h1>
-        <p class="lead">Planned and reactive maintenance for schools, clinics, offices, municipal buildings and private property in Hoedspruit and Maruleng.</p>
-        <div class="acts">
-          <a class="btn btn-lg" data-wa="maintenance">Get a Maintenance Quote <span aria-hidden="true">↗</span></a>
-          <a class="btn btn-o btn-lg" href="/quote/?service=maintenance">Detailed request</a>
-        </div>
-      </div>
-      <div class="frame pt-48">
-        <div class="dim" aria-hidden="true"><span>DWG MRR-102 · MAINTENANCE</span></div>
-        {{> draw-maintenance}}
-      </div>
+    <div class="txt">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/services/">Services</a><span aria-hidden="true">/</span><span aria-current="page">Maintenance</span></nav>
+      <p class="lbl">Service 03 · Facility maintenance</p>
+      <h1 class="h-xl mt-20 lines" id="hero-t"><span class="ln"><span>Maintenance</span></span><span class="ln"><em>on a schedule.</em></span></h1>
+      <p class="lead mt-24">Planned inspection-and-repair cycles for schools, clinics, offices and municipal buildings, plus call-outs when something breaks in between.</p>
+      <div class="acts"><a class="btn btn-primary" data-wa="maintenance">Get a maintenance quote <span class="arr" aria-hidden="true">→</span></a><a class="btn-text" href="/tenders/">Tender documents</a></div>
     </div>
   </div>
 </section>
 
-<section class="section" aria-labelledby="scope-t">
+<section class="sec sec-tight tone-concrete" aria-labelledby="sch-t">
   <div class="wrap">
-    <p class="eyebrow mono"><span class="n"></span>Scope of work</p>
-    <div class="sec-head">
-      <h2 class="h-lg" id="scope-t">Planned, or when it breaks.</h2>
-      <p class="lead">Facility owners get a maintenance cycle — inspect, report, repair — priced per visit or per programme. Everyone else can call us out when something needs fixing. Tap <b>Quote</b> on any item to open WhatsApp with that job already filled in.</p>
+    <p class="eyebrow"><span class="n"></span>A typical annual cycle</p>
+    <h2 class="vh" id="sch-t">Example planned maintenance schedule</h2>
+    <section class="sched-wrap" data-reveal tabindex="0" aria-label="Example maintenance schedule (scrolls sideways on small screens)">
+      <table class="sched">
+        <caption>Example only: every facility gets its own schedule. ◆ planned visit · ◇ check after heavy rain.</caption>
+        <thead><tr><th scope="col">Element</th><th scope="col">Q1 · Jan–Mar</th><th scope="col">Q2 · Apr–Jun</th><th scope="col">Q3 · Jul–Sep</th><th scope="col">Q4 · Oct–Dec</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Roof &amp; flashings</th><td class="r"><span title="After rain"></span><span class="vh">After heavy rain</span></td><td></td><td><span></span><span class="vh">Planned</span></td><td class="r"><span></span><span class="vh">After heavy rain</span></td></tr>
+          <tr><th scope="row">Gutters &amp; downpipes</th><td class="r"><span></span><span class="vh">After heavy rain</span></td><td></td><td><span></span><span class="vh">Planned</span></td><td><span></span><span class="vh">Planned, before the rains</span></td></tr>
+          <tr><th scope="row">Paint &amp; waterproofing</th><td></td><td><span></span><span class="vh">Planned</span></td><td></td><td></td></tr>
+          <tr><th scope="row">Doors, locks &amp; windows</th><td><span></span><span class="vh">Planned</span></td><td></td><td><span></span><span class="vh">Planned</span></td><td></td></tr>
+          <tr><th scope="row">Ceilings &amp; partitions</th><td></td><td><span></span><span class="vh">Planned</span></td><td></td><td></td></tr>
+          <tr><th scope="row">Fencing &amp; gates</th><td></td><td></td><td></td><td><span></span><span class="vh">Planned</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+    <div class="split mt-64">
+      <div class="panel"><p class="lbl">Planned</p><h3>Inspect, report, repair</h3><p>A maintenance cycle priced per visit or per programme. After each visit you get a short report of what was found and what was fixed.</p></div>
+      <div class="panel"><p class="lbl">Reactive</p><h3>When it breaks in between</h3><p>Send photos or a short video on WhatsApp first: it often lets us scope the repair before we arrive.</p></div>
     </div>
+  </div>
+</section>
+
+<section class="sec tone-dark" aria-labelledby="scope-t">
+  <div class="wrap">
+    <p class="eyebrow"><span class="n"></span>Scope of work</p>
+    <div class="ph-grid mb-48"><h2 class="h-l" id="scope-t">What we take on.</h2><p class="lead">Tap <strong>Quote</strong> on any line to open WhatsApp with that job already written into the message.</p></div>
     {{svc:maintenance:scope}}
   </div>
 </section>
 
-<section class="section" aria-labelledby="price-t">
+<section class="sec tone-paper" aria-labelledby="price-t">
   <div class="wrap split">
-    <div class="panel">
-      <p class="mono">/02 · Pricing</p>
-      <h2 class="h-md mt-10" id="price-t">How we price it</h2>
-      <ul class="ticks"><li>Planned maintenance: priced per cycle or per facility, against an agreed schedule.</li><li>Reactive repairs: quoted per job after we've seen the problem (photos help).</li><li>Public sector: priced against the specification or bill of quantities issued.</li></ul>
-    </div>
-    <div class="panel">
-      <p class="mono">/03 · Before you message</p>
-      <h2 class="h-md mt-10">What to send us</h2>
-      <ul class="ticks"><li>Photos or a short video of the problem</li><li>Facility name and location pin</li><li>For programmes: number of buildings and the maintenance period</li><li>Any condition report you already have</li></ul>
-      <p>Everything above can be sent straight into the WhatsApp chat.</p>
-    </div>
+    <div class="panel"><p class="lbl">Pricing</p><h2 id="price-t">How we price it</h2><ul class="ticks"><li>Planned maintenance: priced per cycle or per facility, against an agreed schedule.</li><li>Reactive repairs: quoted per job after we've seen the problem (photos help).</li><li>Public sector: priced against the specification or bill of quantities issued.</li></ul></div>
+    <div class="panel"><p class="lbl">Before you message</p><h2>What to send us</h2><ul class="ticks"><li>Photos or a short video of the problem</li><li>Facility name and location pin</li><li>For programmes: number of buildings and the maintenance period</li><li>Any condition report you already have</li></ul><p class="mt-20">Everything above can be sent straight into the WhatsApp chat.</p></div>
   </div>
 </section>
 
-<section class="section" aria-labelledby="faq-t">
-  <div class="wrap">
-    <p class="eyebrow mono"><span class="n"></span>Questions</p>
-    <div class="sec-head"><h2 class="h-lg" id="faq-t">Maintenance FAQ</h2><p class="lead">Short answers. Anything else, ask on WhatsApp.</p></div>
+<section class="sec tone-dark" aria-labelledby="faq-t">
+  <div class="wrap split">
+    <div><p class="eyebrow"><span class="n"></span>Questions</p><h2 class="h-l" id="faq-t">Asked <em>often.</em></h2></div>
     <div class="faqs">
       <details class="faq"><summary>Can we put our facility on a maintenance programme?</summary><div><p>Yes. We agree a schedule — for example quarterly roof and gutter checks — and report back after each visit with what was found and repaired.</p></div></details>
       <details class="faq"><summary>Can I send photos of the problem instead of booking a visit?</summary><div><p>Yes, start there. Clear photos or a short video on WhatsApp often let us scope the job or tell you what to expect before a site visit.</p></div></details>
@@ -69,15 +75,9 @@
   </div>
 </section>
 
-<section class="section" aria-labelledby="rel-t">
-  <div class="wrap">
-    <p class="eyebrow mono"><span class="n"></span>Related</p>
-    <h2 class="h-md mb-24" id="rel-t">Projects &amp; other services</h2>
-    <div class="proj-grid">
-      <article class="proj" data-optional><div class="ph-photo"><span>PHOTO PENDING<small>[PLACEHOLDER] maintenance project</small></span></div><div class="proj-body"><p class="mono">Maintenance</p><h3><span class="ph-tag" data-placeholder>[Project title]</span></h3><p class="mt-10"><a class="link" href="/projects/">All projects →</a></p></div></article>
-      <a class="card" href="/services/construction/"><span class="n">/01</span><span class="ar" aria-hidden="true">↗</span><h3>Construction</h3><p>From setting out to roof level.</p></a><a class="card" href="/services/carpentry/"><span class="n">/03</span><span class="ar" aria-hidden="true">↗</span><h3>Carpentry</h3><p>Structural timber to finished joinery.</p></a>
-    </div>
+<section class="sec tone-raised cta-band" aria-labelledby="cta-t">
+  <div class="wrap grid">
+    <h2 class="h-xl" id="cta-t">Tell us about <em>the maintenance job.</em></h2>
+    <div class="cta-side"><p class="lead">Photos, plans and a location pin are all you need to start.</p><div class="acts"><a class="btn btn-primary" data-wa="maintenance">Get a maintenance quote <span class="arr" aria-hidden="true">→</span></a><a class="btn-text" href="/quote/?service=maintenance">Detailed request</a></div></div>
   </div>
 </section>
-
-{{> cta}}

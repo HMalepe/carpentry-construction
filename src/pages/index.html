@@ -5,187 +5,167 @@
   "nav": "home",
   "crumb": "Home",
   "dwg": "MRR-001",
-  "schema": ["business"]
+  "schema": ["business"],
+  "bodyClass": "home"
 }
 -->
+<!-- 01 · INTRODUCTION — layered hero: slatted wall, framed portrait photograph, editorial headline -->
 <section class="hero" aria-labelledby="hero-t">
-  <div class="wrap hero-grid">
-    <div class="hero-l">
-      <p class="status"><span class="dot" aria-hidden="true"></span>Now accepting projects · Maruleng &amp; surrounds</p>
-      <h1 class="h-xl" id="hero-t">Precision<br>from <span class="accent">plan</span><br><span class="out">to handover.</span></h1>
-      <p class="lead">Building construction, maintenance and carpentry engineered around your drawings — for government departments, municipalities and private developers in Hoedspruit and the Maruleng area.</p>
-      <div class="acts">
-        <a class="btn btn-lg" data-wa="general">Start your project <span aria-hidden="true">→</span></a>
-        <a class="btn btn-o btn-lg" href="/tenders/#profile">Download company profile</a>
-      </div>
-      <div class="spec">
-        <div data-optional><span class="mono">Reg. since</span><b>{{cfg.regYear}}</b></div>
-        <div><span class="mono">Disciplines</span><b>Build + Carpentry</b></div>
-        <div><span class="mono">Sectors</span><b>Gov · Municipal · Private</b></div>
+  <div class="hero-slats" aria-hidden="true"></div>
+  <figure class="hero-fig">
+    <picture class="ph">
+      <source media="(min-width:900px)" srcset="/assets/img/art/hero-kitchen-desktop.webp">
+      <img {{art:hero-kitchen-mobile}} alt="Charcoal high-gloss kitchen with a hob island, white stone-look tops and red-framed glass display cabinets" fetchpriority="high" decoding="async">
+    </picture>
+  </figure>
+  <div class="hero-anno fade" aria-hidden="true"><div class="dimline"><span>DWG 01 · Charcoal gloss kitchen</span></div></div>
+  <p class="hero-status fade"><span class="dot" aria-hidden="true"></span>Now accepting projects · Maruleng &amp; surrounds</p>
+  <div class="hero-txt">
+    <p class="lbl">Construction · Joinery · Maintenance — Hoedspruit</p>
+    <h1 class="display lines" id="hero-t"><span class="ln"><span>Built to</span></span><span class="ln"><span>the drawing.</span></span><span class="ln"><em>Finished by hand.</em></span></h1>
+    <div class="hero-row fade">
+      <p class="lead">Kitchens, wardrobes and buildings for homes, lodges, government departments and municipalities across Maruleng: measured on site, made to fit.</p>
+      <div class="hero-acts">
+        <a class="btn btn-primary" data-wa="general">Start a project <span class="arr" aria-hidden="true">→</span></a>
+        <a class="btn-text" href="/projects/">See the work</a>
       </div>
     </div>
+  </div>
+  <p class="hero-idx num" aria-hidden="true">01</p>
+</section>
 
-    <div>
-      <div class="frame">
-        <div class="dim" aria-hidden="true"><span>SCOPE → DESIGN → BUILD → HANDOVER</span></div>
-        <div class="shot">
-          <div class="vdim" aria-hidden="true"></div>
-          <div class="photo">
-            <img src="/assets/img/hero-plan-920.webp" srcset="/assets/img/hero-plan-480.webp 480w, /assets/img/hero-plan-920.webp 920w" sizes="(min-width:1100px) 640px, calc(100vw - 64px)" width="920" height="690" alt="Hands drafting a building section on paper with a scale ruler" fetchpriority="high" decoding="async">
-          </div>
-          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
-          <p class="pin p1" aria-hidden="true"><i></i><span>01 · SITE MEASUREMENT</span></p>
-          <p class="pin p2" aria-hidden="true"><i></i><span>02 · BILL OF QUANTITIES</span></p>
-          <p class="pin p3" aria-hidden="true"><i></i><span>03 · BUILD &amp; JOINERY</span></p>
-        </div>
-        <div class="frame-cards">
-          <a class="card hl" href="/services/construction/"><span class="n">/01</span><span class="ar" aria-hidden="true">↗</span><h2>Construction</h2><p>New builds, extensions and structural work.</p></a>
-          <a class="card" href="/services/maintenance/"><span class="n">/02</span><span class="ar" aria-hidden="true">↗</span><h2>Maintenance</h2><p>Planned and reactive upkeep for public facilities.</p></a>
-          <a class="card" href="/services/carpentry/"><span class="n">/03</span><span class="ar" aria-hidden="true">↗</span><h2>Carpentry</h2><p>Roofing, doors, frames, cupboards and fit-outs.</p></a>
-        </div>
-      </div>
-      <p class="mono dwg">DWG NO. MRR-001 · SCALE 1:100 · REV A</p>
+<!-- 02 · PHILOSOPHY — paper, a single editorial statement + three principles + the shadow-gap detail -->
+<section class="sec tone-paper philo" aria-labelledby="philo-t">
+  <div class="wrap grid">
+    <h2 class="eyebrow" id="philo-t"><span class="n"></span>How we work</h2>
+    <blockquote class="statement" data-reveal>We price from measurements, build from drawings and finish with our hands. <span class="mute">Nothing on site is guesswork: not the setting-out, not the gap between two cupboard doors.</span></blockquote>
+    <ol class="principles" data-reveal="2">
+      <li><span class="num">01</span><h3>Measure before pricing</h3><p>Quotes come from a site visit, your drawings or the issued bill of quantities.</p></li>
+      <li><span class="num">02</span><h3>Build to the drawing</h3><p>Scope, price and changes agreed in writing before the work is done.</p></li>
+      <li><span class="num">03</span><h3>Hand over clean</h3><p>Snags attended to, site cleaned, documents handed over.</p></li>
+    </ol>
+    <figure class="philo-detail" data-reveal="3">{{> detail-door}}<figcaption class="mono">Joinery is judged in millimetres.</figcaption></figure>
+  </div>
+</section>
+
+<!-- 03 · THE WORK — asymmetric showcase with oversized numerals -->
+<section class="sec tone-dark" aria-labelledby="work-t">
+  <div class="wrap">
+    <p class="eyebrow"><span class="n"></span>The work</p>
+    <div class="work-head">
+      <h2 class="h-xl lines" id="work-t"><span class="ln"><span>Rooms we have</span></span><span class="ln"><em>put our hands to.</em></span></h2>
+      <a class="btn-text" href="/projects/">All {{projects:count}} projects</a>
+    </div>
+    <div class="showcase">
+      {{projects:showcase}}
     </div>
   </div>
 </section>
 
-<section class="section" aria-labelledby="svc-t">
+<!-- 04 · EXPERTISE — interactive discipline index; the stage shows a photograph or drawing per discipline -->
+<section class="sec tone-raised" aria-labelledby="exp-t">
   <div class="wrap">
-    <p class="eyebrow mono"><span class="n"></span>Services</p>
-    <div class="sec-head">
-      <h2 class="h-lg" id="svc-t">Three disciplines.<br><span class="out">One team on site.</span></h2>
-      <p class="lead">From the foundations to the last cupboard door. Pick a service to get a quote on WhatsApp — your message is already written for you.</p>
-    </div>
-    <div class="svc-grid">
-      <article class="svc">
-        <div class="svc-draw">{{> draw-construction}}</div>
-        <div class="svc-body">
-          <p class="mono">/01 · Construction</p>
-          <h3>Construction</h3>
+    <p class="eyebrow"><span class="n"></span>Expertise</p>
+    <h2 class="h-l mb-48" id="exp-t">One company, <em>three disciplines.</em></h2>
+    <div class="exp">
+      <div class="exp-list">
+        <a class="exp-row" href="/services/carpentry/" data-active>
+          <span class="num">01</span><h3>Joinery</h3><span class="arr" aria-hidden="true">→</span>
+          <p>Kitchens, wardrobes, TV walls, ceilings, doors and roof trusses, measured on site and made to fit.</p>
+          <span class="exp-fig"><span class="ph"><img {{art:exp-joinery}} alt="Concrete-look corner wardrobes with open shelving and drawers, under exposed timber roof trusses" loading="lazy" decoding="async"></span></span>
+        </a>
+        <a class="exp-row" href="/services/construction/">
+          <span class="num">02</span><h3>Construction</h3><span class="arr" aria-hidden="true">→</span>
           <p>New builds, extensions, renovations and structural repairs, built to approved drawings.</p>
-          <div class="svc-acts">
-            <a class="btn" data-wa="construction">Get a Quote <span aria-hidden="true">↗</span></a>
-            <a class="btn btn-o" href="/services/construction/">Details</a>
-          </div>
-        </div>
-      </article>
-      <article class="svc">
-        <div class="svc-draw">{{> draw-maintenance}}</div>
-        <div class="svc-body">
-          <p class="mono">/02 · Maintenance</p>
-          <h3>Maintenance</h3>
-          <p>Planned and reactive maintenance for schools, clinics, offices and municipal buildings.</p>
-          <div class="svc-acts">
-            <a class="btn" data-wa="maintenance">Get a Quote <span aria-hidden="true">↗</span></a>
-            <a class="btn btn-o" href="/services/maintenance/">Details</a>
-          </div>
-        </div>
-      </article>
-      <article class="svc">
-        <div class="svc-draw">{{> draw-carpentry}}</div>
-        <div class="svc-body">
-          <p class="mono">/03 · Carpentry</p>
-          <h3>Carpentry</h3>
-          <p>Roof trusses, doors and frames, built-in cupboards, kitchens and fit-outs.</p>
-          <div class="svc-acts">
-            <a class="btn" data-wa="carpentry">Get a Quote <span aria-hidden="true">↗</span></a>
-            <a class="btn btn-o" href="/services/carpentry/">Details</a>
-          </div>
-        </div>
-      </article>
+          <span class="exp-fig"><span class="exp-drawing">{{> draw-construction}}</span></span>
+        </a>
+        <a class="exp-row" href="/services/maintenance/">
+          <span class="num">03</span><h3>Maintenance</h3><span class="arr" aria-hidden="true">→</span>
+          <p>Planned and reactive upkeep for schools, clinics, offices and municipal buildings.</p>
+          <span class="exp-fig"><span class="exp-drawing">{{> draw-maintenance}}</span></span>
+        </a>
+      </div>
+      <div class="exp-stage" aria-hidden="true"></div>
     </div>
   </div>
 </section>
 
-<section class="section" aria-labelledby="proc-t">
+<!-- 05 · THE DETAILS — material sample board cut from our own installations -->
+<section class="sec tone-paper" aria-labelledby="mat-t">
   <div class="wrap">
-    <p class="eyebrow mono"><span class="n"></span>Process</p>
-    <div class="sec-head">
-      <h2 class="h-lg" id="proc-t">How a job runs.</h2>
-      <p class="lead">The same four stages whether it's a cupboard or a classroom block — so you always know what happens next.</p>
+    <p class="eyebrow"><span class="n"></span>Materials</p>
+    <div class="board-head">
+      <h2 class="h-l" id="mat-t">Seven finishes, <em>taken from our own jobs.</em></h2>
+      <p class="lead">Every sample on this board is cropped from a photograph of an installation we fitted. Hover or tap a finish to see where it went.</p>
     </div>
-    <div class="dim static" aria-hidden="true"><span>SCOPE → HANDOVER</span></div>
-    <ol class="steps">
-      <li class="step"><span class="mono">01 · Site measurement</span><h3>We see it first</h3><p>We visit the site, measure, photograph and confirm the scope with you — or work from your drawings.</p></li>
-      <li class="step"><span class="mono">02 · Bill of quantities</span><h3>Itemised pricing</h3><p>You get an itemised quote. For tenders and RFQs we price against the issued bill of quantities.</p></li>
-      <li class="step"><span class="mono">03 · Build &amp; joinery</span><h3>Work on site</h3><p>Construction, repairs and carpentry carried out to the agreed scope, with progress updates.</p></li>
-      <li class="step"><span class="mono">04 · Handover</span><h3>Snag &amp; close-out</h3><p>Joint inspection, snag list attended to, site cleaned and handed back with close-out documents.</p></li>
+    {{swatches}}
+    <p class="board-note">Finishes available vary by supplier and season. Bring a photo of what you like; we will match it or tell you honestly how close we can get.</p>
+  </div>
+</section>
+
+<!-- 06 · PROCESS — a dimension line from first visit to handover -->
+<section class="sec tone-dark" aria-labelledby="proc-t">
+  <div class="wrap">
+    <p class="eyebrow"><span class="n"></span>Process</p>
+    <div class="process-head">
+      <h2 class="h-l" id="proc-t">From site visit <em>to handover.</em></h2>
+    </div>
+    <ol class="timeline" data-reveal>
+      <li class="stage"><span class="num">01</span><h3>Site measurement</h3><p>We visit, measure, photograph and confirm the scope, or work from your drawings.</p><span class="mono">Day one</span></li>
+      <li class="stage"><span class="num">02</span><h3>Itemised quote</h3><p>An itemised price. For tenders and RFQs we price against the issued bill of quantities.</p><span class="mono">Scope agreed in writing</span></li>
+      <li class="stage"><span class="num">03</span><h3>Build &amp; joinery</h3><p>Construction, repairs and carpentry to the agreed scope, with progress photos on WhatsApp.</p><span class="mono">On site</span></li>
+      <li class="stage"><span class="num">04</span><h3>Handover</h3><p>Joint inspection, snag list attended to, site cleaned and handed back with close-out documents.</p><span class="mono">Signed off</span></li>
     </ol>
   </div>
 </section>
 
-<section class="section" aria-labelledby="sec-t">
+<!-- 07 · PROOF — facts we can count, credentials on record, real feedback only -->
+<section class="sec tone-paper proof" aria-labelledby="proof-t">
   <div class="wrap">
-    <p class="eyebrow mono"><span class="n"></span>Who we work for</p>
-    <div class="sec-head">
-      <h2 class="h-lg" id="sec-t">Public sector ready.<br><span class="out">Private client friendly.</span></h2>
-      <p class="lead">Procurement officers get the paperwork they need. Homeowners get a straight answer on WhatsApp.</p>
-    </div>
-    <div class="sectors">
-      <div class="sector"><span class="mono">Sector /A</span><h3>Government departments</h3><p>Construction, maintenance and repair work procured through quotations, RFQs and tenders.</p><p><a class="link" href="/tenders/">Compliance documents →</a></p></div>
-      <div class="sector"><span class="mono">Sector /B</span><h3>Municipalities</h3><p>Upkeep and upgrades of municipal buildings and facilities across Maruleng and surrounds.</p><p><a class="link" href="/services/maintenance/">Maintenance services →</a></p></div>
-      <div class="sector"><span class="mono">Sector /C</span><h3>Private clients</h3><p>Homeowners, businesses, lodges and farms that need building work or carpentry done properly.</p><p><a class="link" href="/quote/">Request a quote →</a></p></div>
-    </div>
-  </div>
-</section>
-
-<section class="section" aria-labelledby="proj-t" data-collection="home-projects">
-  <div class="wrap">
-    <p class="eyebrow mono"><span class="n"></span>Projects</p>
-    <div class="sec-head">
-      <h2 class="h-lg" id="proj-t">Recent work.</h2>
-      <p class="lead">Kitchens, wardrobes and TV walls built and fitted by our team. <a class="link" href="/projects/">See all {{projects:count}} projects →</a></p>
-    </div>
-    <div class="proj-grid">
-      {{projects:featured}}
-    </div>
-  </div>
-</section>
-
-<section class="section" aria-labelledby="tst-t" data-collection="testimonials">
-  <div class="wrap">
-    <p class="eyebrow mono"><span class="n"></span>Client feedback</p>
-    <div class="sec-head"><h2 class="h-lg" id="tst-t">What clients say.</h2><p class="lead">Real feedback only — added with each client's written permission.</p></div>
-    <div class="quotes">
-      <figure class="quote-ph" data-placeholder data-optional data-item><span class="mono">[Placeholder] Testimonial slot 1</span><blockquote>“Client's own words about the project go here.”</blockquote><p>— [Client name], [Organisation / town] · [Project]</p></figure>
-      <figure class="quote-ph" data-placeholder data-optional data-item><span class="mono">[Placeholder] Testimonial slot 2</span><blockquote>“Client's own words about the project go here.”</blockquote><p>— [Client name], [Organisation / town] · [Project]</p></figure>
-    </div>
-  </div>
-</section>
-
-<section class="section" aria-labelledby="cmp-t">
-  <div class="wrap split">
-    <div>
-      <p class="eyebrow mono"><span class="n"></span>Tenders &amp; compliance</p>
-      <h2 class="h-lg" id="cmp-t">Paperwork, sorted.</h2>
-      <p class="lead mt-20">Procuring through an RFQ or tender? Our registration and compliance details are listed in one place, with the company profile ready to download.</p>
-      <div class="acts">
-        <a class="btn" href="/tenders/">View compliance register <span aria-hidden="true">→</span></a>
-        <a class="btn btn-o" href="/tenders/#profile">Company profile (PDF)</a>
+    <p class="eyebrow"><span class="n"></span>On record</p>
+    <h2 class="h-l mb-48" id="proof-t">Proof, <em>not promises.</em></h2>
+    <div class="grid">
+      <div class="facts">
+        <div class="fact"><span class="num">{{projects:count}}</span><span class="lbl">Installations photographed on this site</span></div>
+        <div class="fact"><span class="num">3</span><span class="lbl">Disciplines under one company</span></div>
+        <div class="fact"><span class="num">3</span><span class="lbl">Sectors: government, municipal, private</span></div>
+        <div class="fact"><span class="num">{{areaCount}}</span><span class="lbl">Towns in our service area</span></div>
+      </div>
+      <div class="creds">
+        <h3>Registration &amp; compliance</h3>
+        <ul class="cred-list" data-collection="home-reg">
+          <li data-optional data-item><span>CIPC registration</span><span>{{cfg.compliance.cipc}}</span></li>
+          <li data-optional data-item><span>CSD supplier number</span><span>{{cfg.compliance.csd}}</span></li>
+          <li data-optional data-item><span>CIDB grading</span><span>{{cfg.compliance.cidb}}</span></li>
+          <li data-optional data-item><span>B-BBEE status</span><span>{{cfg.compliance.bbbee}}</span></li>
+          <li data-optional data-item><span>Tax compliance</span><span>{{cfg.compliance.tax}}</span></li>
+        </ul>
+        <p class="muted" data-if-empty="home-reg">CIPC, CSD, CIDB, B-BBEE, COIDA and tax compliance documents are available on request for RFQs and tenders.</p>
+        <div class="acts"><a class="btn btn-primary" href="/tenders/">Tenders &amp; compliance <span class="arr" aria-hidden="true">→</span></a><a class="btn-text" href="/tenders/#profile">Company profile (PDF)</a></div>
+      </div>
+      <div class="proof-side" data-collection="testimonials">
+        <figure class="quote-slot" data-placeholder data-optional data-item><blockquote>“[Placeholder] A client's own words about the project, added with their written permission.”</blockquote><p>— [Client name], [Organisation / town] · [Project]</p></figure>
       </div>
     </div>
-    <div class="register reg-mini" data-collection="home-reg">
-      <div class="reg-row" data-optional data-item><span class="doc">CIPC registration</span><span class="st">{{cfg.compliance.cipc}}</span></div>
-      <div class="reg-row" data-optional data-item><span class="doc">CSD supplier number</span><span class="st">{{cfg.compliance.csd}}</span></div>
-      <div class="reg-row" data-optional data-item><span class="doc">CIDB grading</span><span class="st">{{cfg.compliance.cidb}}</span></div>
-      <div class="reg-row" data-optional data-item><span class="doc">B-BBEE status</span><span class="st">{{cfg.compliance.bbbee}}</span></div>
-      <div class="reg-row" data-optional data-item><span class="doc">Tax compliance</span><span class="st">{{cfg.compliance.tax}}</span></div>
-    </div>
-    <div class="panel" data-if-empty="home-reg"><p class="mono">Compliance documents</p><p>CIPC, CSD, CIDB, B-BBEE, COIDA and tax compliance documents are available on request for RFQs and tenders.</p></div>
   </div>
 </section>
 
-<section class="section" aria-labelledby="area-t">
-  <div class="wrap area">
+<!-- 08 · INVITATION — our installers at work -->
+<section class="invite" aria-labelledby="inv-t">
+  <picture class="invite-bg">
+    <source media="(min-width:900px)" srcset="/assets/img/art/invite-installers.webp">
+    <img {{art:invite-installers-mobile}} alt="Two installers fitting light oak kitchen units in a room with a stepped ceiling bulkhead" loading="lazy" decoding="async">
+  </picture>
+  <p class="invite-cap lbl lbl-mute">On site · Installation in progress</p>
+  <div class="wrap invite-in">
     <div>
-      <p class="eyebrow mono"><span class="n"></span>Area served</p>
-      <h2 class="h-lg" id="area-t">Based in Hoedspruit.<br><span class="out">Working across Maruleng.</span></h2>
-      <p class="lead mt-20">We're a local construction company serving Hoedspruit, the Maruleng Local Municipality and the surrounding Mopani district. Not sure if we cover your site? Send your location on WhatsApp.</p>
-      <ul class="towns">{{areaChips}}</ul>
-      <p class="mono mt-20">Hoedspruit · 24°21′S 30°58′E</p>
+      <p class="lbl">Start a project</p>
+      <h2 class="h-xl mt-20" id="inv-t">Send the drawings, <em>or a photo of the problem.</em></h2>
+      <p class="lead">WhatsApp takes photos, PDFs and voice notes. Tell us where the site is and we will come back to you with next steps.</p>
     </div>
-    <div class="map">{{> map}}</div>
+    <div class="hero-acts">
+      <a class="btn btn-primary" data-wa="general">Start on WhatsApp <span class="arr" aria-hidden="true">→</span></a>
+      <a class="btn btn-ghost" href="/quote/">Detailed request</a>
+    </div>
   </div>
 </section>
-
-{{> cta}}

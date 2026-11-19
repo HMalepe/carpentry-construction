@@ -12,7 +12,7 @@
 
 **Readiness: Production Candidate.** The software meets the gate. **The launch is blocked on business inputs, not code.**
 
-- The code, tests and deployment configuration pass every applicable item that can be verified from this environment: **35/35 automated tests**, **0 axe-core violations**, **0 HTML validation errors** and **0 npm vulnerabilities**.
+- The code, tests and deployment configuration pass every applicable item that can be verified from this environment: **36/36 automated tests**, **0 axe-core violations**, **0 HTML validation errors** and **0 npm vulnerabilities**.
 - The site cannot go live until the owner supplies four facts: the WhatsApp number, a business email, the POPIA Information Officer, and the company profile PDF. This is now *enforced*: a production build on Vercel fails until they're real (section 6).
 - Two things were not tested from here and should be done before launch: a real phone, and Safari/Firefox (section 5). The headers have since been verified on the live Vercel preview.
 
@@ -62,6 +62,9 @@ Both are fixed and covered by tests.
 | F11 | Low | dev dependencies | `glob` / `minimatch` advisories via html-validate 9 | Dev tooling only, never shipped | Upgraded to html-validate 11 | `npm audit`: 0 vulnerabilities |
 | F12 | Low | section labels | Hiding a block in production would leave numbering gaps (/03 → /06) | Looks broken | CSS counters | e2e #19 + screenshot |
 | F13 | Low | `scripts/lib.mjs` | Stripping blocks left trailing whitespace | Validator errors in production output | Line-aware removal | unit #28, lint on both builds |
+| F14 | **High** | Redesign: `main.css` image reveal | Image reveals clipped the observed frame itself; Chrome's IntersectionObserver never fires for a fully clipped target, so photos on the home page, portfolio and case studies stayed **blank** with motion on | Visitors would see empty frames on the most important pages | Clip moved to the inner image | New e2e test "motion mode: every reveal completes"; **mutation-checked** |
+| F15 | Medium | Redesign: maintenance schedule | Visually-hidden table labels escaped the scroll container (no positioned ancestor): 163px sideways scroll on phones with reduced motion | Broken mobile layout for reduced-motion users | Positioned scroll container | e2e overflow test at 5 widths |
+| F16 | Low | Redesign: WhatsApp pill | A hidden-but-focusable button would trap keyboard users; schedule scroll region not keyboard-reachable | Keyboard access | `visibility:hidden` until shown; focusable labelled region | axe + keyboard e2e |
 
 ### Open (needs the owner, or can't be verified from this environment)
 
@@ -92,7 +95,7 @@ Run on Node 22.23 with Chromium (Playwright 1.63.0).
 
 ```
 npm run lint   → html-validate (recommended rules): 0 errors; node --check: OK      exit 0
-npm test       → tests 35 · pass 35 · fail 0 · duration ≈25 s                         exit 0
+npm test       → tests 36 · pass 36 · fail 0 · duration ≈60 s                         exit 0
 npm audit      → found 0 vulnerabilities
 ```
 
@@ -102,7 +105,7 @@ npm audit      → found 0 vulnerabilities
 | `tests/build.test.mjs` | 6 | Preview build; production blocked on placeholders; `VERCEL_ENV=production` vs `preview`; production output has zero placeholders and shows fallbacks; refuses to write outside the repo; sitemap / robots |
 | `tests/e2e.test.mjs` | 13 | All routes + 404; no overflow and no console / CSP errors at 320 / 390 / 768 / 1024 / 1440px; **every** WhatsApp link (more than 60) checked for number and service; full quote journey; Back navigation; clipboard failure; sheet and menu keyboard / focus; no-JS behaviour; axe-core on all pages at 2 sizes; SEO metadata; security headers; production build on screen |
 
-Measured performance (not a Lighthouse score): home page first visit on mobile is **≈64 KB** in total (gzip HTML + CSS + JS + both fonts + 480w hero), CLS 0.000 on every page.
+Measured performance (not a Lighthouse score): after the Graphite Atelier redesign, a first visit to the home page on mobile is **≈230 KB** above the fold (compressed HTML 7 KB + CSS 13 KB + JS 4 KB + fonts 155 KB + mobile hero 50 KB). Fonts are cached after the first page. Gallery images lazy-load. CLS 0.000. Before the redesign it was ≈64 KB: the premium typography is the deliberate cost.
 
 **NOT TESTED, and why:** real iOS / Android devices and the Safari / Firefox engines (no devices or engines available here); Lighthouse / PageSpeed (blocked in this environment); a manual screen-reader pass (VoiceOver / TalkBack); sending a real WhatsApp message (needs the real number, and live messages need the owner's approval).
 

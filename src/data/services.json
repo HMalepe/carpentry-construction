@@ -95,23 +95,28 @@
       },
       {
         "name": "Built-in cupboards",
-        "desc": "Bedroom cupboards and wardrobes made to measure."
+        "desc": "Bedroom cupboards and wardrobes made to measure.",
+        "photo": "grey-gloss-wardrobe-wall"
       },
       {
         "name": "Kitchen units",
-        "desc": "Base and wall units, worktops and fitting."
+        "desc": "Base and wall units, worktops and fitting.",
+        "photo": "charcoal-kitchen-island"
       },
       {
         "name": "Shelving & storage",
-        "desc": "Storerooms, offices, libraries and classrooms."
+        "desc": "Storerooms, offices, libraries and classrooms.",
+        "photo": "wardrobe-wall-shelving-desk"
       },
       {
         "name": "TV units & feature walls",
-        "desc": "Floating TV cabinets with slatted, marble-look or LED-lit feature panels."
+        "desc": "Floating TV cabinets with slatted, marble-look or LED-lit feature panels.",
+        "photo": "tv-wall-red-led"
       },
       {
         "name": "Ceilings & bulkheads",
-        "desc": "Brandering, ceiling boards, bulkheads and trims."
+        "desc": "Brandering, ceiling boards, bulkheads and trims.",
+        "photo": "stepped-ceiling-bulkhead"
       },
       {
         "name": "Decks & pergolas",
@@ -123,7 +128,8 @@
       },
       {
         "name": "Bathroom vanities",
-        "desc": "Vanity cabinets with stone-look tops and matching mirror frames."
+        "desc": "Vanity cabinets with stone-look tops and matching mirror frames.",
+        "photo": "bathroom-vanity-mirror"
       }
     ]
   }

@@ -17,7 +17,8 @@ const AXE = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'site.config.json'), 'utf8'));
 const services = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/services.json'), 'utf8'));
 
-const PAGES = ['/', '/services/', '/services/construction/', '/services/maintenance/', '/services/carpentry/', '/projects/', '/about/', '/tenders/', '/contact/', '/quote/', '/privacy/'];
+const CASE_PAGES = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/cases.json'), 'utf8')).map((c) => `/projects/${c.slug}/`);
+const PAGES = ['/', '/services/', '/services/construction/', '/services/maintenance/', '/services/carpentry/', '/projects/', ...CASE_PAGES, '/about/', '/tenders/', '/contact/', '/quote/', '/privacy/'];
 const WIDTHS = [320, 390, 768, 1024, 1440];
 let browser, preview, prod, BASE, PROD;
 
@@ -86,7 +87,7 @@ test('every WhatsApp link targets the configured number with the right pre-fille
       assert.equal(l.target, '_blank');
       const text = waText(l.href);
       assert.match(text, /^Hi Malepe R&R, /);
-      if (label[l.key]) assert.match(text, new RegExp(`Service: ${label[l.key]}${l.item ? ` › ${l.item}` : ''}\\n`), `${u} ${l.key}`);
+      if (label[l.key]) assert.ok(text.includes(`Service: ${label[l.key]}${l.item ? ` › ${l.item}` : ''}\n`), `${u} ${l.key}: ${text}`);
       checked++;
     }
   }
@@ -144,6 +145,8 @@ test('quote builder: blocked clipboard shows a recovery message', async () => {
 test('service sheet: keyboard open, focus inside, Escape closes and returns focus', async () => {
   const p = await open();
   await p.goto(BASE + '/');
+  await p.evaluate(() => scrollTo(0, innerHeight * 2));
+  await p.waitForFunction(() => getComputedStyle(document.querySelector('.fab')).visibility === 'visible');
   await p.focus('.fab');
   await p.keyboard.press('Enter');
   assert.equal(await p.$eval('#quote-sheet', (d) => d.open), true);
@@ -152,7 +155,7 @@ test('service sheet: keyboard open, focus inside, Escape closes and returns focu
   assert.deepEqual(opts.map((h) => waText(h).split('\n')[1]), ['Service: Construction', 'Service: Maintenance', 'Service: Carpentry']);
   await p.keyboard.press('Escape');
   assert.equal(await p.$eval('#quote-sheet', (d) => d.open), false);
-  assert.equal(await p.evaluate(() => document.activeElement.className), 'fab');
+  assert.equal(await p.evaluate(() => document.activeElement.classList.contains('fab')), true, 'focus returns to the WhatsApp button');
   await p.context().close();
 });
 
@@ -180,7 +183,8 @@ test('works without JavaScript: quote links and project filter', async () => {
 
 test('accessibility: axe-core finds no violations (mobile + desktop)', async () => {
   for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 }]) {
-    const p = await open({ viewport, bypassCSP: true });
+    // Audit the final, readable state (reduced motion) rather than elements caught mid fade-in.
+    const p = await open({ viewport, bypassCSP: true, reducedMotion: 'reduce' });
     for (const u of [...PAGES, '/no-such-page/']) {
       await p.goto(BASE + u);
       await p.addScriptTag({ content: AXE });
@@ -258,11 +262,12 @@ test('project photos: alt text, intrinsic size, lazy loading, all load', async (
   for (const u of ['/', '/projects/', '/services/carpentry/']) {
     await p.goto(BASE + u);
     await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 600) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 20)); } });
-    await p.evaluate(async () => { for (const i of document.querySelectorAll('.has-photo img')) { i.loading = 'eager'; await i.decode().catch(() => {}); } });
-    const imgs = await p.$$eval('.has-photo img', (is) => is.map((i) => ({ src: i.getAttribute('src'), alt: i.alt, w: i.getAttribute('width'), h: i.getAttribute('height'), nat: i.naturalWidth })));
-    assert.ok(imgs.length > 0, u);
+    await p.evaluate(async () => { for (const i of document.querySelectorAll('main img')) { i.loading = 'eager'; await i.decode().catch(() => {}); } });
+    const imgs = await p.$$eval('main img', (is) => is.map((i) => ({ src: i.getAttribute('src'), alt: i.getAttribute('alt'), w: i.getAttribute('width'), h: i.getAttribute('height'), nat: i.naturalWidth, deco: !!i.closest('[aria-hidden="true"], .index-thumb') })));
+    assert.ok(imgs.filter((i) => !i.deco).length > 0, u);
     for (const i of imgs) {
-      assert.ok(i.alt.length > 20, `${u} ${i.src} needs descriptive alt text`);
+      assert.ok(i.alt !== null, `${u} ${i.src} needs an alt attribute`);
+      if (!i.deco) assert.ok(i.alt.length > 20, `${u} ${i.src} needs descriptive alt text`);
       assert.ok(+i.w > 0 && +i.h > 0, `${u} ${i.src} needs width/height (no layout shift)`);
       assert.ok(i.nat > 0, `${u} ${i.src} failed to load`);
     }
@@ -285,6 +290,24 @@ test('project lightbox: opens full photo, Escape closes and returns focus', asyn
   await p.keyboard.press('Escape');
   assert.equal(await box.evaluate((d) => d.open), false);
   assert.equal(await p.evaluate(() => document.activeElement.hasAttribute('data-lightbox')), true);
+  assert.deepEqual(p.problems, []);
+  await p.context().close();
+});
+
+test('motion mode: every reveal completes after scrolling (no content stuck invisible)', async () => {
+  const p = await open({ reducedMotion: 'no-preference' });
+  for (const u of ['/', '/projects/', '/services/carpentry/', '/services/maintenance/', CASE_PAGES[0], '/about/']) {
+    await p.goto(BASE + u);
+    assert.equal(await p.evaluate(() => document.documentElement.classList.contains('motion')), true, `${u}: motion layer active`);
+    const h = await p.evaluate(() => document.body.scrollHeight);
+    for (let y = 0; y <= h; y += 300) { await p.evaluate((y) => scrollTo(0, y), y); await p.waitForTimeout(20); }
+    await p.waitForTimeout(1800);
+    const stuck = await p.evaluate(() => [...document.querySelectorAll('[data-reveal], .reveal-img, .lines, .draw-in')]
+      .filter((e) => e.offsetParent !== null && !e.classList.contains('in')).map((e) => e.className));
+    assert.deepEqual(stuck, [], `${u}: elements never revealed`);
+    const clipped = await p.evaluate(() => [...document.querySelectorAll('.reveal-img img')].filter((i) => i.offsetParent && getComputedStyle(i).clipPath !== 'inset(0px)').length);
+    assert.equal(clipped, 0, `${u}: images still clipped after reveal`);
+  }
   assert.deepEqual(p.problems, []);
   await p.context().close();
 });

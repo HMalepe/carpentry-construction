@@ -8,49 +8,29 @@
   "schema": ["business"]
 }
 -->
-<section class="page-hero">
+<section class="page-hero tone-dark" aria-labelledby="hero-t">
   <div class="wrap">
-    <nav class="crumbs mono" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Contact</span></nav>
-    <div class="page-hero-grid">
-      <h1 class="h-xl">Contact<br><span class="out">the site office.</span></h1>
-      <p class="lead">WhatsApp is the fastest way to reach us. Send photos, plans or a location pin with your message.</p>
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Contact</span></nav>
+    <div class="ph-grid">
+      <h1 class="h-xl lines" id="hero-t"><span class="ln"><span>Talk to</span></span><span class="ln"><em>the site office.</em></span></h1>
+      <p class="lead" data-reveal>WhatsApp is the fastest way to reach us. Send photos, plans or a location pin with your message.</p>
     </div>
   </div>
 </section>
 
-<section class="section tight" aria-label="Contact options">
-  <div class="wrap">
-    <div class="contact-grid">
-      <div class="c-card hl">
-        <p class="mono">Fastest</p>
-        <h2>WhatsApp</h2>
-        <p>Quotes, site visits and questions. Your message opens already written: just add the details.</p>
-        <p class="mono ink-2">+{{waNumber}}</p>
-        <a class="btn btn-lg" data-wa="general">Get a Quote on WhatsApp <span aria-hidden="true">↗</span></a>
-      </div>
-      <div class="c-card" data-optional>
-        <p class="mono">Call</p>
-        <h2>Phone</h2>
-        <p>Talk to us directly during office hours.</p>
-        <p class="mono ink-2">{{cfg.phone}}</p>
-        <a class="btn btn-o btn-lg" href="{{telHref}}">Call now</a>
-      </div>
-      <div class="c-card">
-        <p class="mono">Email</p>
-        <h2>Email</h2>
-        <p>For tender documents, formal RFQs and anything with attachments.</p>
-        <p class="mono ink-2 nocase">{{cfg.email}}</p>
-        <a class="btn btn-o btn-lg" href="{{mailHref}}">Send an email</a>
-      </div>
-    </div>
+<section class="sec sec-tight tone-dark" aria-label="Ways to reach us">
+  <div class="wrap channels">
+    <a class="channel" data-wa="general"><span class="lbl">Fastest · +{{waNumber}}</span><h2>WhatsApp</h2><span class="arr" aria-hidden="true">↗</span><p>Quotes, site visits and questions. Your message opens already written: just add the details.</p></a>
+    <a class="channel" href="{{telHref}}" data-optional><span class="lbl">Office hours · {{cfg.phone}}</span><h2>Call</h2><span class="arr" aria-hidden="true">↗</span><p>Talk to us directly during office hours.</p></a>
+    <a class="channel" href="{{mailHref}}"><span class="lbl">Tenders &amp; attachments · {{cfg.email}}</span><h2>Email</h2><span class="arr" aria-hidden="true">↗</span><p>For tender documents, formal RFQs and anything with attachments.</p></a>
   </div>
 </section>
 
-<section class="section" aria-labelledby="det-t">
+<section class="sec tone-paper" aria-labelledby="det-t">
   <div class="wrap split">
-    <div class="panel">
-      <p class="mono">Business details</p>
-      <h2 class="h-md my-10-20" id="det-t">Malepe R and R (Pty) Ltd</h2>
+    <div>
+      <p class="eyebrow"><span class="n"></span>Business details</p>
+      <h2 class="h-m mb-28" id="det-t">Malepe R and R (Pty) Ltd</h2>
       <dl class="dl">
         <div data-optional><dt>Address</dt><dd>{{cfg.address}}</dd></div>
         <div><dt>Town</dt><dd>{{cfg.locality}}, Maruleng, {{cfg.region}}</dd></div>
@@ -58,24 +38,22 @@
         <div data-optional><dt>Reg. no.</dt><dd>{{cfg.compliance.cipc}}</dd></div>
         <div><dt>Area</dt><dd>{{areaInline}}</dd></div>
       </dl>
-      <div class="acts">
-        <a class="btn btn-o" href="https://www.google.com/maps/search/?api=1&amp;query=Hoedspruit%2C%20Limpopo" target="_blank" rel="noopener">Open in Google Maps <span aria-hidden="true">↗</span></a>
-      </div>
+      <div class="acts"><a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&amp;query=Hoedspruit%2C%20Limpopo" target="_blank" rel="noopener">Open in Google Maps <span class="arr" aria-hidden="true">↗</span></a></div>
     </div>
     <div class="map">{{> map}}</div>
   </div>
 </section>
 
-<section class="section" aria-labelledby="tip-t">
+<section class="sec tone-dark" aria-labelledby="tip-t">
   <div class="wrap">
-    <p class="eyebrow mono"><span class="n"></span>Get a faster quote</p>
-    <h2 class="h-lg mb-28" id="tip-t">What to include in your message</h2>
-    <ol class="steps">
-      <li class="step"><span class="mono">01</span><h3>What</h3><p>The service and the job, e.g. "carpentry: built-in cupboards, 2 bedrooms".</p></li>
-      <li class="step"><span class="mono">02</span><h3>Where</h3><p>Town, or tap 📎 → Location in WhatsApp to send a pin.</p></li>
-      <li class="step"><span class="mono">03</span><h3>Photos / plans</h3><p>A few photos of the site, or your drawings as PDF.</p></li>
-      <li class="step"><span class="mono">04</span><h3>When</h3><p>When you'd like the work to start, or the tender closing date.</p></li>
+    <p class="eyebrow"><span class="n"></span>Get a faster quote</p>
+    <h2 class="h-l mb-48" id="tip-t">What to put <em>in the message.</em></h2>
+    <ol class="timeline">
+      <li class="stage"><span class="num">01</span><h3>What</h3><p>The service and the job, e.g. “carpentry: built-in cupboards, two bedrooms”.</p></li>
+      <li class="stage"><span class="num">02</span><h3>Where</h3><p>Town, or tap 📎 → Location in WhatsApp to send a pin.</p></li>
+      <li class="stage"><span class="num">03</span><h3>Photos &amp; plans</h3><p>A few photos of the site, or your drawings as PDF.</p></li>
+      <li class="stage"><span class="num">04</span><h3>When</h3><p>When you would like work to start, or the tender closing date.</p></li>
     </ol>
-    <div class="acts"><a class="btn btn-lg" href="/quote/">Use the quote builder <span aria-hidden="true">→</span></a></div>
+    <div class="acts"><a class="btn btn-primary" href="/quote/">Use the quote builder <span class="arr" aria-hidden="true">→</span></a></div>
   </div>
 </section>
