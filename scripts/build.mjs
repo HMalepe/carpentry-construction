@@ -154,9 +154,10 @@ const icon = {
   wa: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5 5.6 16A8 8 0 1 1 8.4 18.6z"/><path d="M9.2 8.6c.3-.6.8-.6 1-.2l.7 1.5c.1.3 0 .6-.2.8l-.4.4c.5 1.1 1.4 2 2.5 2.5l.4-.4c.2-.2.5-.3.8-.2l1.5.7c.4.2.4.7-.2 1-1 .6-2.3.6-3.6-.2a8 8 0 0 1-2.7-2.7c-.8-1.3-.8-2.6-.2-3.6z"/></svg>',
   close: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>',
 };
-// Brand mark: a drawn frame (brass, animates on load) around a monogram built from straight joinery lines.
-const mark = '<svg class="logo-mark" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28"/><path d="M7 22V8l5 8 5-8v14M20 8v14M20 8h3.5a3 3 0 0 1 0 6H20m2.5 0 3 8"/></svg>';
-const logo = `<a class="logo" href="/" aria-label="${esc(cfg.shortName)} — home">${mark}<span class="logo-word">Malepe R&amp;R<small>Construction · Joinery</small></span></a>`;
+// Brand mark: the supplied logo (house, trowel, spanner), traced to SVG. Colours come from CSS (.r red, .c charcoal),
+// so the same markup is full-colour on paper and reversed on graphite.
+const mark = read(path.join(SRC, 'partials', 'logo-mark.html')).trim();
+const logo = `<a class="logo" href="/" aria-label="${esc(cfg.shortName)} — home">${mark}<span class="logo-word">Malepe R&amp;R<small>Pty Ltd</small></span></a>`;
 
 /* ---------- shared chrome ---------- */
 const NAV = [

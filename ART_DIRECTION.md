@@ -1,5 +1,7 @@
 # Art direction: "Graphite Atelier"
 
+> **Brand update:** the palette is built around the supplied logo (house, trowel and spanner in brick red `#9F2D32` and charcoal `#282828`). An earlier brass accent was replaced by the logo's own red. See section 4 and "The logo" below.
+
 The visual identity of the Malepe R&R website, the reasoning behind it, and the rules for keeping it intact.
 
 ## 1. The brief and the constraint
@@ -31,7 +33,19 @@ Kept from C: the technical-drawing voice (dimension lines, drawing numbers, titl
 - **The drawing**, which is technical, exact and procurement-ready: JetBrains Mono annotations, dimension lines, sheet numbers, the plan detail of a cupboard-door shadow gap, schedules and registers.
 - **The hand**, which is crafted and material: Newsreader italics, timber and gloss photography, finishes sampled from real jobs.
 
-The brand mark is a drawn frame (it draws itself on load) around a monogram made of straight joinery lines.
+
+
+## 3b. The logo
+
+The supplied logo is a house with a trowel and an adjustable spanner: building and maintenance in one mark, drawn in brick red and charcoal. It is used as supplied, never redrawn or recoloured arbitrarily:
+- **Source:** `media/brand/logo-icon-source.png` (the icon only; the original card also carries personal contact details, which must never be published).
+- **Vector:** `src/partials/logo-mark.html` is the icon traced to SVG. The organic shapes (trowel, spanner) come from tracing the supplied pixels; the house, base and windows are clean geometry measured from the same trace.
+- **Two colourways:**
+  - *Full colour on paper:* red `#9F2D32` and charcoal `#282828`, exactly as supplied.
+  - *Reversed on graphite:* the charcoal parts become ivory and the red lifts to `#C93C41` so it stays visible. The charcoal would vanish on a graphite background, which is why the variants exist.
+- **Placement:** header (46px), footer (60px). The header switches colourway automatically over paper-toned page heroes.
+- **Derived assets** (`npm run brand`): favicon, 180px and 512px app icons, and the social-share image.
+- **Wordmark:** "Malepe R&R" with "Pty Ltd", set in Archivo at 72% width, uppercase, wide tracking.
 
 ## 4. Colour
 
@@ -40,17 +54,20 @@ All text pairs pass WCAG AA. Ratios below are computed with the WCAG formula and
 | Token | Hex | Role | Contrast |
 |---|---|---|---|
 | `--g-950` | #111110 | Primary background (graphite) | — |
-| `--g-900` / `--g-850` / `--g-800` | #181716 / #1F1D1B / #2A2825 | Raised surface / photo frames / concrete sections | — |
+| `--g-900` / `--g-850` / `--g-800` | #181716 / #1F1D1B / #2A2825 | Raised surface / photo frames / concrete sections (`--g-800` is the logo charcoal's neighbour) | — |
 | `--paper` / `--paper-2` | #EEE9E1 / #E5DFD5 | Document sections / drawing sheets | — |
 | `--ivory` | #ECE7DF | Text on graphite; primary button | 15.4:1 on graphite |
 | `--stone` | #A8A29A | Secondary text on graphite | 7.5:1 (5.8:1 on concrete) |
 | `--ink` / `--ink-mute` | #1B1A18 / #5E584F | Text / secondary text on paper | 14.4:1 / 5.8:1 |
-| `--brass` / `--brass-hi` | #B8925C / #CFAE7E | **The only accent** (on dark): labels, numerals, italics, focus ring | 6.6:1 (`--brass-hi` 9.0:1) |
-| `--brass-ink` | #7A5A33 | The accent on paper | 5.2:1 |
-| `--warn` | #E0A050 | Preview placeholders only (removed in production) | — |
+| `--red` | **#9F2D32** (exact logo red) | Brand fills: button hover, the mark on paper, selected-chip fill. **Text on paper** (`--acc` there) | 6.0:1 on paper · 5.9:1 under ivory text · only 2.6:1 on graphite |
+| `--red-hi` | #E8736C (the logo red lifted) | **The accent on dark**: labels, numerals, italics, focus ring, indicators | 6.4:1 on graphite · 5.0:1 on concrete |
+| `--logo-red` / `--logo-ink` | #C93C41 / #ECE7DF (reversed) · #9F2D32 / #282828 (paper) | The mark itself, swapped by tone | graphic, not text |
+| `--warn` | #E0A050 | Preview placeholders only (removed in production), deliberately not red so a placeholder never looks like brand | — |
+
+All text pairs pass WCAG AA. Ratios are computed with the WCAG formula and re-checked by axe-core on every page in the test suite. The brand red is too dark to read as text on graphite, so the contrast-safe `--acc` token resolves to `--red-hi` on dark sections and `--red` on paper. **Never use `--red` directly for text on a dark section.**
 
 Rules:
-- One accent.
+- One accent family: the logo's red. No other hue appears as UI colour except functional green (the "accepting projects" dot) and the preview-only amber.
 - No gradients except photo-legibility scrims.
 - Section tone changes (graphite → paper → raised → concrete) are the main way the page breathes.
 
@@ -59,7 +76,7 @@ Rules:
 | Role | Face | Setting |
 |---|---|---|
 | Hero display | Newsreader Light (optical size 72) | clamp(58–188px), line-height .88, tracking −4% |
-| Section headings | Newsreader Light | 36–128px, italics in brass for the turn of the phrase |
+| Section headings | Newsreader Light | 36–128px, italics in the accent colour for the turn of the phrase |
 | Body, UI | Archivo | 17px / 1.6 |
 | Labels, nav, buttons | Archivo at 78–85% width | 11–13.5px, uppercase, +14–20% tracking |
 | Large numerals (project indices, facts, process) | Archivo at 62% width, Light | 40–330px, tabular figures |

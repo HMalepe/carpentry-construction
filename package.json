@@ -14,7 +14,8 @@
     "test:e2e": "node --test --test-concurrency=1 tests/e2e.test.mjs",
     "test": "node --test --test-concurrency=1 \"tests/*.test.mjs\"",
     "check": "npm run lint && npm test",
-    "photos": "node scripts/photos.mjs"
+    "photos": "node scripts/photos.mjs",
+    "brand": "node scripts/brand.mjs"
   },
   "engines": {
     "node": "22.x"
