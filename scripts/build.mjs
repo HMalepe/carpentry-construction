@@ -34,7 +34,7 @@ const pimg = (p, size = 'sm', extra = 'loading="lazy" decoding="async"') =>
 function showcase() {
   return projects.filter((p) => p.featured).map((p, i) => `<a class="sc sc-${i + 1}" href="${linkFor(p.slug)}">
         <span class="sc-n num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
-        <span class="ph ph-zoom reveal-img">${pimg(p, 'lg')}</span>
+        <span class="ph ph-zoom reveal-img"${caseOf(p.slug) ? ` data-vt="${caseOf(p.slug).slug}"` : ''}>${pimg(p, 'lg')}</span>
         <div class="sc-body"><h3>${esc(p.title)}</h3><span class="lbl">${esc(CATEGORY_LABEL[p.category])}</span></div>
       </a>`).join('\n      ');
 }
@@ -48,7 +48,7 @@ function caseFeatures() {
   return cases.map((c, i) => {
     const p = pBy[c.cover];
     return `<a class="feature" href="/projects/${c.slug}/">
-        <span class="ph ph-zoom reveal-img">${pimg(p, 'lg')}</span>
+        <span class="ph ph-zoom reveal-img" data-vt="${c.slug}">${pimg(p, 'lg')}</span>
         <div class="feature-txt"><span class="feature-n num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span><span class="lbl">${esc(c.kicker)} · Case study</span><h2 class="mt-12">${esc(c.title)}</h2><p>${esc(c.intro)}</p><span class="btn-text mt-20">Read the project</span></div>
       </a>`;
   }).join('\n      ');
@@ -74,7 +74,7 @@ function caseBody(c, i) {
     </div>
     <figure class="case-cover">
       <div class="dimline" aria-hidden="true"><span>DWG ${String(i + 1).padStart(2, '0')} · ${esc(c.title)}</span></div>
-      <span class="ph reveal-img">${pimg(p, 'lg', 'fetchpriority="high" decoding="async"')}</span>
+      <span class="ph reveal-img" data-vt="${c.slug}">${pimg(p, 'lg', 'fetchpriority="high" decoding="async"')}</span>
     </figure>
   </div>
 </section>
@@ -428,7 +428,12 @@ function applyTokens(html) {
 /* ---------- build ---------- */
 rmrf(OUT);
 copyDir(path.join(SRC, 'assets'), path.join(OUT, 'assets'));
-const v = { css: hash(path.join(SRC, 'assets/css/main.css')), js: hash(path.join(SRC, 'assets/js/main.js')) };
+// Shared-element transitions: one view-transition-name per case study, generated here so the CSS never drifts from cases.json.
+// (Inline styles are blocked by the CSP, so the names live in the stylesheet and are selected by data-vt.)
+const vtCss = '\n/* generated: shared-element names (cases.json) */\n' + cases.map((c) =>
+  `[data-vt="${c.slug}"]{view-transition-name:vt-${c.slug}}\n::view-transition-group(vt-${c.slug}){animation-duration:.85s;animation-timing-function:cubic-bezier(.65,0,.35,1)}\n::view-transition-old(vt-${c.slug}),::view-transition-new(vt-${c.slug}){height:100%;width:100%;object-fit:cover}\n`).join('');
+fs.appendFileSync(path.join(OUT, 'assets/css/main.css'), vtCss);
+const v = { css: hash(path.join(OUT, 'assets/css/main.css')), js: hash(path.join(SRC, 'assets/js/main.js')) };
 const layout = read(path.join(SRC, 'layout.html'));
 
 for (const page of pages) {

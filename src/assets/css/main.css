@@ -203,6 +203,7 @@ main{counter-reset:sec}
 .no-fab .fab{display:none}
 .js .fab{opacity:0;visibility:hidden;transform:translateY(16px);transition:opacity .5s var(--ease),transform .5s var(--ease),visibility .5s}
 .js .fab.show{opacity:1;visibility:visible;transform:none}
+.js .fab.show.fab-off{opacity:0;visibility:hidden;transform:translateY(16px)}
 
 /* ---------- media primitives ---------- */
 .ph{display:block;position:relative;overflow:hidden;background:var(--g-850)}
@@ -379,20 +380,59 @@ a:hover .ph-zoom img{transform:scale(1.035)}
 }
 .board-note{margin-top:var(--s5);font-size:13.5px;color:var(--ink-mute)}
 
-/* 06 process timeline */
-.process-head{margin-bottom:var(--s8)}
-.timeline{position:relative;border-left:1px solid var(--line2);margin-left:6px}
-.stage{position:relative;padding:0 0 var(--s7) var(--s6)}
+/* 06 process: a pinned master timeline (one scene, four beats). Static list without motion / below 560px of height. */
+.proc{padding:var(--s9) 0}
+@media (min-width:900px){.proc{padding:var(--s10) 0}}
+.proc h2{margin-bottom:var(--s7)}
+.route{position:relative;height:12px;margin:0 0 var(--s6)}
+.route svg{display:block;width:100%;height:12px;overflow:visible}
+.route line{stroke-width:1.5;fill:none}
+.route-base{stroke:var(--line2)}
+.route-draw{stroke:var(--acc);stroke-dasharray:1;stroke-dashoffset:0}
+.route-dot{position:absolute;top:6px;left:100%;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;background:var(--acc);transform:rotate(45deg);box-shadow:0 0 0 6px rgba(232,115,108,.16)}
+.timeline{position:relative}
+.stage{position:relative;padding:0 0 var(--s7) var(--s6);border-left:1px solid var(--line2);margin-left:6px}
 .stage::before{content:"";position:absolute;left:-6px;top:10px;width:11px;height:11px;border:1px solid var(--acc);background:var(--g-950);transform:rotate(45deg)}
-.stage .num{display:block;font-size:68px;color:transparent;-webkit-text-stroke:1px var(--acc)}
+.stage .num{display:block;font-size:68px;color:transparent;-webkit-text-stroke:1px var(--acc);transition:color .6s var(--ease)}
 .stage h3{font-family:var(--serif);font-weight:400;font-size:26px;margin-top:var(--s3);letter-spacing:-.01em}
 .stage p{color:var(--stone);font-size:15.5px;margin-top:var(--s2);max-width:26em}
 .stage .mono{display:block;margin-top:var(--s3)}
+.route{display:none}
 @media (min-width:900px){
-  .timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-left:0;border-top:1px solid var(--line2);margin:0;padding-top:var(--s6)}
-  .stage{padding:0 var(--s6) 0 0}
+  .timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line2);padding-top:var(--s6)}
+  .stage{padding:0 var(--s6) 0 0;border-left:0;margin:0}
   .stage::before{left:0;top:calc(-1 * var(--s6) - 6px)}
   .stage .num{font-size:104px}
+}
+.stage .num{font-feature-settings:"tnum"}
+
+/* the pinned scene: only with motion, and only where the viewport is tall enough to hold it */
+@media (min-height:560px){
+  .motion .proc{height:calc(100svh + 340svh);padding:0}
+  .motion .proc-stick{position:sticky;top:0;height:100svh;display:flex;align-items:center;padding-top:var(--head-h);overflow:hidden}
+  .motion .proc .route{display:block}
+  .motion .proc .timeline{border-top:0;padding-top:0}
+  .motion .proc .stage::before{display:none}
+  .motion .route-draw{stroke-dashoffset:calc(1 - min(1, var(--p, 0) * 1.12))}
+  .motion .route-dot{left:calc(min(1, var(--p, 0) * 1.12) * 100%)}
+  /* dim by colour, not opacity: inactive steps stay >= 4.5:1 (opacity would drop them to 3.6:1) */
+  .motion .stage{transition:transform .9s var(--ease);transform:translateY(10px)}
+  .motion .stage h3,.motion .stage p,.motion .stage .mono{color:var(--stone-2);transition:color .6s var(--ease)}
+  .motion .stage.is-past,.motion .stage.is-active{transform:none}
+  .motion .stage.is-active h3{color:var(--ivory)}
+  .motion .stage.is-active p,.motion .stage.is-active .mono{color:var(--stone)}
+  .motion .stage.is-active .num,.motion .stage.is-past .num{color:var(--acc);-webkit-text-stroke:0}
+  .motion .stage .num{transition:color .6s var(--ease),-webkit-text-stroke-width .6s}
+}
+/* phones: one beat at a time, stacked in the same cell, so the whole scene fits the screen */
+@media (max-width:899.98px) and (min-height:560px){
+  .motion .proc .timeline{display:grid;border:0;margin:0;padding:0}
+  .motion .proc .stage{grid-area:1/1;border:0;margin:0;padding:var(--s4) 0 0;opacity:0;transform:translateY(24px);pointer-events:none}
+  .motion .proc .stage.is-active{opacity:1;transform:none;pointer-events:auto}
+  .motion .proc .stage.is-past{opacity:0}
+  .motion .proc .stage .num{font-size:clamp(120px,36vw,200px)}
+  .motion .proc .stage h3{font-size:clamp(30px,8vw,40px)}
+  .motion .proc .stage p{font-size:16px;max-width:30em}
 }
 
 /* 07 proof */
@@ -419,8 +459,9 @@ a:hover .ph-zoom img{transform:scale(1.035)}
   .proof-side{grid-column:8/13}
 }
 
-/* 08 invitation */
-.invite{position:relative;min-height:92svh;display:grid;align-items:end;overflow:hidden;isolation:isolate}
+/* 08 invitation: pinned scale-to-fullscreen. Static full-bleed block without motion. */
+.invite{position:relative}
+.invite-stick{position:relative;min-height:92svh;display:grid;align-items:end;overflow:hidden;isolation:isolate}
 .invite-bg{position:absolute;inset:0;z-index:-1}
 .invite-bg img{width:100%;height:100%;object-fit:cover}
 .invite-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(17,17,16,.25),rgba(17,17,16,.5) 40%,rgba(17,17,16,.95))}
@@ -429,6 +470,19 @@ a:hover .ph-zoom img{transform:scale(1.035)}
 .invite .lead{margin-top:var(--s5);color:rgba(236,231,223,.82)}
 .invite-cap{position:absolute;right:var(--margin);top:var(--s6);color:rgba(236,231,223,.75)}
 @media (min-width:900px){.invite-in{grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);align-items:end}.invite-in>:first-child{grid-column:1/9}.invite-in>:last-child{grid-column:9/13;justify-self:end}}
+@media (min-height:560px){
+  .motion .invite{height:calc(100svh + 150svh);
+    --e:clamp(0, calc(var(--p, 0) * 2.1), 1);
+    --s:calc(var(--e) * var(--e) * (3 - 2 * var(--e)));
+    --ix:calc((1 - var(--s)) * 8vw);--iy:calc((1 - var(--s)) * 12svh);--ir:calc((1 - var(--s)) * 20px);
+    --txt:clamp(0, calc((var(--s) - .55) * 2.4), 1)}
+  .motion .invite-stick{position:sticky;top:0;height:100svh;min-height:0;background:var(--g-950)}
+  .motion .invite-bg{clip-path:inset(var(--iy) var(--ix) round var(--ir))}
+  .motion .invite-bg img{scale:calc(1.14 - var(--s) * .14)}
+  .motion .invite-in,.motion .invite-cap{opacity:var(--txt);transform:translateY(calc((1 - var(--txt)) * 28px))}
+  .motion .invite-in:focus-within{opacity:1;transform:none}
+}
+@media (min-height:560px) and (min-width:900px){.motion .invite{--ix:calc((1 - var(--s)) * 20vw);--iy:calc((1 - var(--s)) * 14svh)}}
 
 /* ==========================================================================
    SHARED / INNER PAGES
@@ -601,14 +655,24 @@ a:hover .ph-zoom img{transform:scale(1.035)}
 /* ==========================================================================
    SERVICES
    ========================================================================== */
-.svc-hub{border-top:1px solid var(--line)}
-.svc-row{display:grid;gap:var(--s5);padding:var(--s8) 0;border-bottom:1px solid var(--line)}
-.svc-row .num{font-size:clamp(76px,10vw,150px);color:var(--acc)}
-.svc-row h2{font-family:var(--serif);font-weight:300;font-size:var(--fs-l);line-height:.95;letter-spacing:-.03em}
-.svc-row .vis{aspect-ratio:4/3}
-.svc-row ul{display:grid;gap:6px;margin-top:var(--s4);color:var(--stone);font-size:15px}
-.svc-row ul li::before{content:"— ";color:var(--acc)}
-@media (min-width:900px){.svc-row{grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);align-items:start}.svc-row .num{grid-column:1/3}.svc-row .txt{grid-column:3/8}.svc-row .vis{grid-column:9/13}}
+.svc-stack{display:grid;gap:var(--s5)}
+.svc-card{position:relative;overflow:hidden;border:1px solid var(--line);transform-origin:50% 0}
+.svc-card-in{display:grid;gap:var(--s5);padding:var(--s6)}
+.svc-card .num{font-size:clamp(76px,10vw,150px);color:var(--acc)}
+.svc-card h2{font-family:var(--serif);font-weight:300;font-size:var(--fs-l);line-height:.95;letter-spacing:-.03em}
+.svc-card .vis{aspect-ratio:4/3}
+.svc-card ul{display:grid;gap:6px;margin-top:var(--s4);color:var(--mute);font-size:15px}
+.svc-card ul li::before{content:"— ";color:var(--acc)}
+.svc-card::after{content:"";position:absolute;inset:0;background:var(--g-950);opacity:calc(var(--p, 0) * .62);pointer-events:none}
+@media (min-width:900px){.svc-card-in{grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);align-items:center;padding:var(--s8) var(--s7)}.svc-card .num{grid-column:1/3}.svc-card .txt{grid-column:3/8}.svc-card .vis{grid-column:9/13}}
+/* the deck: each card sticks and the next slides over it (needs a tall, wide viewport so a card never exceeds the screen) */
+@media (min-width:900px) and (min-height:700px){
+  .motion .svc-stack{gap:0;padding-bottom:var(--s9)}
+  .motion .svc-card{position:sticky;min-height:calc(100svh - var(--head-h) - 72px);display:grid;align-items:center;margin-bottom:34svh;transform:scale(calc(1 - var(--p, 0) * .055))}
+  .motion .svc-card:nth-child(1){top:calc(var(--head-h) + 12px)}
+  .motion .svc-card:nth-child(2){top:calc(var(--head-h) + 30px)}
+  .motion .svc-card:nth-child(3){top:calc(var(--head-h) + 48px);margin-bottom:0}
+}
 
 /* carpentry: photo-led */
 .svc-photo-hero{position:relative;min-height:94svh;display:grid;align-items:end;isolation:isolate;overflow:hidden}
@@ -757,18 +821,68 @@ a.channel:hover .arr{transform:translate(4px,-4px)}
 .home .foot-sign,.home .site-foot>.wrap>.acts,.has-cta .foot-sign,.has-cta .site-foot>.wrap>.acts{display:none}
 .home .foot-grid,.has-cta .foot-grid{margin-top:0}
 /* header over paper heroes: ink until the page scrolls */
-.head-paper .site-head:not(.is-scrolled) .head-in{color:var(--ink)}
-.head-paper .site-head:not(.is-scrolled){--logo-red:#9F2D32;--logo-ink:#282828}
-.head-paper .site-head:not(.is-scrolled) .logo-word small,.head-paper .site-head:not(.is-scrolled) .nav-d a{color:var(--ink-mute)}
-.head-paper .site-head:not(.is-scrolled) .nav-d a[aria-current],.head-paper .site-head:not(.is-scrolled) .nav-d a:hover{color:var(--ink)}
-.head-paper .site-head:not(.is-scrolled) .btn-ghost{border-color:var(--line-l2)}
-html:not(.js) .head-paper .site-head .head-in{color:var(--ivory)}
+/* header over a paper section (class set by JS from what is under the header): ink on paper, in every scroll state */
+.site-head.on-paper{--logo-red:#9F2D32;--logo-ink:#282828}
+.site-head.on-paper .head-in{color:var(--ink)}
+.site-head.on-paper.is-scrolled{background:rgba(238,233,225,.9);border-bottom-color:var(--line-l)}
+.site-head.on-paper .logo-word small,.site-head.on-paper .nav-d a{color:var(--ink-mute)}
+.site-head.on-paper .nav-d a[aria-current],.site-head.on-paper .nav-d a:hover{color:var(--ink)}
+.site-head.on-paper .btn-ghost{border-color:var(--line-l2)}
+.site-head.on-paper .burger,.site-head.on-paper .menu>summary{color:var(--ink)}
 .nf{min-height:86svh;display:grid;align-items:end;padding-bottom:var(--s9)}
 
 /* utilities */
 .mt-0{margin-top:0!important}.mt-10{margin-top:10px!important}.mt-12{margin-top:12px!important}.mt-14{margin-top:14px!important}.mt-18{margin-top:18px!important}.mt-20{margin-top:20px!important}.mt-24{margin-top:24px!important}.mt-28{margin-top:28px!important}.mt-48{margin-top:48px!important}.mt-64{margin-top:64px!important}
 .mb-12{margin-bottom:12px!important}.mb-24{margin-bottom:24px!important}.mb-28{margin-bottom:28px!important}.mb-48{margin-bottom:48px!important}
 .muted{color:var(--mute)}
+
+/* ==========================================================================
+   MOTION LAYER (everything below is inert without html.motion, so no-JS and reduced-motion users get the finished page)
+   Playbook 01: scrubbed / pinned / velocity · 02: image motion · 05: transitions
+   ========================================================================== */
+
+/* entrance vocabulary: rise (default), slide from the left / right, grow */
+.motion [data-reveal="left"]{transform:translateX(-56px)}
+.motion [data-reveal="right"]{transform:translateX(56px)}
+/* off-screen starting positions must never create sideways scroll. `clip` (unlike `hidden`) keeps sticky scenes working */
+main{overflow-x:clip}
+.motion [data-reveal="scale"]{transform:scale(.94)}
+
+/* staggered ripple: group items arrive outward from the middle of the screen (delays set by the engine) */
+.motion .stg{opacity:0;transform:translateY(46px) scale(.975);transition:opacity .9s var(--ease),transform 1.1s var(--ease)}
+.motion .stg.in{opacity:1;transform:none}
+.motion .verify>a.stg{transition:opacity .9s var(--ease),transform 1.1s var(--ease),padding .5s var(--ease)}
+
+/* hero: scrubbed. The photograph drifts slower than the page, the headline rises faster and fades, and the first frame pulls focus */
+.motion .hero-txt{transform:translate3d(0,calc(var(--p, 0) * -80px),0);opacity:calc(1 - var(--p, 0) * 1.35)}
+.motion .hero-fig{translate:0 calc(var(--p, 0) * 70px)}
+.motion .hero-slats{translate:0 calc(var(--p, 0) * 36px)}
+.motion .hero .hero-fig img{filter:blur(18px);transition:transform 2.6s var(--ease) .1s,filter 2.2s var(--ease) .25s}
+.motion .hero.in .hero-fig img{filter:blur(0)}
+
+/* parallax on photographs: a quiet 9% drift behind a slightly oversized image (never more than that) */
+.motion .px img{scale:1.12;translate:0 calc((var(--p, .5) - .5) * -9%)}
+.motion .reveal-img[data-vt] img{clip-path:inset(0);transform:none;transition:none}
+
+/* velocity: the showcase leans into fast scrolling (±2.5° max) and settles when you stop */
+.motion .showcase .ph{transform:skewY(var(--skew, 0deg));will-change:transform}
+
+/* case-study cover pulls focus as it arrives */
+.motion .case-cover .ph img{filter:blur(14px);transition:filter 1.6s var(--ease) .2s,clip-path 1.3s var(--ease-io),transform 1.8s var(--ease)}
+.motion .case-cover .ph.in img{filter:blur(0)}
+
+/* page transitions: native cross-document View Transitions. The new page is drawn upward like a curtain,
+   the old page recedes, the header stays put, and a clicked project photograph morphs into its case-study cover
+   (names generated per case study at build time). Browsers without support just navigate normally. */
+@media (prefers-reduced-motion:no-preference){
+  @view-transition{navigation:auto}
+  .site-head{view-transition-name:site-head}
+  ::view-transition-group(site-head){animation:none}
+  ::view-transition-old(root){animation:vt-out .7s var(--ease-io) both}
+  ::view-transition-new(root){animation:vt-in .9s var(--ease-io) both}
+  @keyframes vt-out{to{opacity:.35;transform:translateY(-4%) scale(.985)}}
+  @keyframes vt-in{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0)}}
+}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 @media print{.site-head,.fab,.sheet,.lb,.hero-slats{display:none!important}body{background:#fff;color:#000}}

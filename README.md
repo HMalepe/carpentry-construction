@@ -42,6 +42,7 @@ src/data/art.json       ← art-directed crops and material swatches
 media/originals/        ← untouched original photos (never published)
 scripts/photos.mjs      ← photo pipeline: strip metadata, blur, grade, resize (npm run photos)
 scripts/brand.mjs       ← favicon, app icons, social-share image from the logo (npm run brand)
+src/assets/js/main.js   ← motion engine (scrub / pin / velocity / stagger), quote builder, lightbox, menus. See ART_DIRECTION.md §10
 src/partials/logo-mark.html ← the logo as SVG (colours come from CSS)
 src/pages/              ← one file per page (the folder = the URL)
 src/partials/           ← reusable blocks: CTA band, blueprint drawings, area map

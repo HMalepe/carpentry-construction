@@ -10,7 +10,7 @@
 }
 -->
 <!-- 01 · INTRODUCTION — layered hero: slatted wall, framed portrait photograph, editorial headline -->
-<section class="hero" aria-labelledby="hero-t">
+<section class="hero" aria-labelledby="hero-t" data-scrub="hero">
   <div class="hero-slats" aria-hidden="true"></div>
   <figure class="hero-fig">
     <picture class="ph">
@@ -39,12 +39,12 @@
   <div class="wrap grid">
     <h2 class="eyebrow" id="philo-t"><span class="n"></span>How we work</h2>
     <blockquote class="statement" data-reveal>We price from measurements, build from drawings and finish with our hands. <span class="mute">Nothing on site is guesswork: not the setting-out, not the gap between two cupboard doors.</span></blockquote>
-    <ol class="principles" data-reveal="2">
+    <ol class="principles" data-reveal="left">
       <li><span class="num">01</span><h3>Measure before pricing</h3><p>Quotes come from a site visit, your drawings or the issued bill of quantities.</p></li>
       <li><span class="num">02</span><h3>Build to the drawing</h3><p>Scope, price and changes agreed in writing before the work is done.</p></li>
       <li><span class="num">03</span><h3>Hand over clean</h3><p>Snags attended to, site cleaned, documents handed over.</p></li>
     </ol>
-    <figure class="philo-detail" data-reveal="3">{{> detail-door}}<figcaption class="mono">Joinery is judged in millimetres.</figcaption></figure>
+    <figure class="philo-detail" data-reveal="right">{{> detail-door}}<figcaption class="mono">Joinery is judged in millimetres.</figcaption></figure>
   </div>
 </section>
 
@@ -103,19 +103,23 @@
   </div>
 </section>
 
-<!-- 06 · PROCESS — a dimension line from first visit to handover -->
-<section class="sec tone-dark" aria-labelledby="proc-t">
-  <div class="wrap">
-    <p class="eyebrow"><span class="n"></span>Process</p>
-    <div class="process-head">
+<!-- 06 · PROCESS — pinned master timeline: one scene, four beats, a line that draws itself as you scroll -->
+<section class="proc tone-dark" aria-labelledby="proc-t" data-scrub="pin" data-beats="4">
+  <div class="proc-stick">
+    <div class="wrap">
+      <p class="eyebrow"><span class="n"></span>Process</p>
       <h2 class="h-l" id="proc-t">From site visit <em>to handover.</em></h2>
+      <div class="route" aria-hidden="true">
+        <svg viewBox="0 0 1000 12" preserveAspectRatio="none" focusable="false"><line class="route-base" x1="0" y1="6" x2="1000" y2="6"/><line class="route-draw" pathLength="1" x1="0" y1="6" x2="1000" y2="6"/></svg>
+        <span class="route-dot"></span>
+      </div>
+      <ol class="timeline">
+        <li class="stage is-active"><span class="num">01</span><h3>Site measurement</h3><p>We visit, measure, photograph and confirm the scope, or work from your drawings.</p><span class="mono">Day one</span></li>
+        <li class="stage"><span class="num">02</span><h3>Itemised quote</h3><p>An itemised price. For tenders and RFQs we price against the issued bill of quantities.</p><span class="mono">Scope agreed in writing</span></li>
+        <li class="stage"><span class="num">03</span><h3>Build &amp; joinery</h3><p>Construction, repairs and carpentry to the agreed scope, with progress photos on WhatsApp.</p><span class="mono">On site</span></li>
+        <li class="stage"><span class="num">04</span><h3>Handover</h3><p>Joint inspection, snag list attended to, site cleaned and handed back with close-out documents.</p><span class="mono">Signed off</span></li>
+      </ol>
     </div>
-    <ol class="timeline" data-reveal>
-      <li class="stage"><span class="num">01</span><h3>Site measurement</h3><p>We visit, measure, photograph and confirm the scope, or work from your drawings.</p><span class="mono">Day one</span></li>
-      <li class="stage"><span class="num">02</span><h3>Itemised quote</h3><p>An itemised price. For tenders and RFQs we price against the issued bill of quantities.</p><span class="mono">Scope agreed in writing</span></li>
-      <li class="stage"><span class="num">03</span><h3>Build &amp; joinery</h3><p>Construction, repairs and carpentry to the agreed scope, with progress photos on WhatsApp.</p><span class="mono">On site</span></li>
-      <li class="stage"><span class="num">04</span><h3>Handover</h3><p>Joint inspection, snag list attended to, site cleaned and handed back with close-out documents.</p><span class="mono">Signed off</span></li>
-    </ol>
   </div>
 </section>
 
@@ -150,22 +154,24 @@
   </div>
 </section>
 
-<!-- 08 · INVITATION — our installers at work -->
-<section class="invite" aria-labelledby="inv-t">
-  <picture class="invite-bg">
-    <source media="(min-width:900px)" srcset="/assets/img/art/invite-installers.webp">
-    <img {{art:invite-installers-mobile}} alt="Two installers fitting light oak kitchen units in a room with a stepped ceiling bulkhead" loading="lazy" decoding="async">
-  </picture>
-  <p class="invite-cap lbl lbl-mute">On site · Installation in progress</p>
-  <div class="wrap invite-in">
-    <div>
-      <p class="lbl">Start a project</p>
-      <h2 class="h-xl mt-20" id="inv-t">Send the drawings, <em>or a photo of the problem.</em></h2>
-      <p class="lead">WhatsApp takes photos, PDFs and voice notes. Tell us where the site is and we will come back to you with next steps.</p>
-    </div>
-    <div class="hero-acts">
-      <a class="btn btn-primary" data-wa="general">Start on WhatsApp <span class="arr" aria-hidden="true">→</span></a>
-      <a class="btn btn-ghost" href="/quote/">Detailed request</a>
+<!-- 08 · INVITATION — a framed photograph that scales to full-bleed as you arrive (pinned, scrubbed) -->
+<section class="invite" aria-labelledby="inv-t" data-scrub="pin">
+  <div class="invite-stick">
+    <picture class="invite-bg">
+      <source media="(min-width:900px)" srcset="/assets/img/art/invite-installers.webp">
+      <img {{art:invite-installers-mobile}} alt="Two installers fitting light oak kitchen units in a room with a stepped ceiling bulkhead" loading="lazy" decoding="async">
+    </picture>
+    <p class="invite-cap lbl lbl-mute">On site · Installation in progress</p>
+    <div class="wrap invite-in">
+      <div>
+        <p class="lbl">Start a project</p>
+        <h2 class="h-xl mt-20" id="inv-t">Send the drawings, <em>or a photo of the problem.</em></h2>
+        <p class="lead">WhatsApp takes photos, PDFs and voice notes. Tell us where the site is and we will come back to you with next steps.</p>
+      </div>
+      <div class="hero-acts">
+        <a class="btn btn-primary" data-wa="general">Start on WhatsApp <span class="arr" aria-hidden="true">→</span></a>
+        <a class="btn btn-ghost" href="/quote/">Detailed request</a>
+      </div>
     </div>
   </div>
 </section>

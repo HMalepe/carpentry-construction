@@ -5,22 +5,120 @@
   var root = d.documentElement;
   root.classList.add('js');
 
-  /* ---- motion: only when the visitor has not asked for reduced motion ---- */
+  var clamp = function (v, lo, hi) { return Math.max(lo === undefined ? 0 : lo, Math.min(hi === undefined ? 1 : hi, v)); };
+  var head = d.querySelector('.site-head');
+
+  /* ======================================================================
+     MOTION ENGINE (vanilla, ~2 KB gz). Only runs when the visitor has not asked for reduced motion.
+     Three relationships between scroll and animation:
+       triggered : fires once as an element arrives (reveals, ripple stagger)
+       scrubbed  : progress 0..1 written to a CSS variable (--p); CSS decides what that means
+       pinned    : a tall wrapper holds a sticky scene; progress = how far through the wrapper we are
+     No smooth-scroll hijacking: native scrolling is never replaced or delayed.
+     ====================================================================== */
   var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!still && 'IntersectionObserver' in window) {
     root.classList.add('motion');
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+    var vw = window.innerWidth, vh = window.innerHeight;
+
+    /* -- triggered reveals; items marked .stg ripple outward from the middle of the screen -- */
+    d.querySelectorAll('.proj-grid > .proj, .board > .swatch, .facts > .fact, .stages > li, .principles > li, .channels > .channel, .verify > a, .index > li, .index > a').forEach(function (el) { el.classList.add('stg'); });
+    var reveal = new IntersectionObserver(function (entries) {
+      var hit = entries.filter(function (e) { return e.isIntersecting; });
+      var mid = vw / 2;
+      hit.sort(function (a, b) {
+        return Math.abs(a.boundingClientRect.left + a.boundingClientRect.width / 2 - mid) - Math.abs(b.boundingClientRect.left + b.boundingClientRect.width / 2 - mid) || a.boundingClientRect.top - b.boundingClientRect.top;
+      });
+      hit.forEach(function (en, i) {
+        var el = en.target;
+        if (el.classList.contains('stg')) el.style.transitionDelay = Math.min(i * 70, 560) + 'ms';
+        el.classList.add('in');
+        reveal.unobserve(el);
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
-    d.querySelectorAll('[data-reveal], .reveal-img, .lines, .draw-in').forEach(function (el) { io.observe(el); });
+    d.querySelectorAll('[data-reveal], .reveal-img, .lines, .draw-in, .stg').forEach(function (el) { reveal.observe(el); });
+
     var hero = d.querySelector('.hero');
     if (hero) requestAnimationFrame(function () { requestAnimationFrame(function () { hero.classList.add('in'); hero.querySelectorAll('.lines').forEach(function (l) { l.classList.add('in'); }); }); });
+
+    /* -- scrubbed + pinned scenes -- */
+    var scrubs = [];
+    var visIO = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { e.target._s.vis = e.isIntersecting; });
+      request();
+    }, { rootMargin: '30% 0px 30% 0px' });
+    var register = function (el, kind) {
+      var s = { el: el, kind: kind, vis: false, last: '', beats: 0, stages: null, next: null, nextTop: 0 };
+      if (kind === 'pin') {
+        s.beats = Number(el.getAttribute('data-beats')) || 0;
+        s.stages = s.beats ? [].slice.call(el.querySelectorAll('.stage')) : null;
+      }
+      if (kind === 'stack') s.next = el.nextElementSibling && el.nextElementSibling.matches('[data-scrub="stack"]') ? el.nextElementSibling : null;
+      el._s = s; scrubs.push(s); visIO.observe(el);
+    };
+    d.querySelectorAll('[data-scrub]').forEach(function (el) { register(el, el.getAttribute('data-scrub')); });
+    d.querySelectorAll('.sc .ph, .case-cover .ph, .invite-wide, .feature .ph').forEach(function (el) { el.classList.add('px'); register(el, 'view'); });
+
+    var progress = function (s) {
+      var r = s.el.getBoundingClientRect();
+      if (s.kind === 'hero') return clamp(-r.top / Math.max(1, r.height));
+      if (s.kind === 'view') return clamp((vh - r.top) / (vh + r.height));
+      if (s.kind === 'pin') return clamp(-r.top / Math.max(1, r.height - vh));
+      if (s.kind === 'stack') {
+        if (!s.next) return 0;
+        var n = s.next.getBoundingClientRect();
+        return clamp((vh - n.top) / Math.max(1, vh - s.nextTop));
+      }
+      return 0;
+    };
+    var apply = function (s, p) {
+      var v = p.toFixed(3);
+      if (v === s.last) return;
+      s.last = v;
+      s.el.style.setProperty('--p', v);
+      if (s.kind === 'pin' && s.beats) {
+        var st = Math.min(s.beats, Math.floor(p * s.beats * 0.985) + 1);
+        if (s.el.getAttribute('data-stage') !== String(st)) {
+          s.el.setAttribute('data-stage', st);
+          if (s.stages) s.stages.forEach(function (el, i) { el.classList.toggle('is-active', i === st - 1); el.classList.toggle('is-past', i < st - 1); });
+        }
+      }
+    };
+    var measure = function () {
+      vw = window.innerWidth; vh = window.innerHeight;
+      scrubs.forEach(function (s) { if (s.next) s.nextTop = parseFloat(window.getComputedStyle(s.next).top) || 0; });
+    };
+
+    /* -- scroll velocity: the showcase leans into fast scrolling and settles when you stop (clamped to ±2.5°) -- */
+    var skewEl = d.querySelector('.showcase'), skewVis = false, lastY = window.scrollY, skew = 0;
+    if (skewEl) new IntersectionObserver(function (es) { skewVis = es[0].isIntersecting; request(); }, { rootMargin: '20% 0px' }).observe(skewEl);
+
+    var queued = false;
+    var request = function () { if (!queued) { queued = true; requestAnimationFrame(frame); } };
+    var frame = function () {
+      queued = false;
+      var again = false;
+      scrubs.forEach(function (s) { if (s.vis) apply(s, progress(s)); });
+      var y = window.scrollY;
+      if (skewEl && skewVis) {
+        var t = clamp((y - lastY) * 0.08, -2.5, 2.5);
+        skew += (t - skew) * 0.2;
+        if (Math.abs(skew) < 0.01) skew = 0; else again = true;
+        skewEl.style.setProperty('--skew', skew.toFixed(2) + 'deg');
+      } else if (skewEl && skew !== 0) {      // off screen: reset so it never returns with a stale lean
+        skew = 0;
+        skewEl.style.setProperty('--skew', '0deg');
+      }
+      lastY = y;
+      if (again) request();
+    };
+    measure();
+    window.addEventListener('scroll', request, { passive: true });
+    window.addEventListener('resize', function () { measure(); request(); });
+    request();
   }
 
-  /* ---- header: solid once the page scrolls ---- */
-  var head = d.querySelector('.site-head');
+  /* ---- header: solid once the page scrolls; takes the paper tone while it sits over a paper section ---- */
   if (head) {
     var ticking = false;
     var fab = d.querySelector('.fab');
@@ -33,6 +131,33 @@
     };
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(paint); } }, { passive: true });
     paint();
+
+    var papers = [].slice.call(d.querySelectorAll('.tone-paper')), over = [], toneIO = null, toneT = 0;
+    var watchTone = function () {
+      if (toneIO) toneIO.disconnect();
+      over = [];
+      var band = Math.round(head.offsetHeight / 2);
+      toneIO = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          var i = over.indexOf(e.target);
+          if (e.isIntersecting && i < 0) over.push(e.target); else if (!e.isIntersecting && i >= 0) over.splice(i, 1);
+        });
+        head.classList.toggle('on-paper', over.length > 0);
+      }, { rootMargin: '0px 0px ' + (-(window.innerHeight - band)) + 'px 0px', threshold: 0 });
+      papers.forEach(function (el) { toneIO.observe(el); });
+    };
+    /* the floating WhatsApp pill steps aside while a big call to action is on screen */
+    if (fab && 'IntersectionObserver' in window) {
+      var cta = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { e.target._cta = e.isIntersecting; });
+        fab.classList.toggle('fab-off', [].some.call(d.querySelectorAll('.invite, .cta-band'), function (n) { return n._cta; }));
+      }, { threshold: 0.35 });
+      d.querySelectorAll('.invite, .cta-band').forEach(function (n) { cta.observe(n); });
+    }
+    if (papers.length && 'IntersectionObserver' in window) {
+      watchTone();
+      window.addEventListener('resize', function () { clearTimeout(toneT); toneT = setTimeout(watchTone, 150); });
+    }
   }
   var NUMBER = d.body.getAttribute('data-wa-number');
   var BRAND = 'Malepe R&R';

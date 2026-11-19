@@ -302,7 +302,7 @@ test('motion mode: every reveal completes after scrolling (no content stuck invi
     const h = await p.evaluate(() => document.body.scrollHeight);
     for (let y = 0; y <= h; y += 300) { await p.evaluate((y) => scrollTo(0, y), y); await p.waitForTimeout(20); }
     await p.waitForTimeout(1800);
-    const stuck = await p.evaluate(() => [...document.querySelectorAll('[data-reveal], .reveal-img, .lines, .draw-in')]
+    const stuck = await p.evaluate(() => [...document.querySelectorAll('[data-reveal], .reveal-img, .lines, .draw-in, .stg')]
       .filter((e) => e.offsetParent !== null && !e.classList.contains('in')).map((e) => e.className));
     assert.deepEqual(stuck, [], `${u}: elements never revealed`);
     const clipped = await p.evaluate(() => [...document.querySelectorAll('.reveal-img img')].filter((i) => i.offsetParent && getComputedStyle(i).clipPath !== 'inset(0px)').length);
@@ -310,4 +310,196 @@ test('motion mode: every reveal completes after scrolling (no content stuck invi
   }
   assert.deepEqual(p.problems, []);
   await p.context().close();
+});
+
+/* ---------------------------------------------------------------------------------------------
+   Motion upgrade (playbooks 01 scroll engine · 02 image motion · 05 transitions)
+   --------------------------------------------------------------------------------------------- */
+const jump = (p, y) => p.evaluate((y) => scrollTo({ top: y, behavior: 'instant' }), y);
+const sceneY = (p, sel, f) => p.evaluate(([sel, f]) => { const el = document.querySelector(sel); return scrollY + el.getBoundingClientRect().top + (el.offsetHeight - innerHeight) * f; }, [sel, f]);
+const settle = (p, ms = 350) => p.waitForTimeout(ms);
+
+test('pinned process scene: one scene, four beats; scrubbed route; rewinds when scrolling back', async () => {
+  const p = await open({ viewport: { width: 1440, height: 900 } });
+  await p.goto(BASE + '/');
+  assert.equal(await p.evaluate(() => document.documentElement.classList.contains('motion')), true);
+  assert.equal(await p.evaluate(() => getComputedStyle(document.querySelector('.proc-stick')).position), 'sticky', 'process scene is pinned');
+  const seen = [];
+  for (const f of [0.04, 0.3, 0.55, 0.92]) {
+    await jump(p, await sceneY(p, '.proc', f)); await settle(p);
+    const r = await p.evaluate(() => ({ stage: document.querySelector('.proc').dataset.stage, active: [...document.querySelectorAll('.proc .stage')].findIndex((s) => s.classList.contains('is-active')) + 1, dash: parseFloat((getComputedStyle(document.querySelector('.route-draw')).strokeDashoffset.match(/[\d.]+/) || ['0'])[0]) }));
+    assert.equal(r.stage, String(r.active), 'the highlighted stage matches the scene beat');
+    seen.push(r);
+  }
+  assert.deepEqual(seen.map((r) => r.stage), ['1', '2', '3', '4']);
+  assert.ok(seen.every((r, i) => !i || r.dash < seen[i - 1].dash), 'the route line draws further with every beat');
+  assert.ok(seen[3].dash < 0.2, 'the route is (almost) fully drawn at the end');
+  await jump(p, await sceneY(p, '.proc', 0.04)); await settle(p);
+  assert.equal(await p.evaluate(() => document.querySelector('.proc').dataset.stage), '1', 'scrubbing rewinds');
+  assert.deepEqual(p.problems, []);
+  await p.context().close();
+});
+
+test('pinned process scene on a phone: one beat at a time, no overflow', async () => {
+  const p = await open({ viewport: { width: 390, height: 844 } });
+  await p.goto(BASE + '/');
+  await jump(p, await sceneY(p, '.proc', 0.6)); await settle(p, 900);
+  const r = await p.evaluate(() => ({ visible: [...document.querySelectorAll('.proc .stage')].filter((s) => parseFloat(getComputedStyle(s).opacity) > 0.9).length, ov: document.documentElement.scrollWidth - innerWidth }));
+  assert.equal(r.visible, 1, 'exactly one stage is shown at a time');
+  assert.equal(r.ov, 0);
+  await p.context().close();
+});
+
+test('scale-to-fullscreen: the closing photo opens from a framed card to full-bleed and reveals its text', async () => {
+  const p = await open({ viewport: { width: 1440, height: 900 } });
+  await p.goto(BASE + '/');
+  const clip = async (f) => { await jump(p, await sceneY(p, '.invite', f)); await settle(p, 450); return p.evaluate(() => ({ clip: getComputedStyle(document.querySelector('.invite-bg')).clipPath, txt: parseFloat(getComputedStyle(document.querySelector('.invite-in')).opacity) })); };
+  const start = await clip(0), end = await clip(1);
+  const insetPx = (c) => (c.match(/inset\(([\d.]+)px/) || [])[1];
+  assert.ok(parseFloat(insetPx(start.clip)) > 40, `starts as a framed card (${start.clip})`);
+  assert.ok(parseFloat(insetPx(end.clip)) < 1, `ends full-bleed (${end.clip})`);
+  assert.ok(start.txt < 0.05 && end.txt > 0.95, 'headline arrives as the frame opens');
+  // keyboard users can always reach the call to action, even before the scene has opened
+  await clip(0);
+  await p.focus('.invite-in a');
+  assert.equal(await p.evaluate(() => parseFloat(getComputedStyle(document.querySelector('.invite-in')).opacity)), 1, 'focus makes the text visible');
+  await p.context().close();
+});
+
+test('sticky stacking cards: Services deals as a deck on desktop and stays plain on phones', async () => {
+  const d = await open({ viewport: { width: 1440, height: 900 } });
+  await d.goto(BASE + '/services/');
+  assert.equal(await d.evaluate(() => getComputedStyle(document.querySelector('.svc-card')).position), 'sticky');
+  const ps = [];
+  for (const off of [-60, 1900]) { await jump(d, (await d.evaluate(() => scrollY + document.querySelector('.svc-stack').getBoundingClientRect().top)) + off); await settle(d, 500); ps.push(await d.evaluate(() => [...document.querySelectorAll('.svc-card')].map((c) => parseFloat(c.style.getPropertyValue('--p') || '0')))); }
+  assert.ok(ps[0][0] < 0.05, 'first card starts uncovered');
+  assert.ok(ps[1][0] > 0.95 && ps[1][1] > 0.7, 'earlier cards end up covered (scaled and darkened) by the next');
+  await d.context().close();
+  const m = await open({ viewport: { width: 390, height: 844 } });
+  await m.goto(BASE + '/services/');
+  assert.equal(await m.evaluate(() => getComputedStyle(document.querySelector('.svc-card')).position), 'relative', 'no sticky deck on a phone (cards would exceed the screen)');
+  assert.equal(await m.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0);
+  await m.context().close();
+});
+
+test('header changes tone over paper sections (and back over graphite)', async () => {
+  const p = await open({ viewport: { width: 1440, height: 900 } });
+  await p.goto(BASE + '/services/construction/'); await settle(p, 500);
+  assert.equal(await p.evaluate(() => document.querySelector('.site-head').classList.contains('on-paper')), true, 'a paper hero starts with the paper header');
+  await p.goto(BASE + '/');
+  await settle(p, 500);
+  assert.equal(await p.evaluate(() => document.querySelector('.site-head').classList.contains('on-paper')), false, 'graphite hero: dark header');
+  await jump(p, await p.evaluate(() => scrollY + document.querySelector('.philo').getBoundingClientRect().top - 20)); await settle(p, 500);
+  assert.equal(await p.evaluate(() => document.querySelector('.site-head').classList.contains('on-paper')), true, 'cream manifesto section under the header');
+  await jump(p, await p.evaluate(() => scrollY + document.querySelector('.proc').getBoundingClientRect().top + 200)); await settle(p, 500);
+  assert.equal(await p.evaluate(() => document.querySelector('.site-head').classList.contains('on-paper')), false, 'back to dark');
+  await p.context().close();
+});
+
+test('hero is scrubbed: headline rises and fades, photo drifts, then rewinds', async () => {
+  const p = await open({ viewport: { width: 1440, height: 900 } });
+  await p.goto(BASE + '/'); await settle(p, 2600);
+  const at = async (y) => { await jump(p, y); await settle(p, 300); return p.evaluate(() => ({ o: parseFloat(getComputedStyle(document.querySelector('.hero-txt')).opacity), p: parseFloat(document.querySelector('.hero').style.getPropertyValue('--p') || '0') })); };
+  const a = await at(0), b = await at(300), c = await at(600), back = await at(0);
+  assert.ok(a.o > 0.99 && b.o < a.o && c.o < b.o, 'fades as it scrolls away');
+  assert.ok(b.p > a.p && c.p > b.p, 'progress is monotonic');
+  assert.ok(back.o > 0.99, 'rewinds');
+  await p.context().close();
+});
+
+test('velocity lean stays within ±2.5° and settles back to 0', async () => {
+  const p = await open({ viewport: { width: 1440, height: 900 } });
+  await p.goto(BASE + '/');
+  await jump(p, await p.evaluate(() => scrollY + document.querySelector('.showcase').getBoundingClientRect().top - 300)); await settle(p, 400);
+  let max = 0;
+  for (let i = 0; i < 8; i++) { await p.mouse.wheel(0, 500); await p.waitForTimeout(16); const v = parseFloat(await p.evaluate(() => document.querySelector('.showcase').style.getPropertyValue('--skew') || '0')); max = Math.max(max, Math.abs(v)); }
+  assert.ok(max <= 2.5 + 1e-6, `max lean ${max}°`);
+  await p.waitForTimeout(1200);
+  assert.equal(parseFloat(await p.evaluate(() => document.querySelector('.showcase').style.getPropertyValue('--skew') || '0')), 0, 'settles to 0 when scrolling stops');
+  await p.context().close();
+});
+
+test('ripple stagger: gallery items arrive in a wave with bounded delays', async () => {
+  const p = await open({ viewport: { width: 1440, height: 900 } });
+  await p.goto(BASE + '/projects/');
+  await jump(p, await p.evaluate(() => scrollY + document.querySelector('.proj-grid').getBoundingClientRect().top - 100)); await settle(p, 300);
+  const delays = await p.evaluate(() => [...document.querySelectorAll('.proj.in')].map((e) => parseFloat(e.style.transitionDelay || '0')));
+  assert.ok(delays.length >= 3, `${delays.length} items revealed in the first batch`);
+  assert.ok(new Set(delays).size >= 3, 'delays differ (a ripple, not a block)');
+  assert.ok(Math.max(...delays) <= 560, 'no item waits longer than 0.56 s');
+  await p.context().close();
+});
+
+test('floating WhatsApp pill steps aside while a big call to action is on screen', async () => {
+  const p = await open({ viewport: { width: 390, height: 844 } });
+  await p.goto(BASE + '/');
+  await jump(p, await sceneY(p, '.invite', 0.9)); await settle(p, 700);
+  assert.equal(await p.evaluate(() => getComputedStyle(document.querySelector('.fab')).visibility), 'hidden');
+  await p.context().close();
+});
+
+test('page transitions: curtain + shared-element morph (project photo → case-study cover); none under reduced motion', async () => {
+  const run = async (reducedMotion) => {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion });
+    await ctx.addInitScript(() => { addEventListener('pagereveal', (e) => { window.__vt = { has: !!e.viewTransition }; if (e.viewTransition) e.viewTransition.ready.then(() => { window.__vt.pseudos = [...new Set(document.getAnimations().map((a) => a.effect && a.effect.pseudoElement).filter(Boolean))]; }).catch(() => { window.__vt.failed = true; }); }); });
+    const p = await ctx.newPage(); p.problems = [];
+    p.on('console', (m) => m.type() === 'error' && p.problems.push(m.text())); p.on('pageerror', (e) => p.problems.push(String(e)));
+    await p.goto(BASE + '/projects/'); await settle(p, 500);
+    await p.click('a.feature >> nth=0'); await p.waitForURL('**/projects/charcoal-kitchen/'); await p.waitForTimeout(1300);
+    const vt = await p.evaluate(() => window.__vt); const y = await p.evaluate(() => scrollY);
+    await ctx.close();
+    return { vt, y, problems: p.problems };
+  };
+  const on = await run('no-preference');
+  assert.equal(on.vt.has, true, 'a view transition ran');
+  assert.ok(on.vt.pseudos.includes('::view-transition-new(root)'), 'curtain on the page itself');
+  assert.ok(on.vt.pseudos.includes('::view-transition-group(vt-charcoal-kitchen)'), 'the clicked photograph morphs into the cover');
+  assert.equal(on.y, 0, 'new page starts at the top');
+  assert.deepEqual(on.problems, []);
+  const off = await run('reduce');
+  assert.equal(off.vt.has, false, 'reduced motion: plain navigation');
+  assert.deepEqual(off.problems, []);
+});
+
+test('reduced motion: nothing is pinned, hidden or animated; every scene reads as a plain page', async () => {
+  const p = await open({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+  await p.goto(BASE + '/');
+  assert.equal(await p.evaluate(() => document.documentElement.classList.contains('motion')), false);
+  const r = await p.evaluate(() => ({
+    procH: document.querySelector('.proc').offsetHeight, invH: document.querySelector('.invite').offsetHeight, vh: innerHeight,
+    stages: [...document.querySelectorAll('.proc .stage')].map((s) => getComputedStyle(s).opacity),
+    sticky: getComputedStyle(document.querySelector('.proc-stick')).position,
+    clip: getComputedStyle(document.querySelector('.invite-bg')).clipPath,
+  }));
+  assert.ok(r.procH < r.vh * 2 && r.invH < r.vh * 1.2, `scenes are not stretched into scroll distance (${r.procH}, ${r.invH})`);
+  assert.deepEqual(r.stages, ['1', '1', '1', '1'], 'all four process steps fully visible');
+  assert.equal(r.sticky, 'static');
+  assert.equal(r.clip, 'none', 'closing photo is simply full-bleed');
+  await p.goto(BASE + '/services/');
+  assert.equal(await p.evaluate(() => getComputedStyle(document.querySelector('.svc-card')).position), 'relative');
+  await p.context().close();
+});
+
+test('no JavaScript: process steps, closing section and services are all present and readable', async () => {
+  const p = await open({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: false });
+  await p.goto(BASE + '/');
+  const r = await p.evaluate(() => ({ stages: [...document.querySelectorAll('.proc .stage')].map((s) => getComputedStyle(s).opacity), txt: getComputedStyle(document.querySelector('.invite-in')).opacity, route: getComputedStyle(document.querySelector('.route')).display }));
+  assert.deepEqual(r.stages, ['1', '1', '1', '1']);
+  assert.equal(r.txt, '1');
+  assert.equal(r.route, 'none', 'the scroll-drawn route only appears when it can be drawn');
+  await p.context().close();
+});
+
+test('accessibility: axe-core is clean in mid-animation states too (pinned scenes, motion on)', async () => {
+  for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
+    const p = await open({ viewport, bypassCSP: true });
+    await p.goto(BASE + '/'); await settle(p, 1200);
+    for (const [sel, f] of [['.proc', 0.05], ['.proc', 0.3], ['.proc', 0.9], ['.invite', 0.05], ['.invite', 0.25], ['.invite', 1]]) {
+      await jump(p, await sceneY(p, sel, f)); await settle(p, 1200);
+      await p.addScriptTag({ content: AXE });
+      const v = await p.evaluate(async () => (await axe.run(document, { resultTypes: ['violations'] })).violations.map((x) => `${x.id} (${x.nodes.length})`));
+      assert.deepEqual(v, [], `${sel} @${f} ${viewport.width}px`);
+    }
+    await p.context().close();
+  }
 });

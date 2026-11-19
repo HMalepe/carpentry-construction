@@ -141,23 +141,60 @@ Technical: RAW or highest-quality JPEG, ≥3000px long edge, fixed white balance
 
 ## 10. Motion
 
-- **Principles:** motion serves reading order and never decorates for its own sake.
-  - Reveals are one-shot (IntersectionObserver).
-  - No scroll hijacking, no parallax, no continuous animation.
-  - Total JS is 3.7KB gzipped.
-- **Inventory:**
-  - hero photo mask-reveal and headline line-reveal on load;
-  - section line-reveals;
-  - image mask-reveal with settle-zoom;
-  - drawings that draw themselves;
-  - nav underline wipe;
-  - expanding sample board;
-  - expertise index slide;
-  - filter fade;
-  - lightbox fade;
-  - menu stagger;
-  - logo frame draw.
-- **Accessibility:** everything renders in its final state without JavaScript and under `prefers-reduced-motion`. A regression test checks that every reveal completes after scrolling.
+Built from three motion playbooks (the Scroll Engine, Image Motion and Reveals, Transitions/Depth/3D), choosing a few techniques from each. Everything is plain JavaScript and CSS (no GSAP, no Lenis): **5.8 KB of JS and 15 KB of CSS compressed**.
+
+**Principles**
+- Motion serves reading order; nothing animates for its own sake.
+- Native scrolling is never replaced. **No smooth-scroll library, no scroll hijacking.** Pinned scenes use CSS `position: sticky`, so the scrollbar, keyboard and touch all behave normally.
+- Three relationships between scroll and animation:
+  - *triggered*: fires once as an element arrives;
+  - *scrubbed*: progress 0 to 1 is written to a CSS variable and tied to the scrollbar, so scrolling back rewinds it;
+  - *pinned*: a tall wrapper holds a sticky scene, and progress is how far through it you are.
+- Everything renders in its final state without JavaScript and under `prefers-reduced-motion` (the whole layer is inert without `html.motion`).
+
+**From playbook 01, Scroll Engine**
+
+| Concept | Where it is used |
+|---|---|
+| #01 Scrubbed vs triggered | Hero: the photograph drifts slower than the page, the headline rises and fades, and it all rewinds. Reveals elsewhere are triggered. |
+| #02 Pinning + #04 Master timeline | **Process** on the home page: one pinned scene with four beats. Desktop shows all four steps lighting up in turn; phones show one step at a time with a giant numeral. |
+| #07 Velocity | The three showcase photographs lean into fast scrolling (max ±2.5°) and settle when you stop. |
+
+**From playbook 02, Image Motion and Reveals**
+
+| Concept | Where it is used |
+|---|---|
+| #10 Parallax | Photographs drift 9% behind a slightly oversized image (case covers, showcase, About band). |
+| #12/#13 Clip-path reveal + scale-within-mask | Every important photograph is unveiled and settles. |
+| #14 Blur-to-focus | Hero photograph and case-study covers only (blur is expensive: never on the gallery). |
+| #15 Scale to fullscreen | **Closing invitation:** a framed photograph opens to full-bleed as you arrive, then the headline appears. |
+| #16 Staggered grid | Gallery, materials, facts, lists: items ripple outward from the middle of the screen (delays capped at 0.56 s). |
+| #17 Entrance vocabulary | `data-reveal` = rise (default), `left`, `right`, `scale`. |
+| #18 Sticky stacking cards | **Services:** each discipline is a card; the next slides over it and the buried one shrinks and darkens. |
+
+**From playbook 05, Transitions, Depth and 3D**
+
+| Concept | Where it is used |
+|---|---|
+| #36 Page transitions | Native cross-document View Transitions: the new page is drawn upward like a curtain, the old one recedes, the header stays put. |
+| #37 Shared element | A project photograph morphs into its case-study cover (names generated per case study at build time; the build guards against duplicate names, which would cancel the transition). |
+| #40 Scroll colour shift | The header takes the paper tone while it sits over a cream section, and the floating WhatsApp pill steps aside while a big call to action is on screen. |
+| #41 SVG path drawing | The process route line draws itself as you scroll, with a diamond riding its tip. |
+
+**Considered and deliberately not used**
+- **Lenis smooth scrolling (#03):** it replaces native scrolling, which hurts phones, keyboard users and accessibility.
+- **Image or video sequences (#08/#09):** we have no frame assets.
+- **Scatter drift (#11):** the wrong tone for a trade company.
+- **Preloader (#43):** the playbook itself says to use one only when assets need loading time; ours do not, and it would hurt the mobile-data goal.
+- **CSS 3D camera / WebGL (#38/#39):** no 3D asset, and a high cost.
+- **Horizontal pin (#05):** the photographs are too small to read well in a moving strip.
+
+**Safety rails (tested)**
+- Pinned scenes only engage on viewports at least 560px tall; the card deck only at 900x700 and above, so a card never exceeds the screen.
+- Reduced motion: nothing is pinned, hidden or animated, and page transitions are off.
+- Keyboard focus inside the closing scene makes its text visible even before the scene has opened.
+- Inactive process steps are dimmed by colour, not opacity, so they stay at AA contrast mid-animation.
+- On a 4x-throttled phone-class CPU, scrolling the whole home page ran at a locked 60 fps with zero long tasks.
 
 ## 11. Signature details (deliberately few)
 

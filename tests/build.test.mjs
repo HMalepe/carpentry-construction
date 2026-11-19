@@ -62,3 +62,17 @@ test('sitemap and robots are generated with absolute URLs', () => {
   assert.doesNotMatch(sm, /404/);
   assert.match(fs.readFileSync(path.join(out, 'robots.txt'), 'utf8'), /Sitemap: https:\/\/example\.co\.za\/sitemap\.xml/);
 });
+
+test('shared-element names: each data-vt appears at most once per page, and every one has generated CSS', () => {
+  const out = path.join(ROOT, '.tmp-test-prod');
+  const css = fs.readFileSync(path.join(out, 'assets/css/main.css'), 'utf8');
+  const cases = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/cases.json'), 'utf8')).map((c) => c.slug);
+  for (const f of walk(out).filter((f) => f.endsWith('.html'))) {
+    const names = [...fs.readFileSync(f, 'utf8').matchAll(/data-vt="([^"]+)"/g)].map((m) => m[1]);
+    assert.equal(new Set(names).size, names.length, `${path.relative(out, f)}: duplicate view-transition names would cancel the transition`);
+    for (const n of names) {
+      assert.ok(cases.includes(n), `${n} is not a case study`);
+      assert.ok(css.includes(`[data-vt="${n}"]{view-transition-name:vt-${n}}`), `${n}: no generated CSS`);
+    }
+  }
+});
