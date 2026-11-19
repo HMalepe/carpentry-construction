@@ -7,7 +7,9 @@
     "w": 332,
     "h": 720,
     "featured": true,
-    "focus": "b"
+    "focus": "b",
+    "mw": 507,
+    "lw": 677
   },
   {
     "slug": "charcoal-kitchen-red-glass",
@@ -15,7 +17,9 @@
     "title": "Red glass display cabinets over the sink",
     "alt": "Black double sink, white worktops and red-framed glass wall cabinets in a charcoal high-gloss kitchen",
     "w": 331,
-    "h": 720
+    "h": 720,
+    "mw": 506,
+    "lw": 676
   },
   {
     "slug": "open-plan-kitchen-island",
@@ -23,7 +27,9 @@
     "title": "Open-plan kitchen with oak-finish island",
     "alt": "Open-plan kitchen with white wall units, a tall pantry, oak-finish base units and a white-topped island",
     "w": 715,
-    "h": 536
+    "h": 536,
+    "mw": 715,
+    "lw": 715
   },
   {
     "slug": "white-oak-kitchen-wine-rack",
@@ -31,7 +37,9 @@
     "title": "White and oak kitchen with fridge surround",
     "alt": "L-shaped kitchen with white doors and oak-finish frames, a fridge surround with built-in wine rack and a breakfast counter",
     "w": 720,
-    "h": 540
+    "h": 540,
+    "mw": 1100,
+    "lw": 1600
   },
   {
     "slug": "blue-grey-gloss-kitchen",
@@ -39,7 +47,9 @@
     "title": "Blue and grey gloss kitchen",
     "alt": "Kitchen with blue gloss base drawers, grey gloss wall units, an open shelf and a built-in wine rack",
     "w": 720,
-    "h": 540
+    "h": 540,
+    "mw": 1100,
+    "lw": 1600
   },
   {
     "slug": "white-gloss-kitchen-breakfast-bar",
@@ -47,7 +57,9 @@
     "title": "White gloss kitchen with breakfast counter",
     "alt": "White high-gloss kitchen with built-in oven, hob, tall units and a breakfast counter with bar stools",
     "w": 715,
-    "h": 536
+    "h": 536,
+    "mw": 715,
+    "lw": 715
   },
   {
     "slug": "white-gloss-u-kitchen",
@@ -63,7 +75,9 @@
         0.15,
         0.62
       ]
-    ]
+    ],
+    "mw": 715,
+    "lw": 715
   },
   {
     "slug": "white-oak-kitchen-counter",
@@ -71,7 +85,9 @@
     "title": "White and oak kitchen with breakfast counter",
     "alt": "Kitchen with white doors, oak-finish worktops and an L-shaped breakfast counter",
     "w": 720,
-    "h": 540
+    "h": 540,
+    "mw": 1100,
+    "lw": 1280
   },
   {
     "slug": "light-oak-l-kitchen",
@@ -79,7 +95,9 @@
     "title": "Light oak L-shaped kitchen",
     "alt": "L-shaped kitchen in a light oak finish with white tops, drawers and open wall shelving",
     "w": 720,
-    "h": 538
+    "h": 538,
+    "mw": 1100,
+    "lw": 1296
   },
   {
     "slug": "grey-woodgrain-kitchen",
@@ -87,7 +105,9 @@
     "title": "Grey woodgrain kitchen",
     "alt": "Grey woodgrain kitchen with wall cupboards, a built-in microwave space, extractor and dark worktops",
     "w": 715,
-    "h": 536
+    "h": 536,
+    "mw": 715,
+    "lw": 715
   },
   {
     "slug": "white-kitchen-installation",
@@ -96,7 +116,9 @@
     "alt": "White high-gloss kitchen being installed, with built-in oven, tall units and open shelving",
     "w": 715,
     "h": 402,
-    "inProgress": true
+    "inProgress": true,
+    "mw": 715,
+    "lw": 715
   },
   {
     "slug": "white-u-kitchen-installation",
@@ -105,7 +127,9 @@
     "alt": "White high-gloss U-shaped kitchen during installation, with the window still covered in plastic",
     "w": 715,
     "h": 536,
-    "inProgress": true
+    "inProgress": true,
+    "mw": 715,
+    "lw": 715
   },
   {
     "slug": "kitchen-install-led-ceiling",
@@ -114,7 +138,9 @@
     "alt": "Two installers fitting light oak kitchen units in a room with a stepped ceiling bulkhead and purple LED strip lighting",
     "w": 720,
     "h": 540,
-    "inProgress": true
+    "inProgress": true,
+    "mw": 1100,
+    "lw": 1600
   },
   {
     "slug": "gloss-white-wardrobe",
@@ -122,7 +148,9 @@
     "title": "High-gloss white wardrobe with drawers",
     "alt": "High-gloss white built-in wardrobe with eight doors, chrome bar handles and a central bank of six drawers",
     "w": 720,
-    "h": 512
+    "h": 512,
+    "mw": 720,
+    "lw": 720
   },
   {
     "slug": "grey-gloss-wardrobe-wall",
@@ -131,7 +159,9 @@
     "alt": "Full-wall grey high-gloss wardrobes around a doorway, with a central drawer bank and an open niche",
     "w": 720,
     "h": 540,
-    "featured": true
+    "featured": true,
+    "mw": 720,
+    "lw": 720
   },
   {
     "slug": "grey-oak-wardrobes-dressing-table",
@@ -139,7 +169,9 @@
     "title": "Grey oak wardrobes with dressing table",
     "alt": "Grey oak-finish wardrobes with drawers on either side of a mirrored dressing table and overhead cupboard",
     "w": 715,
-    "h": 536
+    "h": 536,
+    "mw": 715,
+    "lw": 715
   },
   {
     "slug": "wardrobe-dressing-table",
@@ -147,7 +179,9 @@
     "title": "Built-in wardrobes with dressing table",
     "alt": "Light woodgrain built-in wardrobes around a dressing table with drawer, mirror and overhead cupboards",
     "w": 540,
-    "h": 720
+    "h": 720,
+    "mw": 720,
+    "lw": 720
   },
   {
     "slug": "wardrobe-wall-shelving-desk",
@@ -155,7 +189,9 @@
     "title": "Wardrobe wall, open shelving and study desk",
     "alt": "Full-wall wardrobe in a concrete-look and charcoal finish with drawers, an open shelving unit and a study desk with stone-look top",
     "w": 720,
-    "h": 316
+    "h": 316,
+    "mw": 720,
+    "lw": 720
   },
   {
     "slug": "oak-wardrobes-centre-niche",
@@ -163,7 +199,9 @@
     "title": "Oak-finish wardrobes with centre niche",
     "alt": "Two banks of oak-finish wardrobes with drawers and a dark centre niche, in a bedroom with a ceiling bulkhead",
     "w": 720,
-    "h": 540
+    "h": 540,
+    "mw": 1100,
+    "lw": 1296
   },
   {
     "slug": "light-oak-wardrobes-open-bay",
@@ -171,7 +209,9 @@
     "title": "Light oak wardrobes with open centre bay",
     "alt": "Light oak-finish floor-to-ceiling wardrobes with drawers and an open centre bay under a ceiling bulkhead",
     "w": 720,
-    "h": 540
+    "h": 540,
+    "mw": 1100,
+    "lw": 1600
   },
   {
     "slug": "oak-finish-wardrobe",
@@ -179,7 +219,9 @@
     "title": "Floor-to-ceiling oak-finish wardrobe",
     "alt": "Floor-to-ceiling handleless wardrobe in an oak woodgrain finish with a bulkhead above",
     "w": 540,
-    "h": 720
+    "h": 720,
+    "mw": 600,
+    "lw": 600
   },
   {
     "slug": "concrete-look-corner-wardrobes",
@@ -187,7 +229,9 @@
     "title": "Concrete-look corner wardrobes with shelving",
     "alt": "Corner wardrobes in a concrete-look finish with a tall open shelf unit and drawers, in a room with exposed roof trusses",
     "w": 540,
-    "h": 720
+    "h": 720,
+    "mw": 825,
+    "lw": 1200
   },
   {
     "slug": "white-wardrobes-carpeted-room",
@@ -195,7 +239,9 @@
     "title": "White floor-to-ceiling wardrobes",
     "alt": "Tall white wardrobes with long bar handles and a drawer bank, in a carpeted bedroom",
     "w": 540,
-    "h": 720
+    "h": 720,
+    "mw": 720,
+    "lw": 720
   },
   {
     "slug": "cream-wardrobes-slatted-ceiling",
@@ -203,7 +249,9 @@
     "title": "Cream wardrobe wall with drawers",
     "alt": "Cream built-in wardrobes with silver bar handles and a set of drawers under a slatted ceiling",
     "w": 539,
-    "h": 720
+    "h": 720,
+    "mw": 824,
+    "lw": 959
   },
   {
     "slug": "beige-wardrobe-central-drawers",
@@ -211,7 +259,9 @@
     "title": "Beige wardrobe with central drawers",
     "alt": "Six-door beige built-in wardrobe with bar handles and three central drawers, on a tiled floor",
     "w": 540,
-    "h": 720
+    "h": 720,
+    "mw": 825,
+    "lw": 972
   },
   {
     "slug": "white-wardrobes-curved-handles",
@@ -219,7 +269,9 @@
     "title": "White wardrobes with curved handles",
     "alt": "Row of tall white wardrobes with dark curved handles beside a window, on marble-look tiles",
     "w": 540,
-    "h": 720
+    "h": 720,
+    "mw": 600,
+    "lw": 600
   },
   {
     "slug": "sliding-mirror-wardrobe",
@@ -228,7 +280,9 @@
     "alt": "Dark woodgrain sliding-door wardrobe with two mirrored panels, in a room still under construction",
     "w": 540,
     "h": 720,
-    "inProgress": true
+    "inProgress": true,
+    "mw": 600,
+    "lw": 600
   },
   {
     "slug": "white-sliding-wardrobe",
@@ -236,7 +290,9 @@
     "title": "White sliding-door wardrobe",
     "alt": "White sliding-door built-in wardrobe opened to show hanging space, shelves and drawers, on a timber floor",
     "w": 540,
-    "h": 720
+    "h": 720,
+    "mw": 736,
+    "lw": 736
   },
   {
     "slug": "tv-wall-red-led",
@@ -253,7 +309,9 @@
         0.605,
         0.575
       ]
-    ]
+    ],
+    "mw": 715,
+    "lw": 715
   },
   {
     "slug": "tv-wall-marble-slats",
@@ -269,7 +327,9 @@
         0.67,
         0.65
       ]
-    ]
+    ],
+    "mw": 1100,
+    "lw": 1280
   },
   {
     "slug": "tv-wall-white-grey-slats",
@@ -277,7 +337,9 @@
     "title": "White floating TV unit with grey slats",
     "alt": "White floating TV cabinet with a white TV panel, grey slatted wall and side display shelves",
     "w": 539,
-    "h": 720
+    "h": 720,
+    "mw": 715,
+    "lw": 715
   },
   {
     "slug": "tv-wall-charcoal-slats",
@@ -293,7 +355,9 @@
         0.505,
         0.545
       ]
-    ]
+    ],
+    "mw": 1100,
+    "lw": 1600
   },
   {
     "slug": "tv-wall-under-bulkhead",
@@ -309,7 +373,9 @@
         0.678,
         0.66
       ]
-    ]
+    ],
+    "mw": 1100,
+    "lw": 1600
   },
   {
     "slug": "tv-wall-grey-slats",
@@ -325,7 +391,9 @@
         0.76,
         0.6
       ]
-    ]
+    ],
+    "mw": 1100,
+    "lw": 1280
   },
   {
     "slug": "tv-unit-white-dark-surround",
@@ -341,7 +409,9 @@
         0.78,
         0.435
       ]
-    ]
+    ],
+    "mw": 506,
+    "lw": 613
   },
   {
     "slug": "ceiling-bulkhead-circles",
@@ -350,7 +420,9 @@
     "alt": "Layered ceiling bulkhead with two circular recesses, before painting",
     "w": 720,
     "h": 405,
-    "inProgress": true
+    "inProgress": true,
+    "mw": 1100,
+    "lw": 1280
   },
   {
     "slug": "stepped-ceiling-bulkhead",
@@ -358,7 +430,9 @@
     "title": "Angular stepped ceiling bulkhead",
     "alt": "Layered angular ceiling bulkhead above arched windows",
     "w": 720,
-    "h": 540
+    "h": 540,
+    "mw": 1100,
+    "lw": 1600
   },
   {
     "slug": "bathroom-vanity-mirror",
@@ -366,6 +440,8 @@
     "title": "Bathroom vanity with framed mirror",
     "alt": "Dark woodgrain bathroom vanity with granite top, vessel basin and open shelves, with a matching framed mirror",
     "w": 540,
-    "h": 720
+    "h": 720,
+    "mw": 600,
+    "lw": 600
   }
 ]

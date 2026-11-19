@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { isPh, esc, get, waDigits, waMessage as msg, waHref as href, applyPlaceholderPolicy, criticalProblems, validateProjects, projectCard, projectTeaser, projectFilters, CATEGORY_LABEL } from './lib.mjs';
+import { isPh, esc, get, waDigits, waMessage as msg, waHref as href, applyPlaceholderPolicy, criticalProblems, validateProjects, projectCard, projectTeaser, projectFilters, CATEGORY_LABEL, respImg } from './lib.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'src');
@@ -34,7 +34,7 @@ const pimg = (p, size = 'sm', extra = 'loading="lazy" decoding="async"') =>
 function showcase() {
   return projects.filter((p) => p.featured).map((p, i) => `<a class="sc sc-${i + 1}" href="${linkFor(p.slug)}">
         <span class="sc-n num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
-        <span class="ph ph-zoom reveal-img"${caseOf(p.slug) ? ` data-vt="${caseOf(p.slug).slug}"` : ''}>${pimg(p, 'lg')}</span>
+        <span class="ph ph-zoom reveal-img"${caseOf(p.slug) ? ` data-vt="${caseOf(p.slug).slug}"` : ''}>${respImg(p, '(min-width:900px) 46vw, 92vw')}</span>
         <div class="sc-body"><h3>${esc(p.title)}</h3><span class="lbl">${esc(CATEGORY_LABEL[p.category])}</span></div>
       </a>`).join('\n      ');
 }
@@ -48,7 +48,7 @@ function caseFeatures() {
   return cases.map((c, i) => {
     const p = pBy[c.cover];
     return `<a class="feature" href="/projects/${c.slug}/">
-        <span class="ph ph-zoom reveal-img" data-vt="${c.slug}">${pimg(p, 'lg')}</span>
+        <span class="ph ph-zoom reveal-img" data-vt="${c.slug}">${respImg(p, '(min-width:900px) 58vw, 92vw')}</span>
         <div class="feature-txt"><span class="feature-n num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span><span class="lbl">${esc(c.kicker)} · Case study</span><h2 class="mt-12">${esc(c.title)}</h2><p>${esc(c.intro)}</p><span class="btn-text mt-20">Read the project</span></div>
       </a>`;
   }).join('\n      ');
@@ -59,10 +59,10 @@ function caseBody(c, i) {
   const specs = c.specs.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')
     + `<div data-optional><dt>Location</dt><dd><span class="ph-tag" data-placeholder>[Town]</span></dd></div><div data-optional><dt>Year</dt><dd><span class="ph-tag" data-placeholder>[Year]</span></dd></div>`;
   const pair = c.pair ? `<div class="diptych" data-reveal>
-          <figure><span class="ph reveal-img">${pimg(pBy[c.pair.before], 'lg')}</span><figcaption class="cap"><span>A — During installation</span></figcaption></figure>
-          <figure><span class="ph reveal-img">${pimg(pBy[c.pair.after], 'lg')}</span><figcaption class="cap"><span>B — At handover</span></figcaption></figure>
+          <figure><span class="ph reveal-img">${respImg(pBy[c.pair.before], '(min-width:600px) 45vw, 92vw')}</span><figcaption class="cap"><span>A — During installation</span></figcaption></figure>
+          <figure><span class="ph reveal-img">${respImg(pBy[c.pair.after], '(min-width:600px) 45vw, 92vw')}</span><figcaption class="cap"><span>B — At handover</span></figcaption></figure>
         </div>` : '';
-  const figs = c.photos.map((x) => `<figure><span class="ph reveal-img">${pimg(pBy[x.slug], 'lg')}</span><figcaption class="cap"><span>${esc(x.caption)}</span></figcaption></figure>`).join('');
+  const figs = c.photos.map((x) => `<figure><span class="ph reveal-img">${respImg(pBy[x.slug], '(min-width:900px) 58vw, 92vw')}</span><figcaption class="cap"><span>${esc(x.caption)}</span></figcaption></figure>`).join('');
   return `
 <section class="case-hero tone-dark">
   <div class="wrap case-hero-grid">
@@ -74,7 +74,7 @@ function caseBody(c, i) {
     </div>
     <figure class="case-cover">
       <div class="dimline" aria-hidden="true"><span>DWG ${String(i + 1).padStart(2, '0')} · ${esc(c.title)}</span></div>
-      <span class="ph reveal-img" data-vt="${c.slug}">${pimg(p, 'lg', 'fetchpriority="high" decoding="async"')}</span>
+      <span class="ph reveal-img" data-vt="${c.slug}">${respImg(p, '(min-width:900px) 40vw, 92vw', 'fetchpriority="high" decoding="async"')}</span>
     </figure>
   </div>
 </section>

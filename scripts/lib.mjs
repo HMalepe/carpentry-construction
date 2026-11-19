@@ -131,8 +131,11 @@ export function validateProjects(projects) {
   return projects;
 }
 
-const img = (p) =>
-  `<img src="/assets/img/projects/${p.slug}-sm.webp" alt="${esc(p.alt)}" width="${p.w}" height="${p.h}" loading="lazy" decoding="async">`;
+/** Responsive <img>: the browser picks 720 / 1100 / 1600px by screen width and pixel density. */
+export const srcset = (p) => [`/assets/img/projects/${p.slug}-sm.webp ${p.w}w`, p.mw > p.w && `/assets/img/projects/${p.slug}-md.webp ${p.mw}w`, p.lw > (p.mw || p.w) && `/assets/img/projects/${p.slug}-lg.webp ${p.lw}w`].filter(Boolean).join(', ');
+export const respImg = (p, sizes, extra = 'loading="lazy" decoding="async"') =>
+  `<img src="/assets/img/projects/${p.slug}-sm.webp" srcset="${srcset(p)}" sizes="${sizes}" alt="${esc(p.alt)}" width="${p.w}" height="${p.h}" ${extra}>`;
+const img = (p) => respImg(p, '(min-width:900px) 31vw, (min-width:600px) 46vw, 58vw');   // phones keep the 720px thumbnail; bigger variants are for large images
 
 export const CATEGORY_LABEL = Object.fromEntries(Object.entries(CATEGORIES).map(([k, v]) => [k, v.label]));
 

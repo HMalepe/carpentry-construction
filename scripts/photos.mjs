@@ -38,8 +38,11 @@ for (const d of Object.values(OUT)) fs.mkdirSync(d, { recursive: true });
 for (const p of projects) {
   const { args } = base(p.slug);
   execFileSync('convert', [...args, ...GRADE.house, '-resize', '720x720>', ...webp(74), path.join(OUT.projects, `${p.slug}-sm.webp`)]);
+  execFileSync('convert', [...args, ...GRADE.house, '-resize', '1100x1100>', ...webp(76), path.join(OUT.projects, `${p.slug}-md.webp`)]);
   execFileSync('convert', [...args, ...GRADE.house, '-resize', '1600x1600>', ...webp(78), path.join(OUT.projects, `${p.slug}-lg.webp`)]);
   [p.w, p.h] = size(path.join(OUT.projects, `${p.slug}-sm.webp`));
+  p.mw = size(path.join(OUT.projects, `${p.slug}-md.webp`))[0];   // real widths, for srcset w descriptors
+  p.lw = size(path.join(OUT.projects, `${p.slug}-lg.webp`))[0];
 }
 for (const c of art.crops) {
   const { args, w, h } = base(c.from);
@@ -54,4 +57,4 @@ for (const s of art.swatches) {
 }
 fs.writeFileSync(projectsFile, JSON.stringify(projects, null, 2) + '\n');
 fs.writeFileSync(path.join(ROOT, 'src/data/art.json'), JSON.stringify(art, null, 2) + '\n');
-console.log(`✓ ${projects.length} projects (×2 sizes), ${art.crops.length} crops, ${art.swatches.length} swatches`);
+console.log(`✓ ${projects.length} projects (×3 sizes), ${art.crops.length} crops, ${art.swatches.length} swatches`);

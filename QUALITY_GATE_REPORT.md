@@ -111,7 +111,7 @@ npm audit      → found 0 vulnerabilities
 
 **Scroll performance, measured (motion upgrade):** with the CPU throttled 4x on a 390px, 2x-DPR phone profile, scrolling the entire home page in 9 s produced 541 frames with a median, 95th percentile and maximum of 16.7 ms (a locked 60 fps), no frame over 50 ms and no long tasks. JS 5.8 KB and CSS 15 KB compressed; no animation libraries.
 
-Measured performance (not a Lighthouse score): after the Graphite Atelier redesign, a first visit to the home page on mobile is **≈230 KB** above the fold (compressed HTML 7 KB + CSS 13 KB + JS 4 KB + fonts 155 KB + mobile hero 50 KB). Fonts are cached after the first page. Gallery images lazy-load. CLS 0.000. Before the redesign it was ≈64 KB: the premium typography is the deliberate cost.
+Measured performance (not a Lighthouse score): after the Graphite Atelier redesign, a first visit to the home page on mobile is **≈230 KB** above the fold (compressed HTML 7 KB + CSS 13 KB + JS 4 KB + fonts 155 KB + mobile hero 50 KB). Fonts are cached after the first page. Gallery images lazy-load. CLS 0.000. **Mobile optimisation pass:** fonts re-cut to the glyphs and weights actually used (155 KB to 84 KB) and a 1100px image tier with responsive `srcset`, taking the home first screen on a 3x phone from 353 KB to 219 KB with no visible change. Before the redesign it was ≈64 KB: the premium typography is the deliberate cost.
 
 **NOT TESTED, and why:** real iOS / Android devices and the Safari / Firefox engines (no devices or engines available here); Lighthouse / PageSpeed (blocked in this environment); a manual screen-reader pass (VoiceOver / TalkBack); sending a real WhatsApp message (needs the real number, and live messages need the owner's approval).
 
