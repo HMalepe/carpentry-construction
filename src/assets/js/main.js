@@ -122,7 +122,7 @@
   if (head) {
     var ticking = false;
     var fab = d.querySelector('.fab');
-    var heroEl = d.querySelector('.hero');
+    var heroEl = d.querySelector('.hero, .open');
     var paint = function () {
       var y = window.scrollY;
       head.classList.toggle('is-scrolled', y > 40);
@@ -199,6 +199,117 @@
     });
   }
 
+
+  /* ---- shortlist composer: tap + Shortlist on any job; the message to WhatsApp writes itself ---- */
+  var picks = (function () {
+    var KEY = 'mrr-shortlist', LOC = 'mrr-sl-loc', NOTE = 'mrr-sl-note', items = [];
+    var bar = d.querySelector('.pickbar'), count = d.querySelector('[data-pick-count]');
+    var dlg = d.getElementById('composer');
+    var list = dlg && dlg.querySelector('[data-comp-list]'), prev = dlg && dlg.querySelector('[data-comp-preview]');
+    var send = dlg && dlg.querySelector('[data-comp-send]'), loc = d.getElementById('comp-loc'), note = d.getElementById('comp-note');
+    function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) {} return null; }
+    function load() {
+      try { var v = JSON.parse(store(KEY) || '[]'); items = Array.isArray(v) ? v.filter(function (x) { return x && x.slug && x.title; }) : []; } catch (e) { items = []; }
+    }
+    function has(slug) { return items.some(function (i) { return i.slug === slug; }); }
+    function message() {
+      var cats = [];
+      items.forEach(function (i) { if (cats.indexOf(i.cat) < 0) cats.push(i.cat); });
+      // Opening line matches waMessage() in scripts/lib.mjs.
+      var lines = ['Hi ' + BRAND + ", I'd like a quote.", 'Service: Carpentry' + (cats.length ? ' › ' + cats.join(', ') : ''), 'Jobs like these:'];
+      items.forEach(function (i) { lines.push('• ' + i.title + ' (' + i.cat + ')'); });
+      lines.push('Location: ' + (loc ? loc.value.trim() : ''), 'Details: ' + (note ? note.value.trim() : ''));
+      return lines.join('\n');
+    }
+    function paint() {
+      if (!dlg) return;
+      list.innerHTML = '';
+      items.forEach(function (i) {
+        var li = d.createElement('li'), b = d.createElement('button');
+        li.innerHTML = '<span><b></b><small></small></span>';
+        li.querySelector('b').textContent = i.title;
+        li.querySelector('small').textContent = i.cat;
+        b.type = 'button'; b.className = 'comp-x'; b.setAttribute('data-remove', i.slug);
+        b.setAttribute('aria-label', 'Remove ' + i.title); b.textContent = '✕';
+        li.appendChild(b); list.appendChild(li);
+      });
+      var m = message();
+      prev.textContent = m;
+      send.href = waUrl(m);
+    }
+    function sync() {
+      d.querySelectorAll('[data-pick]').forEach(function (b) {
+        var on = has(b.getAttribute('data-pick'));
+        b.hidden = false;
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        b.classList.toggle('on', on);
+        b.querySelector('.pick-t').textContent = on ? 'Shortlisted' : 'Shortlist';
+        b.querySelector('.pick-on').textContent = on ? '✓' : '+';
+      });
+      if (bar) bar.hidden = !items.length;
+      if (count) count.textContent = String(items.length);
+      d.body.classList.toggle('has-picks', items.length > 0);
+      if (dlg && dlg.open) paint();
+    }
+    function toggle(btn) {
+      var slug = btn.getAttribute('data-pick');
+      if (has(slug)) items = items.filter(function (i) { return i.slug !== slug; });
+      else items.push({ slug: slug, title: btn.getAttribute('data-title'), cat: btn.getAttribute('data-cat') });
+      store(KEY, JSON.stringify(items));
+      sync();
+    }
+    function open() {
+      if (!items.length) return;
+      if (loc && !loc.value) loc.value = store(LOC) || '';
+      if (note && !note.value) note.value = store(NOTE) || '';
+      paint();
+      if (typeof dlg.showModal === 'function') dlg.showModal();
+      else window.open(send.href, '_blank', 'noopener');
+    }
+    d.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('[data-pick]');
+      if (b) { toggle(b); return; }
+      if (e.target.closest && e.target.closest('.pickbar-open')) open();
+    });
+    if (dlg) {
+      dlg.addEventListener('click', function (e) {
+        var rm = e.target.closest('[data-remove]');
+        if (rm) {
+          items = items.filter(function (i) { return i.slug !== rm.getAttribute('data-remove'); });
+          store(KEY, JSON.stringify(items)); sync();
+          if (!items.length) dlg.close();
+          return;
+        }
+        if (e.target.closest('[data-comp-clear]')) { items = []; store(KEY, '[]'); sync(); dlg.close(); return; }
+        if (e.target === dlg || e.target.closest('[data-close]')) dlg.close();
+      });
+      loc.addEventListener('input', function () { store(LOC, loc.value); paint(); });
+      note.addEventListener('input', function () { store(NOTE, note.value); paint(); });
+    }
+    window.addEventListener('pageshow', function () { load(); sync(); }); // back/forward cache: re-read the shortlist
+    load(); sync();
+    return { has: has, toggle: toggle };
+  })();
+
+  /* ---- catalogue rails: arrows appear only when a rail overflows ---- */
+  d.querySelectorAll('.cat').forEach(function (cat) {
+    var rail = cat.querySelector('.rail'), ctl = cat.querySelector('.rail-ctl');
+    if (!rail || !ctl) return;
+    var back = ctl.children[0], fwd = ctl.children[1];
+    function upd() {
+      ctl.hidden = rail.scrollWidth <= rail.clientWidth + 4;
+      back.disabled = rail.scrollLeft < 4;
+      fwd.disabled = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 4;
+    }
+    ctl.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-rail]');
+      if (b) rail.scrollBy({ left: Number(b.getAttribute('data-rail')) * rail.clientWidth * 0.85, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    });
+    rail.addEventListener('scroll', upd, { passive: true });
+    window.addEventListener('resize', upd);
+    upd();
+  });
+
   /* ---- gallery lightbox: <a href="large.webp" data-lightbox><img …></a>; prev/next, arrows, swipe ---- */
   var lbLinks = [].slice.call(d.querySelectorAll('a[data-lightbox]'));
   if (lbLinks.length && typeof HTMLDialogElement === 'function') {
@@ -207,18 +318,20 @@
     lb.setAttribute('aria-label', 'Project photo');
     lb.innerHTML = '<div class="lb-head"><p class="lb-title"></p><button class="lb-btn" type="button" data-close aria-label="Close">✕</button></div>' +
       '<div class="lb-stage"><img alt=""></div>' +
-      '<div class="lb-foot"><span class="lb-count" aria-live="polite"></span><span class="lb-nav"><button class="lb-btn" type="button" data-step="-1" aria-label="Previous photo">←</button><button class="lb-btn" type="button" data-step="1" aria-label="Next photo">→</button></span></div>';
+      '<div class="lb-foot"><span class="lb-count" aria-live="polite"></span><button class="lb-pick" type="button" hidden></button><span class="lb-nav"><button class="lb-btn" type="button" data-step="-1" aria-label="Previous photo">←</button><button class="lb-btn" type="button" data-step="1" aria-label="Next photo">→</button></span></div>';
     d.body.appendChild(lb);
-    var lbImg = lb.querySelector('img'), lbTitle = lb.querySelector('.lb-title'), lbCount = lb.querySelector('.lb-count');
+    var lbImg = lb.querySelector('img'), lbTitle = lb.querySelector('.lb-title'), lbCount = lb.querySelector('.lb-count'), lbPick = lb.querySelector('.lb-pick');
     var visible = function () { return lbLinks.filter(function (a) { return a.offsetParent !== null; }); };
     var set = [], at = 0;
     var show = function (i) {
       at = (i + set.length) % set.length;
-      var a = set[at], card = a.closest('.proj'), h = card && card.querySelector('h3');
+      var a = set[at], card = a.closest('.proj, .tile'), h = card && card.querySelector('h3, h4'), pb = card && card.querySelector('[data-pick]');
       lbImg.src = a.href;
       lbImg.alt = (a.querySelector('img') || {}).alt || '';
       lbTitle.textContent = h ? h.textContent : lbImg.alt;
-      lbCount.textContent = String(at + 1).padStart(2, '0') + ' / ' + String(set.length).padStart(2, '0');
+      lbCount.textContent = (at + 1) + ' of ' + set.length;
+      lbPick.hidden = !pb; lbPick.pick = pb;
+      if (pb) lbPick.textContent = picks.has(pb.getAttribute('data-pick')) ? '✓ Shortlisted' : '+ Shortlist this job';
     };
     lbLinks.forEach(function (a) {
       a.addEventListener('click', function (e) {
@@ -229,6 +342,7 @@
       });
     });
     lb.addEventListener('click', function (e) {
+      if (e.target.closest('.lb-pick') && lbPick.pick) { picks.toggle(lbPick.pick); lbPick.textContent = picks.has(lbPick.pick.getAttribute('data-pick')) ? '✓ Shortlisted' : '+ Shortlist this job'; return; }
       var step = e.target.closest('[data-step]');
       if (step) return show(at + Number(step.getAttribute('data-step')));
       if (e.target.closest('[data-close]') || e.target === lb || e.target.classList.contains('lb-stage')) lb.close();

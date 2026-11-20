@@ -228,3 +228,24 @@ Built from three motion playbooks (the Scroll Engine, Image Motion and Reveals, 
 - No testimonials yet.
 - No construction or maintenance photographs.
 - A 155KB font cost on first visit (cached afterwards).
+
+## 11. Catalogue redesign (v3): chosen from three templates
+
+Direction chosen: **A (Job Catalogue) + C's composer + two doors**, from three presented concepts
+(A Job Catalogue, B Site Office drawing set, C Conversation First). Reasoning: the first ten seconds
+should end in a WhatsApp quote, and the buyers are two different people.
+
+- **Two doors on the first screen**: "Home, lodge or business" (→ catalogue) and "Government, municipality or
+  school" (→ tender desk). One page no longer tries to serve both with the same sentence.
+- **Catalogue**: one horizontal rail per trade, generated from `src/data/projects.json`. Each tile keeps the
+  photo's own proportions (portraits are only cropped to a 0.74 minimum ratio), shows the scope as a spec line and has
+  two actions: **Shortlist** (script) and **Quote this** (plain `wa.me` link, works without JavaScript).
+- **Composer**: shortlisted jobs live in `localStorage` (`mrr-shortlist`), follow the visitor across pages, and become
+  one pre-written WhatsApp message with a live preview. The opening line matches `waMessage()`.
+- **Typography**: condensed catalogue lettering (Archivo, 68% width, caps) for headings; serif kept for running text.
+- **Removed**: hero billboard, manifesto statement, showcase, expertise index, principles row. The finishes board,
+  the pinned process (drawn glyphs) and the invitation scene stay.
+- **Skill check** (`.claude/skills/anti-template-web-design`): no numbered sections, no stat band, no italic accent
+  word, no identical card trio. Swap test: the catalogue only works with this company's own jobs.
+- **Fixed on the way**: tall portrait photos overflowed the lightbox footer (stage grid now has a definite row).
+- **Known leftover**: CSS for the removed home sections is still in `main.css` and can be pruned.

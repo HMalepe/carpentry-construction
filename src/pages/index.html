@@ -9,82 +9,49 @@
   "bodyClass": "home"
 }
 -->
-<!-- 01 · INTRODUCTION — layered hero: slatted wall, framed portrait photograph, editorial headline -->
-<section class="hero" aria-labelledby="hero-t" data-scrub="hero">
-  <div class="hero-slats" aria-hidden="true"></div>
-  <figure class="hero-fig">
-    <picture class="ph">
-      <source media="(min-width:900px)" srcset="/assets/img/art/hero-kitchen-desktop.webp">
-      <img {{art:hero-kitchen-mobile}} alt="Charcoal high-gloss kitchen with a hob island, white stone-look tops and red-framed glass display cabinets" fetchpriority="high" decoding="async">
-    </picture>
-  </figure>
-  <div class="hero-anno fade" aria-hidden="true"><div class="dimline"><span>DWG 01 · Charcoal gloss kitchen</span></div></div>
-  <p class="hero-status fade"><span class="dot" aria-hidden="true"></span>Now accepting projects · Maruleng &amp; surrounds</p>
-  <div class="hero-txt">
-    <p class="lbl">Construction · Joinery · Maintenance — Hoedspruit</p>
-    <h1 class="display lines" id="hero-t"><span class="ln"><span>Built to</span></span><span class="ln"><span>the drawing.</span></span><span class="ln"><em>Finished by hand.</em></span></h1>
-    <div class="hero-row fade">
-      <p class="lead">Kitchens, wardrobes and buildings for homes, lodges, government departments and municipalities across Maruleng: measured on site, made to fit.</p>
-      <div class="hero-acts">
-        <a class="btn btn-primary" data-wa="general">Start a project <span class="arr" aria-hidden="true">→</span></a>
-        <a class="btn-text" href="/projects/">See the work</a>
-      </div>
+<!-- 01 · OPENING — the question first, then two doors: who are you buying for? -->
+<section class="open tone-paper" aria-labelledby="open-t">
+  <div class="wrap open-grid">
+    <div class="open-copy">
+      <p class="lbl">Malepe R and R · Hoedspruit, Maruleng</p>
+      <h1 class="open-h" id="open-t">Pick a job like yours. We’ll price it.</h1>
+      <p class="lead">Browse {{projects:count}} photographed jobs, shortlist the ones you like and send them to us as one WhatsApp message.</p>
     </div>
+    <nav class="doors" aria-label="Who are you buying for?">
+      <a class="door" href="#catalogue"><span class="door-k">Home, lodge or business</span><strong>Browse the catalogue</strong><span class="door-s">Kitchens, wardrobes, TV walls, ceilings and bathrooms.</span><span class="door-go" aria-hidden="true">↓</span></a>
+      <a class="door door-alt" href="#tenders"><span class="door-k">Government, municipality or school</span><strong>Go to the tender desk</strong><span class="door-s">Compliance documents and RFQ / BOQ pricing.</span><span class="door-go" aria-hidden="true">→</span></a>
+    </nav>
   </div>
 </section>
 
-<!-- 02 · PHILOSOPHY — paper, a single editorial statement + three principles + the shadow-gap detail -->
-<section class="sec tone-paper philo" aria-labelledby="philo-t">
-  <div class="wrap grid">
-    <h2 class="eyebrow" id="philo-t"><span class="n"></span>How we work</h2>
-    <blockquote class="statement" data-reveal>We price from measurements, build from drawings and finish with our hands. <span class="mute">Nothing on site is guesswork: not the setting-out, not the gap between two cupboard doors.</span></blockquote>
-    <ol class="principles" data-reveal="left">
-      <li>{{> glyph-measure}}<h3>Measure before pricing</h3><p>Quotes come from a site visit, your drawings or the issued bill of quantities.</p></li>
-      <li>{{> glyph-square}}<h3>Build to the drawing</h3><p>Scope, price and changes agreed in writing before the work is done.</p></li>
-      <li>{{> glyph-handover}}<h3>Hand over clean</h3><p>Snags attended to, site cleaned, documents handed over.</p></li>
-    </ol>
-    <figure class="philo-detail" data-reveal="right">{{> detail-door}}<figcaption class="mono">Joinery is judged in millimetres.</figcaption></figure>
-  </div>
-</section>
-
-<!-- 03 · THE WORK — asymmetric showcase with oversized numerals -->
-<section class="sec tone-dark" aria-labelledby="work-t">
+<!-- 02 · CATALOGUE — one rail per trade; every photo keeps its own proportions; tap to enlarge, tap Shortlist to add it to the message -->
+<section class="sec cata tone-dark" id="catalogue" aria-labelledby="cata-t">
   <div class="wrap">
-    <p class="eyebrow"><span class="n"></span>The work</p>
-    <div class="work-head">
-      <h2 class="h-xl lines" id="work-t"><span class="ln"><span>Rooms we have</span></span><span class="ln"><em>put our hands to.</em></span></h2>
-      <a class="btn-text" href="/projects/">All {{projects:count}} projects</a>
+    <div class="cata-head">
+      <h2 class="h-l" id="cata-t">The catalogue</h2>
+      <p class="lead">Tap a photo to see it full size. Tap <b>Shortlist</b> on the ones you like and they go into one message to us.</p>
     </div>
-    <div class="showcase">
-      {{projects:showcase}}
-    </div>
+  </div>
+  <div class="wrap wrap-rails">
+      {{projects:catalogue}}
   </div>
 </section>
 
-<!-- 04 · EXPERTISE — interactive discipline index; the stage shows a photograph or drawing per discipline -->
-<section class="sec tone-raised" aria-labelledby="exp-t">
+<!-- 03 · BEYOND JOINERY — a ledger, not cards -->
+<section class="sec tone-raised" aria-labelledby="led-t">
   <div class="wrap">
-    <p class="eyebrow"><span class="n"></span>Expertise</p>
-    <h2 class="h-l mb-48" id="exp-t">One company, <em>three disciplines.</em></h2>
-    <div class="exp">
-      <div class="exp-list">
-        <a class="exp-row" href="/services/carpentry/" data-active>
-          <h3>Joinery</h3><span class="arr" aria-hidden="true">→</span>
-          <p>Kitchens, wardrobes, TV walls, ceilings, doors and roof trusses, measured on site and made to fit.</p>
-          <span class="exp-fig"><span class="ph"><img {{art:exp-joinery}} alt="Concrete-look corner wardrobes with open shelving and drawers, under exposed timber roof trusses" loading="lazy" decoding="async"></span></span>
-        </a>
-        <a class="exp-row" href="/services/construction/">
-          <h3>Construction</h3><span class="arr" aria-hidden="true">→</span>
-          <p>New builds, extensions, renovations and structural repairs, built to approved drawings.</p>
-          <span class="exp-fig"><span class="exp-drawing">{{> draw-construction}}</span></span>
-        </a>
-        <a class="exp-row" href="/services/maintenance/">
-          <h3>Maintenance</h3><span class="arr" aria-hidden="true">→</span>
-          <p>Planned and reactive upkeep for schools, clinics, offices and municipal buildings.</p>
-          <span class="exp-fig"><span class="exp-drawing">{{> draw-maintenance}}</span></span>
-        </a>
+    <h2 class="h-m mb-48" id="led-t">Buildings, too.</h2>
+    <div class="ledger">
+      <div class="led-row">
+        <div class="led-main"><h3><a href="/services/construction/">Construction</a></h3><p>New builds, extensions, renovations and structural repairs, built to approved drawings.</p></div>
+        <span class="led-draw exp-drawing draw-in" aria-hidden="true">{{> draw-construction}}</span>
+        <a class="btn btn-ghost btn-sm" data-wa="construction">Get a quote <span class="arr" aria-hidden="true">→</span></a>
       </div>
-      <div class="exp-stage" aria-hidden="true"></div>
+      <div class="led-row">
+        <div class="led-main"><h3><a href="/services/maintenance/">Maintenance</a></h3><p>Planned and reactive upkeep for schools, clinics, offices and municipal buildings: roofs, paint, ceilings, doors, fencing.</p></div>
+        <span class="led-draw exp-drawing" aria-hidden="true">{{> draw-maintenance}}</span>
+        <a class="btn btn-ghost btn-sm" data-wa="maintenance">Get a quote <span class="arr" aria-hidden="true">→</span></a>
+      </div>
     </div>
   </div>
 </section>
@@ -92,9 +59,8 @@
 <!-- 05 · THE DETAILS — material sample board cut from our own installations -->
 <section class="sec tone-paper" aria-labelledby="mat-t">
   <div class="wrap">
-    <p class="eyebrow"><span class="n"></span>Materials</p>
     <div class="board-head">
-      <h2 class="h-l" id="mat-t">Seven finishes, <em>taken from our own jobs.</em></h2>
+      <h2 class="h-l" id="mat-t">Seven finishes, taken from our own jobs.</h2>
       <p class="lead">Every sample on this board is cropped from a photograph of an installation we fitted. Hover or tap a finish to see where it went.</p>
     </div>
     {{swatches}}
@@ -106,8 +72,7 @@
 <section class="proc tone-dark" aria-labelledby="proc-t" data-scrub="pin" data-beats="4">
   <div class="proc-stick">
     <div class="wrap">
-      <p class="eyebrow"><span class="n"></span>Process</p>
-      <h2 class="h-l" id="proc-t">From site visit <em>to handover.</em></h2>
+      <h2 class="h-l" id="proc-t">From site visit to handover.</h2>
       <div class="route" aria-hidden="true">
         <svg viewBox="0 0 1000 12" preserveAspectRatio="none" focusable="false"><line class="route-base" x1="0" y1="6" x2="1000" y2="6"/><line class="route-draw" pathLength="1" x1="0" y1="6" x2="1000" y2="6"/></svg>
         <span class="route-dot"></span>
@@ -122,11 +87,10 @@
   </div>
 </section>
 
-<!-- 07 · PROOF — facts we can count, credentials on record, real feedback only -->
-<section class="sec tone-paper proof" aria-labelledby="proof-t">
+<!-- 06 · TENDER DESK — the second door -->
+<section class="sec tone-paper proof" id="tenders" aria-labelledby="proof-t">
   <div class="wrap">
-    <p class="eyebrow"><span class="n"></span>On record</p>
-    <h2 class="h-l mb-48" id="proof-t">Proof, <em>not promises.</em></h2>
+    <h2 class="h-l mb-48" id="proof-t">Buying for a department, municipality or school?</h2>
     <div class="grid">
       <div class="creds">
         <h3>Registration &amp; compliance</h3>
@@ -158,7 +122,7 @@
     <div class="wrap invite-in">
       <div>
         <p class="lbl">Start a project</p>
-        <h2 class="h-xl mt-20" id="inv-t">Send the drawings, <em>or a photo of the problem.</em></h2>
+        <h2 class="h-xl mt-20" id="inv-t">Send the drawings, or a photo of the problem.</h2>
         <p class="lead">WhatsApp takes photos, PDFs and voice notes. Tell us where the site is and we will come back to you with next steps.</p>
       </div>
       <div class="hero-acts">

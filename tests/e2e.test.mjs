@@ -251,7 +251,7 @@ test('production build: no placeholders on screen, empty states shown, still no 
   assert.equal(nums, 0, 'eyebrow counters must not render');
   const numerals = await p.$$eval('main h2, main h3, main .eyebrow, main .lbl', (els) => els.filter((e) => /^\s*\/?0?\d{1,2}\s*(\/|·|$)/.test(e.textContent)).length);
   assert.equal(numerals, 0, 'no leading 01/02/03 numerals on headings or labels');
-  assert.ok((await p.locator('main .glyph').count()) >= 7, 'process and principles are drawn with glyphs');
+  assert.ok((await p.locator('main .glyph').count()) >= 4, 'the process is drawn with glyphs');
   assert.deepEqual(p.problems, []);
   await p.context().close();
 });
@@ -387,34 +387,74 @@ test('header changes tone over paper sections (and back over graphite)', async (
   assert.equal(await p.evaluate(() => document.querySelector('.site-head').classList.contains('on-paper')), true, 'a paper hero starts with the paper header');
   await p.goto(BASE + '/');
   await settle(p, 500);
-  assert.equal(await p.evaluate(() => document.querySelector('.site-head').classList.contains('on-paper')), false, 'graphite hero: dark header');
-  await jump(p, await p.evaluate(() => scrollY + document.querySelector('.philo').getBoundingClientRect().top - 20)); await settle(p, 500);
-  assert.equal(await p.evaluate(() => document.querySelector('.site-head').classList.contains('on-paper')), true, 'cream manifesto section under the header');
+  const paper = () => p.evaluate(() => document.querySelector('.site-head').classList.contains('on-paper'));
+  assert.equal(await paper(), true, 'the opening is paper: paper header');
+  await jump(p, await p.evaluate(() => scrollY + document.querySelector('.cata').getBoundingClientRect().top + 200)); await settle(p, 500);
+  assert.equal(await paper(), false, 'catalogue is graphite: dark header');
+  await jump(p, await p.evaluate(() => scrollY + document.querySelector('#tenders').getBoundingClientRect().top + 100)); await settle(p, 500);
+  assert.equal(await paper(), true, 'tender desk is paper again');
   await jump(p, await p.evaluate(() => scrollY + document.querySelector('.proc').getBoundingClientRect().top + 200)); await settle(p, 500);
-  assert.equal(await p.evaluate(() => document.querySelector('.site-head').classList.contains('on-paper')), false, 'back to dark');
+  assert.equal(await paper(), false, 'back to dark');
   await p.context().close();
 });
 
-test('hero is scrubbed: headline rises and fades, photo drifts, then rewinds', async () => {
-  const p = await open({ viewport: { width: 1440, height: 900 } });
-  await p.goto(BASE + '/'); await settle(p, 2600);
-  const at = async (y) => { await jump(p, y); await settle(p, 300); return p.evaluate(() => ({ o: parseFloat(getComputedStyle(document.querySelector('.hero-txt')).opacity), p: parseFloat(document.querySelector('.hero').style.getPropertyValue('--p') || '0') })); };
-  const a = await at(0), b = await at(300), c = await at(600), back = await at(0);
-  assert.ok(a.o > 0.99 && b.o < a.o && c.o < b.o, 'fades as it scrolls away');
-  assert.ok(b.p > a.p && c.p > b.p, 'progress is monotonic');
-  assert.ok(back.o > 0.99, 'rewinds');
-  await p.context().close();
-});
-
-test('velocity lean stays within ±2.5° and settles back to 0', async () => {
-  const p = await open({ viewport: { width: 1440, height: 900 } });
+test('catalogue: a rail per category, every tile has a no-JS quote link with the job in the message', async () => {
+  const p = await open({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: false });
   await p.goto(BASE + '/');
-  await jump(p, await p.evaluate(() => scrollY + document.querySelector('.showcase').getBoundingClientRect().top - 300)); await settle(p, 400);
-  let max = 0;
-  for (let i = 0; i < 8; i++) { await p.mouse.wheel(0, 500); await p.waitForTimeout(16); const v = parseFloat(await p.evaluate(() => document.querySelector('.showcase').style.getPropertyValue('--skew') || '0')); max = Math.max(max, Math.abs(v)); }
-  assert.ok(max <= 2.5 + 1e-6, `max lean ${max}°`);
-  await p.waitForTimeout(1200);
-  assert.equal(parseFloat(await p.evaluate(() => document.querySelector('.showcase').style.getPropertyValue('--skew') || '0')), 0, 'settles to 0 when scrolling stops');
+  const cats = await p.$$eval('.cat', (n) => n.map((e) => e.querySelector('h3').textContent));
+  assert.deepEqual(cats, ['Kitchens', 'Wardrobes', 'TV units', 'Ceilings', 'Bathrooms']);
+  const tiles = await p.locator('.tile').count();
+  assert.equal(tiles, JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/projects.json'), 'utf8')).length, 'every project is on a shelf');
+  const q = await p.$eval('.tile .tile-q', (a) => a.href);
+  const m = waText(q);
+  assert.match(m, /^Hi Malepe R&R, I'd like a quote\./);
+  assert.match(m, /Service: Carpentry › Kitchen units \(like: Charcoal gloss kitchen with island\)/);
+  assert.equal(await p.locator('.pick:visible').count(), 0, 'shortlist buttons only appear once the script runs');
+  await p.context().close();
+});
+
+test('shortlist composer: pick jobs, the WhatsApp message writes itself, survives reload, can be edited and cleared', async () => {
+  const p = await open({ viewport: { width: 390, height: 844 } });
+  await p.goto(BASE + '/'); await settle(p, 400);
+  assert.equal(await p.locator('.pickbar:visible').count(), 0, 'no bar while the shortlist is empty');
+  const picks = p.locator('.pick');
+  await picks.nth(0).scrollIntoViewIfNeeded(); await picks.nth(0).click();
+  assert.equal(await picks.nth(0).getAttribute('aria-pressed'), 'true');
+  const wardrobe = p.locator('#cat-wardrobes ~ .rail .pick, .cat:nth-of-type(2) .pick').first();
+  await wardrobe.scrollIntoViewIfNeeded(); await wardrobe.click();
+  assert.equal(await p.textContent('[data-pick-count]'), '2');
+  assert.equal(await p.locator('.fab:visible').count(), 0, 'the shortlist bar replaces the floating WhatsApp button');
+  await p.click('.pickbar-open');
+  await p.waitForSelector('#composer[open]');
+  await p.fill('#comp-loc', 'Hoedspruit');
+  await p.fill('#comp-note', 'Two bedrooms, oak finish');
+  const msg = waText(await p.getAttribute('[data-comp-send]', 'href'));
+  assert.match(msg, /^Hi Malepe R&R, I'd like a quote\.\nService: Carpentry › Kitchens, Wardrobes\nJobs like these:\n• Charcoal gloss kitchen with island \(Kitchens\)\n• .+ \(Wardrobes\)\nLocation: Hoedspruit\nDetails: Two bedrooms, oak finish$/);
+  assert.equal(await p.textContent('[data-comp-preview]'), msg, 'the preview is exactly the message that will be sent');
+  await p.click('.comp-x >> nth=0');
+  assert.equal(await p.textContent('[data-pick-count]'), '1', 'removing a job updates the count');
+  await p.keyboard.press('Escape');
+  await p.reload(); await settle(p, 400);
+  assert.equal(await p.textContent('[data-pick-count]'), '1', 'the shortlist survives a reload');
+  await p.goto(BASE + '/projects/'); await settle(p, 300);
+  assert.equal(await p.textContent('[data-pick-count]'), '1', 'and follows you to other pages');
+  await p.click('.pickbar-open'); await p.waitForSelector('#composer[open]');
+  await p.click('[data-comp-clear]');
+  assert.equal(await p.locator('.pickbar:visible').count(), 0, 'cleared');
+  assert.deepEqual(p.problems, []);
+  await p.context().close();
+});
+
+test('lightbox can shortlist the job on screen', async () => {
+  const p = await open({ viewport: { width: 1440, height: 900 } });
+  await p.goto(BASE + '/'); await settle(p, 400);
+  await p.locator('.tile-ph').first().scrollIntoViewIfNeeded(); await p.locator('.tile-ph').first().click();
+  await p.waitForSelector('.lb[open]');
+  await p.click('.lb-pick');
+  assert.match(await p.textContent('.lb-pick'), /Shortlisted/);
+  await p.keyboard.press('Escape');
+  assert.equal(await p.locator('.pick').first().getAttribute('aria-pressed'), 'true', 'the tile shows it too');
+  assert.equal(await p.textContent('[data-pick-count]'), '1');
   await p.context().close();
 });
 

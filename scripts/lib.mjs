@@ -159,6 +159,7 @@ export function projectCard(p, n) {
           <p class="mono">${c.label}${p.inProgress ? ' · In progress' : ''}</p>
           <h3>${esc(p.title)}</h3>
           <dl class="proj-spec"><div><dt>Scope</dt><dd>${esc(c.scope)}</dd></div>${details}</dl>
+          ${pickBtn(p)}
         </div>
       </article>`;
 }
@@ -175,4 +176,41 @@ export function projectFilters(projects, extra = []) {
   const radios = ['all', ...cats].map((k) => `<input class="f-radio" type="radio" name="pf" id="f-${k}"${k === 'all' ? ' checked' : ''}>`).join('\n    ');
   const buttons = ['all', ...cats].map((k) => `<label for="f-${k}">${k === 'all' ? 'All' : label(k)}</label>`).join('');
   return `${radios}\n    <div class="filters" role="group" aria-label="Filter projects">${buttons}</div>`;
+}
+
+/* ---------- catalogue (home page): one rail per category, tiles keep each photo's own proportions ---------- */
+
+/** Shortlist toggle. Hidden until the script enhances it; the plain "Quote this" link below works without JS. */
+const pickBtn = (p) => `<button class="pick" type="button" hidden aria-pressed="false" data-pick="${p.slug}" data-title="${esc(p.title)}" data-cat="${esc(CATEGORIES[p.category].label)}"><span class="pick-on" aria-hidden="true">+</span><span class="pick-t">Shortlist</span></button>`;
+
+export function catalogueTile(p) {
+  const c = CATEGORIES[p.category];
+  return `<li class="tile" data-item>
+          <a class="tile-ph ph has-photo" href="/assets/img/projects/${p.slug}-lg.webp" data-lightbox>${respImg(p, '(min-width:900px) 520px, 74vw')}</a>
+          <div class="tile-body">
+            <h4>${esc(p.title)}</h4>
+            <p class="mono">${esc(c.scope)}${p.inProgress ? ' · In progress' : ''}</p>
+            <div class="tile-acts">${pickBtn(p)}<a class="tile-q" data-wa="carpentry" data-wa-item="${esc(c.scope)} (like: ${esc(p.title)})" aria-label="Quote a job like: ${esc(p.title)}">Quote this <span aria-hidden="true">↗</span></a></div>
+          </div>
+        </li>`;
+}
+
+/** One horizontal rail per category that has projects. */
+export function catalogue(projects) {
+  return Object.entries(CATEGORIES)
+    .map(([key, c]) => {
+      const list = projects.filter((p) => p.category === key);
+      if (!list.length) return '';
+      return `<section class="cat" aria-labelledby="cat-${key}">
+        <div class="cat-head">
+          <h3 id="cat-${key}">${esc(c.label)}</h3>
+          <p class="mono">${list.length} ${list.length === 1 ? 'job' : 'jobs'} · ${esc(c.scope)}</p>
+          <span class="rail-ctl" hidden><button class="rail-btn" type="button" data-rail="-1" aria-label="Scroll ${esc(c.label)} back">←</button><button class="rail-btn" type="button" data-rail="1" aria-label="Scroll ${esc(c.label)} forward">→</button></span>
+        </div>
+        <ul class="rail" tabindex="0" aria-label="${esc(c.label)}: scroll sideways">
+        ${list.map(catalogueTile).join('\n        ')}
+        </ul>
+      </section>`;
+    })
+    .join('\n      ');
 }

@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { isPh, esc, get, waDigits, waMessage as msg, waHref as href, applyPlaceholderPolicy, criticalProblems, validateProjects, projectCard, projectTeaser, projectFilters, CATEGORY_LABEL, respImg } from './lib.mjs';
+import { isPh, esc, get, waDigits, waMessage as msg, waHref as href, applyPlaceholderPolicy, criticalProblems, validateProjects, projectCard, projectTeaser, projectFilters, catalogue, CATEGORY_LABEL, respImg } from './lib.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'src');
@@ -107,6 +107,7 @@ const pendingCard = (e, n) => `<article class="proj" data-optional data-item dat
 function projectTokens(html) {
   return html
     .replace('{{projects:showcase}}', showcase)
+    .replace('{{projects:catalogue}}', () => catalogue(projects))
     .replace('{{swatches}}', swatches)
     .replace('{{cases:features}}', caseFeatures)
     .replace(/\{\{art:([a-z0-9-]+)\}\}/g, (_, n) => artAttrs(n))
@@ -194,7 +195,25 @@ function header(meta) {
 }
 
 function tabbar() {
-  return `<aside aria-label="Quick contact"><a class="fab" data-wa="general" aria-label="Start a project on WhatsApp">${icon.wa}<span aria-hidden="true">WhatsApp</span></a></aside>`;
+  return `<aside aria-label="Quick contact"><a class="fab" data-wa="general" aria-label="Start a project on WhatsApp">${icon.wa}<span aria-hidden="true">WhatsApp</span></a>
+  <div class="pickbar" hidden><button class="pickbar-open" type="button" aria-haspopup="dialog" aria-controls="composer"><span class="pickbar-n" data-pick-count>0</span><span class="pickbar-t">jobs shortlisted</span><span class="pickbar-go">Review &amp; send <span aria-hidden="true">→</span></span></button></div></aside>`;
+}
+
+function composer() {
+  return `<dialog class="sheet composer" id="composer" aria-labelledby="comp-t">
+  <div class="sheet-in">
+    <div class="sheet-head"><span class="lbl">Your shortlist · WhatsApp</span><button class="sheet-x" type="button" data-close aria-label="Close">${icon.close}</button></div>
+    <h2 id="comp-t">Jobs you like</h2>
+    <ul class="comp-list" data-comp-list></ul>
+    <div class="comp-fields">
+      <label for="comp-loc">Where is the job?</label><input id="comp-loc" type="text" autocomplete="address-level2" placeholder="Town or area">
+      <label for="comp-note">Anything else we should know?</label><textarea id="comp-note" rows="2" placeholder="Rooms, sizes, finish, when you need it"></textarea>
+    </div>
+    <div class="bubble"><p class="mono">This is the message we receive</p><pre data-comp-preview></pre></div>
+    <a class="btn btn-primary btn-block" data-comp-send href="https://wa.me/{{waNumber}}" target="_blank" rel="noopener">Send on WhatsApp <span class="arr" aria-hidden="true">→</span></a>
+    <button class="sheet-more comp-clear" type="button" data-comp-clear>Clear shortlist</button>
+  </div>
+</dialog>`;
 }
 
 function sheet() {
@@ -467,7 +486,7 @@ for (const page of pages) {
     .replace('{{content}}', () => page.body)
     .replace('{{footer}}', () => footer(meta))
     .replace('{{tabbar}}', () => tabbar())
-    .replace('{{sheet}}', () => sheet());
+    .replace('{{sheet}}', () => sheet() + composer());
   html = applyPlaceholderPolicy(applyTokens(html), { strict: STRICT });
   const out = path.join(OUT, page.rel);
   fs.mkdirSync(path.dirname(out), { recursive: true });
