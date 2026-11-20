@@ -18,7 +18,7 @@ const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'site.config.json'), 'utf
 const services = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/services.json'), 'utf8'));
 
 const CASE_PAGES = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/cases.json'), 'utf8')).map((c) => `/projects/${c.slug}/`);
-const PAGES = ['/', '/services/', '/services/construction/', '/services/maintenance/', '/services/carpentry/', '/projects/', ...CASE_PAGES, '/about/', '/tenders/', '/contact/', '/quote/', '/privacy/'];
+const PAGES = ['/', '/services/', '/services/construction/', '/services/maintenance/', '/services/carpentry/', '/projects/', ...CASE_PAGES, '/contact/', '/quote/', '/privacy/'];
 const WIDTHS = [320, 390, 768, 1024, 1440];
 let browser, preview, prod, BASE, PROD;
 
@@ -125,7 +125,7 @@ test('quote builder: message still matches the screen after Back navigation', as
   await p.goto(BASE + '/quote/');
   await p.check('input[name=service][value=Construction]', { force: true });
   await p.check('input[name=item][value="Paving & boundary walls"]', { force: true });
-  await p.goto(BASE + '/about/');
+  await p.goto(BASE + '/contact/');
   await p.goBack();
   await p.waitForFunction(() => document.querySelector('[data-out=service]').textContent !== '—');
   assert.match(waText(await p.getAttribute('#qb-send', 'href')), /Service: Construction › Paving & boundary walls/);
@@ -163,7 +163,7 @@ test('mobile menu: opens, Escape closes and focus returns to the button', async 
   const p = await open();
   await p.goto(BASE + '/services/');
   await p.click('.menu summary');
-  assert.equal(await p.isVisible('.menu-panel a[href="/tenders/"]'), true);
+  assert.equal(await p.isVisible('.menu-panel a[href="/contact/"]'), true);
   await p.keyboard.press('Escape');
   assert.equal(await p.$eval('.menu', (d) => d.open), false);
   assert.equal(await p.evaluate(() => document.activeElement.tagName), 'SUMMARY');
@@ -295,7 +295,7 @@ test('project lightbox: opens full photo, Escape closes and returns focus', asyn
 
 test('motion mode: every reveal completes after scrolling (no content stuck invisible)', async () => {
   const p = await open({ reducedMotion: 'no-preference' });
-  for (const u of ['/', '/projects/', '/services/carpentry/', '/services/maintenance/', CASE_PAGES[0], '/about/']) {
+  for (const u of ['/', '/projects/', '/services/carpentry/', '/services/maintenance/', CASE_PAGES[0]]) {
     await p.goto(BASE + u);
     assert.equal(await p.evaluate(() => document.documentElement.classList.contains('motion')), true, `${u}: motion layer active`);
     const h = await p.evaluate(() => document.body.scrollHeight);

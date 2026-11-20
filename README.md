@@ -87,11 +87,11 @@ Every build prints a **launch checklist** of every placeholder still on the site
 npm run build
 ```
 
-## 2. Replace the company profile PDF
+## 2. Company documents
 
-Overwrite `src/assets/docs/malepe-rr-company-profile.pdf` with the real one (keep the file name), then set `"profilePdfIsPlaceholder": false` in `site.config.json`.
+The Studio and Tenders pages (and the placeholder company profile PDF) were removed. Government and municipal buyers are served by the "Send your RFQ" door on the home page, which opens WhatsApp with an RFQ message; compliance documents are sent on request.
 
-**Never put the director's ID number or a personal email in the PDF or anywhere on the site.**
+**Never put the director's ID number or a personal email anywhere on the site.**
 
 ## 3. Add project photos and case studies
 

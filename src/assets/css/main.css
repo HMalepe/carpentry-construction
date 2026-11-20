@@ -379,7 +379,7 @@ a:hover .ph-zoom img{transform:scale(1.035)}
 }
 .board-note{margin-top:var(--s5);font-size:13.5px;color:var(--ink-mute)}
 
-/* 06 process: a pinned master timeline (one scene, four beats). Static list without motion / below 560px of height. */
+/* 06 process: a pinned master timeline (one scene, four beats, ~47svh of scrolling per beat = one swipe each). Static list without motion / below 560px of height. */
 .proc{padding:var(--s9) 0}
 @media (min-width:900px){.proc{padding:var(--s10) 0}}
 .proc h2{margin-bottom:var(--s7)}
@@ -410,7 +410,7 @@ a:hover .ph-zoom img{transform:scale(1.035)}
 
 /* the pinned scene: only with motion, and only where the viewport is tall enough to hold it */
 @media (min-height:560px){
-  .motion .proc{height:calc(100svh + 340svh);padding:0}
+  .motion .proc{height:calc(100svh + 190svh);padding:0}
   .motion .proc-stick{position:sticky;top:0;height:100svh;display:flex;align-items:center;padding-top:var(--head-h);overflow:hidden}
   .motion .proc .route{display:block}
   .motion .proc .timeline{border-top:0;padding-top:0}
@@ -820,7 +820,7 @@ a.channel:hover .arr{transform:translate(4px,-4px)}
 .titleblock>div:first-child{grid-column:1/-1}
 @media (min-width:900px){.titleblock{grid-template-columns:2fr 1.4fr 1fr 1fr .6fr}.titleblock>div{border-bottom:0}.titleblock>div:first-child{grid-column:auto}.titleblock>div:last-child{border-right:0}}
 
-.home .foot-sign,.home .site-foot>.wrap>.acts,.has-cta .foot-sign,.has-cta .site-foot>.wrap>.acts{display:none}
+.has-cta .foot-sign,.has-cta .site-foot>.wrap>.acts{display:none}
 .home .foot-grid,.has-cta .foot-grid{margin-top:0}
 /* header over paper heroes: ink until the page scrolls */
 /* header over a paper section (class set by JS from what is under the header): ink on paper, in every scroll state */
@@ -931,8 +931,7 @@ main{overflow-x:clip}
 .wrap-rails{display:grid;gap:var(--s8)}
 .cat-head{display:flex;align-items:baseline;gap:var(--s4);flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:var(--s3);margin-bottom:var(--s5)}
 .cat-head h3{font-family:var(--sans);font-stretch:68%;font-weight:700;text-transform:uppercase;font-size:clamp(30px,4vw,54px);line-height:1}
-.cat-head .mono{margin-right:auto}
-.rail-ctl{display:flex;gap:var(--s2)}
+.rail-ctl{display:flex;gap:var(--s2);margin-left:auto}
 .rail-btn{width:44px;height:44px;border:1px solid var(--line2);font-size:18px;transition:border-color .3s,opacity .3s}
 .rail-btn:hover:not(:disabled){border-color:var(--ivory)}
 .rail-btn:disabled{opacity:.3;cursor:default}

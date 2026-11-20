@@ -28,7 +28,5 @@
     "bbbee": "[B-BBEE level — TO CONFIRM]",
     "coida": "[COIDA letter of good standing — TO CONFIRM]",
     "tax": "[Tax compliance status — TO CONFIRM]"
-  },
-  "profilePdf": "/assets/docs/malepe-rr-company-profile.pdf",
-  "profilePdfIsPlaceholder": true
+  }
 }

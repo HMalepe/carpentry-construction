@@ -76,7 +76,7 @@ test('strict mode strips placeholder blocks, empties collections, keeps fallback
 test('criticalProblems blocks production until the essentials are real', () => {
   const placeholderCfg = JSON.parse(fs.readFileSync(new URL('./fixtures/placeholders-enforced.config.json', import.meta.url), 'utf8'));
   const keys = criticalProblems(placeholderCfg).map((p) => p.split(':')[0]);
-  assert.deepEqual(keys, ['whatsapp', 'email', 'informationOfficer', 'profilePdf']);
+  assert.deepEqual(keys, ['whatsapp', 'email', 'informationOfficer']);
   const ok = { whatsapp: '27821234567', email: 'office@malepe.co.za', informationOfficer: 'A. Person', profilePdfIsPlaceholder: false };
   assert.deepEqual(criticalProblems(ok), []);
   assert.equal(criticalProblems({ ...ok, whatsapp: '0821234567' }).length, 1, 'local 0-prefixed number is rejected');

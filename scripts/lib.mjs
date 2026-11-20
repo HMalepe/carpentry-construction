@@ -101,7 +101,6 @@ export function criticalProblems(cfg) {
     p.push('whatsapp: must be a real SA number in the form 27XXXXXXXXX (11 digits). Every quote button depends on it.');
   if (isPh(cfg.email) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cfg.email)) p.push('email: must be a real business email address.');
   if (isPh(cfg.informationOfficer) || !cfg.informationOfficer) p.push('informationOfficer: POPIA requires a named Information Officer on the privacy notice.');
-  if (cfg.profilePdfIsPlaceholder) p.push('profilePdf: replace the placeholder company profile PDF and set profilePdfIsPlaceholder to false.');
   return p;
 }
 
@@ -204,7 +203,6 @@ export function catalogue(projects) {
       return `<section class="cat" aria-labelledby="cat-${key}">
         <div class="cat-head">
           <h3 id="cat-${key}">${esc(c.label)}</h3>
-          <p class="mono">${list.length} ${list.length === 1 ? 'job' : 'jobs'} · ${esc(c.scope)}</p>
           <span class="rail-ctl" hidden><button class="rail-btn" type="button" data-rail="-1" aria-label="Scroll ${esc(c.label)} back">←</button><button class="rail-btn" type="button" data-rail="1" aria-label="Scroll ${esc(c.label)} forward">→</button></span>
         </div>
         <ul class="rail" tabindex="0" aria-label="${esc(c.label)}: scroll sideways">

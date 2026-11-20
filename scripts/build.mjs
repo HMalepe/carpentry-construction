@@ -166,8 +166,6 @@ const logo = `<a class="logo" href="/" aria-label="${esc(cfg.shortName)} — hom
 const NAV = [
   { key: 'projects', href: '/projects/', label: 'Work' },
   { key: 'services', href: '/services/', label: 'Services' },
-  { key: 'about', href: '/about/', label: 'Studio' },
-  { key: 'tenders', href: '/tenders/', label: 'Tenders', long: 'Tenders & Compliance' },
   { key: 'contact', href: '/contact/', label: 'Contact' },
 ];
 const cur = (meta, key) => (meta.nav === key ? ' aria-current="page"' : '');
@@ -242,7 +240,7 @@ function footer(meta) {
         <p>Construction, maintenance and joinery for government departments, municipalities and private clients in ${esc(cfg.locality)}, Maruleng and surrounds.</p>
       </div>
       <div><p class="lbl">Services</p><ul>${svcLinks}<li><a href="/quote/">Quote request</a></li></ul></div>
-      <div><p class="lbl">Studio</p><ul><li><a href="/projects/">Work</a></li><li><a href="/about/">Studio</a></li><li><a href="/tenders/">Tenders &amp; Compliance</a></li><li><a href="/contact/">Contact</a></li><li><a href="/privacy/">Privacy (POPIA)</a></li></ul></div>
+      <div><p class="lbl">Company</p><ul><li><a href="/projects/">Work</a></li><li><a href="/contact/">Contact</a></li><li><a href="/privacy/">Privacy (POPIA)</a></li></ul></div>
       <div><p class="lbl">Site office</p><ul>
         <li><a data-wa="general">WhatsApp +{{waNumber}}</a></li>
         <li data-optional>Tel {{cfg.phone}}</li>
@@ -426,7 +424,6 @@ function applyTokens(html) {
     waNumber, telHref, mailHref, year, siteUrl,
     mailTo: isPh(cfg.email) ? '' : esc(cfg.email),
     emailPh: isPh(cfg.email) ? 'data-placeholder' : '',        // lets data-optional strip email-dependent links in production
-    pdfPh: cfg.profilePdfIsPlaceholder ? 'data-placeholder' : '',
     areaInline: esc(cfg.areaServed.join(' · ')),
     areaCount: String(cfg.areaServed.length),
     areaChips: cfg.areaServed.map((a) => `<li>${esc(a)}</li>`).join(''),
@@ -528,7 +525,6 @@ const cfgPh = [];
     else if (isPh(val)) cfgPh.push(`${key} = ${val}`);
   }
 })(cfg, '');
-if (cfg.profilePdfIsPlaceholder) cfgPh.push('profilePdf is still the placeholder PDF');
 if (!cfg.siteUrl) cfgPh.push(`siteUrl is empty (using ${siteUrl})`);
 const pagePh = outPages
   .map((f) => [path.relative(OUT, f), (read(f).match(/data-placeholder/g) || []).length])
