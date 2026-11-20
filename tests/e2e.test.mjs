@@ -349,22 +349,6 @@ test('pinned process scene on a phone: one beat at a time, no overflow', async (
   await p.context().close();
 });
 
-test('scale-to-fullscreen: the closing photo opens from a framed card to full-bleed and reveals its text', async () => {
-  const p = await open({ viewport: { width: 1440, height: 900 } });
-  await p.goto(BASE + '/');
-  const clip = async (f) => { await jump(p, await sceneY(p, '.invite', f)); await settle(p, 450); return p.evaluate(() => ({ clip: getComputedStyle(document.querySelector('.invite-bg')).clipPath, txt: parseFloat(getComputedStyle(document.querySelector('.invite-in')).opacity) })); };
-  const start = await clip(0), end = await clip(1);
-  const insetPx = (c) => (c.match(/inset\(([\d.]+)px/) || [])[1];
-  assert.ok(parseFloat(insetPx(start.clip)) > 40, `starts as a framed card (${start.clip})`);
-  assert.ok(parseFloat(insetPx(end.clip)) < 1, `ends full-bleed (${end.clip})`);
-  assert.ok(start.txt < 0.05 && end.txt > 0.95, 'headline arrives as the frame opens');
-  // keyboard users can always reach the call to action, even before the scene has opened
-  await clip(0);
-  await p.focus('.invite-in a');
-  assert.equal(await p.evaluate(() => parseFloat(getComputedStyle(document.querySelector('.invite-in')).opacity)), 1, 'focus makes the text visible');
-  await p.context().close();
-});
-
 test('sticky stacking cards: Services deals as a deck on desktop and stays plain on phones', async () => {
   const d = await open({ viewport: { width: 1440, height: 900 } });
   await d.goto(BASE + '/services/');
@@ -391,10 +375,10 @@ test('header changes tone over paper sections (and back over graphite)', async (
   assert.equal(await paper(), true, 'the opening is paper: paper header');
   await jump(p, await p.evaluate(() => scrollY + document.querySelector('.cata').getBoundingClientRect().top + 200)); await settle(p, 500);
   assert.equal(await paper(), false, 'catalogue is graphite: dark header');
-  await jump(p, await p.evaluate(() => scrollY + document.querySelector('#tenders').getBoundingClientRect().top + 100)); await settle(p, 500);
-  assert.equal(await paper(), true, 'tender desk is paper again');
   await jump(p, await p.evaluate(() => scrollY + document.querySelector('.proc').getBoundingClientRect().top + 200)); await settle(p, 500);
-  assert.equal(await paper(), false, 'back to dark');
+  assert.equal(await paper(), false, 'the process scene is dark too');
+  await jump(p, 0); await settle(p, 500);
+  assert.equal(await paper(), true, 'back at the top: paper again');
   await p.context().close();
 });
 
@@ -471,8 +455,8 @@ test('ripple stagger: gallery items arrive in a wave with bounded delays', async
 
 test('floating WhatsApp pill steps aside while a big call to action is on screen', async () => {
   const p = await open({ viewport: { width: 390, height: 844 } });
-  await p.goto(BASE + '/');
-  await jump(p, await sceneY(p, '.invite', 0.9)); await settle(p, 700);
+  await p.goto(BASE + '/services/carpentry/');
+  await jump(p, await p.evaluate(() => scrollY + document.querySelector('.cta-band').getBoundingClientRect().top - 200)); await settle(p, 700);
   assert.equal(await p.evaluate(() => getComputedStyle(document.querySelector('.fab')).visibility), 'hidden');
   await p.context().close();
 });
@@ -505,26 +489,23 @@ test('reduced motion: nothing is pinned, hidden or animated; every scene reads a
   await p.goto(BASE + '/');
   assert.equal(await p.evaluate(() => document.documentElement.classList.contains('motion')), false);
   const r = await p.evaluate(() => ({
-    procH: document.querySelector('.proc').offsetHeight, invH: document.querySelector('.invite').offsetHeight, vh: innerHeight,
+    procH: document.querySelector('.proc').offsetHeight, vh: innerHeight,
     stages: [...document.querySelectorAll('.proc .stage')].map((s) => getComputedStyle(s).opacity),
     sticky: getComputedStyle(document.querySelector('.proc-stick')).position,
-    clip: getComputedStyle(document.querySelector('.invite-bg')).clipPath,
   }));
-  assert.ok(r.procH < r.vh * 2 && r.invH < r.vh * 1.2, `scenes are not stretched into scroll distance (${r.procH}, ${r.invH})`);
+  assert.ok(r.procH < r.vh * 2, `the process scene is not stretched into scroll distance (${r.procH})`);
   assert.deepEqual(r.stages, ['1', '1', '1', '1'], 'all four process steps fully visible');
   assert.equal(r.sticky, 'static');
-  assert.equal(r.clip, 'none', 'closing photo is simply full-bleed');
   await p.goto(BASE + '/services/');
   assert.equal(await p.evaluate(() => getComputedStyle(document.querySelector('.svc-card')).position), 'relative');
   await p.context().close();
 });
 
-test('no JavaScript: process steps, closing section and services are all present and readable', async () => {
+test('no JavaScript: process steps and services are all present and readable', async () => {
   const p = await open({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: false });
   await p.goto(BASE + '/');
-  const r = await p.evaluate(() => ({ stages: [...document.querySelectorAll('.proc .stage')].map((s) => getComputedStyle(s).opacity), txt: getComputedStyle(document.querySelector('.invite-in')).opacity, route: getComputedStyle(document.querySelector('.route')).display }));
+  const r = await p.evaluate(() => ({ stages: [...document.querySelectorAll('.proc .stage')].map((s) => getComputedStyle(s).opacity), route: getComputedStyle(document.querySelector('.route')).display }));
   assert.deepEqual(r.stages, ['1', '1', '1', '1']);
-  assert.equal(r.txt, '1');
   assert.equal(r.route, 'none', 'the scroll-drawn route only appears when it can be drawn');
   await p.context().close();
 });
@@ -533,7 +514,7 @@ test('accessibility: axe-core is clean in mid-animation states too (pinned scene
   for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
     const p = await open({ viewport, bypassCSP: true });
     await p.goto(BASE + '/'); await settle(p, 1200);
-    for (const [sel, f] of [['.proc', 0.05], ['.proc', 0.3], ['.proc', 0.9], ['.invite', 0.05], ['.invite', 0.25], ['.invite', 1]]) {
+    for (const [sel, f] of [['.proc', 0.05], ['.proc', 0.3], ['.proc', 0.9]]) {
       await jump(p, await sceneY(p, sel, f)); await settle(p, 1200);
       await p.addScriptTag({ content: AXE });
       const v = await p.evaluate(async () => (await axe.run(document, { resultTypes: ['violations'] })).violations.map((x) => `${x.id} (${x.nodes.length})`));
