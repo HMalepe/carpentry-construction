@@ -134,7 +134,20 @@ export function validateProjects(projects) {
 export const srcset = (p) => [`/assets/img/projects/${p.slug}-sm.webp ${p.w}w`, p.mw > p.w && `/assets/img/projects/${p.slug}-md.webp ${p.mw}w`, p.lw > (p.mw || p.w) && `/assets/img/projects/${p.slug}-lg.webp ${p.lw}w`].filter(Boolean).join(', ');
 export const respImg = (p, sizes, extra = 'loading="lazy" decoding="async"') =>
   `<img src="/assets/img/projects/${p.slug}-sm.webp" srcset="${srcset(p)}" sizes="${sizes}" alt="${esc(p.alt)}" width="${p.w}" height="${p.h}" ${extra}>`;
-const img = (p) => respImg(p, '(min-width:900px) 31vw, (min-width:600px) 46vw, 58vw');   // phones keep the 720px thumbnail; bigger variants are for large images
+// Card widths measured at 360-1920px: a phone card is the viewport minus the page margins (not 58vw), so phones and
+// iPads were asking for a lower tier than their screens need. Spanning (wide / panorama) cards are larger.
+// object-fit: cover also magnifies a photo that is wider than its frame (4:3 landscape, 4:5 portrait, 21:9 panorama),
+// so the hint is multiplied by how much wider than the frame the photo is.
+const FRAME = { 'o-landscape': 4 / 3, 'o-portrait': 4 / 5, 'o-pano': 21 / 9 };
+const cardSizes = (p, wide) => {
+  const o = orientation(p);
+  const spans = wide || o === 'o-pano';
+  const f = Math.max(1, (p.w / p.h) / FRAME[o]);
+  const m = (v) => (f > 1.001 ? `calc((${v}) * ${f.toFixed(2)})` : v);
+  return `(min-width:900px) ${m(spans ? '60vw' : '31vw')}, (min-width:600px) ${m(spans ? '90vw' : '46vw')}, ${m('100vw - 42px')}`;
+};
+const SIZES_TEASER = '(min-width:900px) 46vw, (min-width:600px) 90vw, calc(100vw - 42px)';
+const img = (p, sizes) => respImg(p, sizes);
 
 export const CATEGORY_LABEL = Object.fromEntries(Object.entries(CATEGORIES).map(([k, v]) => [k, v.label]));
 
@@ -153,7 +166,7 @@ export function projectCard(p, n) {
     : `<div data-optional><dt>Details</dt><dd><span class="ph-tag" data-placeholder>[Town · sector · year]</span></dd></div>`;
   const wide = orientation(p) === 'o-landscape' && n % 5 === 1 ? ' wide' : '';
   return `<article class="proj ${orientation(p)}${wide}" data-item data-cat="${p.category}">
-        <a class="ph-photo has-photo" href="/assets/img/projects/${p.slug}-lg.webp" data-lightbox>${img(p)}</a>
+        <a class="ph-photo has-photo" href="/assets/img/projects/${p.slug}-lg.webp" data-lightbox>${img(p, cardSizes(p, !!wide))}</a>
         <div class="proj-body">
           <p class="mono">${c.label}${p.inProgress ? ' · In progress' : ''}</p>
           <h3>${esc(p.title)}</h3>
@@ -165,7 +178,7 @@ export function projectCard(p, n) {
 
 /** Compact card (home page, service pages) linking to the gallery. */
 export function projectTeaser(p) {
-  return `<article class="proj" data-item><a class="ph-photo has-photo" href="/projects/">${img(p)}</a><div class="proj-body"><p class="mono">${CATEGORIES[p.category].label}</p><h3>${esc(p.title)}</h3></div></article>`;
+  return `<article class="proj" data-item><a class="ph-photo has-photo" href="/projects/">${img(p, SIZES_TEASER)}</a><div class="proj-body"><p class="mono">${CATEGORIES[p.category].label}</p><h3>${esc(p.title)}</h3></div></article>`;
 }
 
 /** Filter radios + buttons for the categories that actually have projects (no dead filters). */
@@ -182,10 +195,16 @@ export function projectFilters(projects, extra = []) {
 /** Shortlist toggle. Hidden until the script enhances it; the plain "Quote this" link below works without JS. */
 const pickBtn = (p) => `<button class="pick" type="button" hidden aria-pressed="false" data-pick="${p.slug}" data-title="${esc(p.title)}" data-cat="${esc(CATEGORIES[p.category].label)}"><span class="pick-on" aria-hidden="true">+</span><span class="pick-t">Shortlist</span></button>`;
 
+/** A catalogue tile is as tall as --th (300-400px) and as wide as its photo allows (0.74x to 1.9x of that height). */
+export function tileSizes(p) {
+  const k = Math.min(1.9, Math.max(0.74, p.w / p.h)).toFixed(2);
+  return `(min-width:900px) ${Math.round(400 * k)}px, calc(clamp(300px, 80vw, 400px) * ${k})`;
+}
+
 export function catalogueTile(p) {
   const c = CATEGORIES[p.category];
   return `<li class="tile" data-item>
-          <a class="tile-ph ph has-photo" href="/assets/img/projects/${p.slug}-lg.webp" data-lightbox>${respImg(p, '(min-width:900px) 520px, 74vw')}</a>
+          <a class="tile-ph ph has-photo" href="/assets/img/projects/${p.slug}-lg.webp" data-lightbox>${respImg(p, tileSizes(p))}</a>
           <div class="tile-body">
             <h4>${esc(p.title)}</h4>
             <p class="mono">${esc(c.scope)}${p.inProgress ? ' · In progress' : ''}</p>

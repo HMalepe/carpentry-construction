@@ -16,7 +16,14 @@
        pinned    : a tall wrapper holds a sticky scene; progress = how far through the wrapper we are
      No smooth-scroll hijacking: native scrolling is never replaced or delayed.
      ====================================================================== */
-  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* Low-end / data-saver devices get the plain, fully readable page (the same one reduced-motion visitors get): no pinned scenes,
+     no scroll-driven effects, nothing to repaint while a thumb is scrolling. iPhones and mid-range Androids keep the full experience.
+     Signals (Chromium-only ones simply stay undefined elsewhere): <=2 GB RAM, <=2 CPU cores, Save-Data, 2G. */
+  var conn = navigator.connection || {};
+  var lite = !!((navigator.deviceMemory && navigator.deviceMemory <= 2) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) ||
+    conn.saveData || /(^|-)2g$/.test(conn.effectiveType || ''));
+  if (lite) root.classList.add('lite');
+  var still = lite || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   if (!still && 'IntersectionObserver' in window) {
     root.classList.add('motion');
     var vw = window.innerWidth, vh = window.innerHeight;
@@ -308,6 +315,9 @@
     rail.addEventListener('scroll', upd, { passive: true });
     window.addEventListener('resize', upd);
     upd();
+    // A rail that was skipped for rendering (content-visibility) is only laid out once it nears the screen: measure then.
+    rail.addEventListener('contentvisibilityautostatechange', function (e) { if (!e.skipped) upd(); });
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { if (e[0].isIntersecting) requestAnimationFrame(function () { requestAnimationFrame(upd); }); }).observe(rail);
   });
 
   /* ---- gallery lightbox: <a href="large.webp" data-lightbox><img …></a>; prev/next, arrows, swipe ---- */
@@ -321,7 +331,10 @@
       '<div class="lb-foot"><span class="lb-count" aria-live="polite"></span><button class="lb-pick" type="button" hidden></button><span class="lb-nav"><button class="lb-btn" type="button" data-step="-1" aria-label="Previous photo">←</button><button class="lb-btn" type="button" data-step="1" aria-label="Next photo">→</button></span></div>';
     d.body.appendChild(lb);
     var lbImg = lb.querySelector('img'), lbTitle = lb.querySelector('.lb-title'), lbCount = lb.querySelector('.lb-count'), lbPick = lb.querySelector('.lb-pick');
-    var visible = function () { return lbLinks.filter(function (a) { return a.offsetParent !== null; }); };
+    // A photo is in the set unless the gallery filter has hidden its card (rails that are skipped for rendering still count).
+    var visible = function () {
+      return lbLinks.filter(function (a) { var c = a.closest('.proj, .tile'); return !c || getComputedStyle(c).display !== 'none'; });
+    };
     var set = [], at = 0;
     var show = function (i) {
       at = (i + set.length) % set.length;

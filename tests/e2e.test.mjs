@@ -523,3 +523,81 @@ test('accessibility: axe-core is clean in mid-animation states too (pinned scene
     await p.context().close();
   }
 });
+
+test('low-end devices (<=2 GB RAM or Save-Data) get the plain page: no pinned scenes, everything readable, no overflow', async () => {
+  for (const hint of ['deviceMemory', 'saveData']) {
+    const p = await open({ viewport: { width: 360, height: 640 }, deviceScaleFactor: 2 });
+    await p.addInitScript((h) => {
+      if (h === 'deviceMemory') Object.defineProperty(navigator, 'deviceMemory', { get: () => 1 });
+      else Object.defineProperty(navigator, 'connection', { get: () => ({ saveData: true, effectiveType: '4g' }) });
+    }, hint);
+    await p.goto(BASE + '/'); await settle(p, 600);
+    const r = await p.evaluate(() => ({
+      lite: document.documentElement.classList.contains('lite'), motion: document.documentElement.classList.contains('motion'),
+      procH: document.querySelector('.proc').offsetHeight, vh: innerHeight, sticky: getComputedStyle(document.querySelector('.proc-stick')).position,
+      stages: [...document.querySelectorAll('.proc .stage')].map((x) => getComputedStyle(x).opacity), overflow: document.documentElement.scrollWidth - innerWidth,
+      blur: getComputedStyle(document.querySelector('.site-head')).backdropFilter,
+    }));
+    assert.equal(r.lite, true, hint); assert.equal(r.motion, false, `${hint}: no scroll-driven motion`);
+    assert.ok(r.procH < r.vh * 2.6, `${hint}: the process is a plain list, not a pinned scene (${r.procH}px)`);
+    assert.equal(r.sticky, 'static'); assert.deepEqual(r.stages, ['1', '1', '1', '1'], `${hint}: every step readable`);
+    assert.equal(r.overflow, 0); assert.ok(r.blur === 'none' || r.blur === '', `${hint}: no backdrop blur (${r.blur})`);
+    assert.deepEqual(p.problems, []);
+    await p.context().close();
+  }
+});
+
+test('images stay HD: on phones, iPads and desktops the browser loads a file at least ~90% as sharp as the screen needs', async () => {
+  const SCREENS = [['360@2x', 360, 740, 2], ['390@3x', 390, 844, 3], ['820@2x', 820, 1180, 2], ['1440@1x', 1440, 900, 1], ['1920@1x', 1920, 1080, 1]];
+  for (const [name, width, height, dpr] of SCREENS) {
+    for (const url of ['/', '/projects/', '/services/carpentry/', CASE_PAGES[0]]) {
+      const p = await open({ viewport: { width, height }, deviceScaleFactor: dpr });
+      await p.goto(BASE + url);
+      await p.evaluate(() => document.querySelectorAll('img[loading=lazy]').forEach((i) => { i.loading = 'eager'; }));
+      await p.waitForFunction(() => [...document.images].every((i) => i.complete), null, { timeout: 15000 });
+      const soft = await p.evaluate(() => [...document.images].filter((i) => i.clientWidth > 40 && i.currentSrc.includes('/assets/img/')).flatMap((i) => {
+        // naturalWidth is density-corrected under srcset, so take the real file width from the chosen srcset entry
+        const entries = i.srcset.split(',').map((e) => e.trim().split(/\s+/)).filter((e) => e[1]);
+        const picked = entries.find((e) => i.currentSrc.endsWith(e[0].split('/').pop()));
+        const fileW = picked ? parseInt(picked[1]) : i.naturalWidth;
+        const needed = Math.max(i.clientWidth, i.clientHeight * (i.naturalWidth / i.naturalHeight)) * devicePixelRatio;
+        const sharperExists = entries.some((e) => parseInt(e[1]) > fileW);
+        return sharperExists && fileW / needed < 0.9 ? [`${i.currentSrc.split('/').pop()} ${fileW}px < ${Math.round(needed)}px`] : [];
+      }));
+      assert.deepEqual(soft, [], `${name} ${url}`);
+      await p.context().close();
+    }
+  }
+});
+
+test('catalogue rails: arrows appear on desktop, scroll the rail, and a rail that starts offscreen still measures itself', async () => {
+  const p = await open({ viewport: { width: 1440, height: 900 } });
+  await p.goto(BASE + '/'); await settle(p, 500);
+  const last = p.locator('.cat').last();
+  await last.scrollIntoViewIfNeeded(); await settle(p, 400);
+  const first = p.locator('.cat').first();
+  await first.scrollIntoViewIfNeeded(); await settle(p, 400);
+  assert.equal(await first.locator('.rail-ctl').isVisible(), true, 'kitchens rail overflows, so it has arrows');
+  const before = await first.locator('.rail').evaluate((r) => r.scrollLeft);
+  await first.locator('[data-rail="1"]').click(); await settle(p, 900);
+  assert.ok((await first.locator('.rail').evaluate((r) => r.scrollLeft)) > before + 200, 'arrow scrolls the rail');
+  assert.equal(await first.locator('[data-rail="-1"]').isDisabled(), false, 'back arrow enables after scrolling');
+  assert.deepEqual(p.problems, []);
+  await p.context().close();
+});
+
+test('catalogue rails are real scroll containers on phones (every job is reachable by swiping), without the page scrolling sideways', async () => {
+  const p = await open({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  await p.goto(BASE + '/'); await settle(p, 500);
+  const r = [];
+  for (const rail of await p.locator('.rail').all()) {   // rails below the fold are not laid out until they near the screen (content-visibility)
+    await rail.scrollIntoViewIfNeeded(); await settle(p, 250);
+    r.push(await rail.evaluate((el) => ({ sw: el.scrollWidth, cw: el.clientWidth, n: el.children.length })));
+  }
+  for (const x of r) { assert.equal(x.cw <= 390, true, `rail is no wider than the screen (${x.cw})`); if (x.n > 2) assert.ok(x.sw > x.cw * 1.5, `rail with ${x.n} jobs scrolls sideways (${x.sw} > ${x.cw})`); }
+  await p.locator('.rail').first().evaluate((el) => { el.scrollLeft = el.scrollWidth; });
+  await settle(p, 400);
+  assert.equal(await p.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0, 'the page itself never scrolls sideways');
+  assert.equal(await p.evaluate(() => scrollX), 0);
+  await p.context().close();
+});

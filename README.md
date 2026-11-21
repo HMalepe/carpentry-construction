@@ -176,3 +176,24 @@ Add a free uptime monitor (e.g. UptimeRobot) on the home page with an SMS/email 
 
 - Fonts: Space Grotesk and JetBrains Mono (SIL Open Font License, see `src/assets/fonts/`).
 - Hero photo: Unsplash (free licence). It's cropped to remove a third-party logo and the person's face. Replace it with your own site photo when you have one.
+
+
+## Devices, speed and image sharpness
+
+The site is tuned for phones first (iOS and Android, including low-end handsets), then tablets and desktops.
+
+- **HD images everywhere.** Every photo has three files (720 / 1100 / 1600 px wide, WebP). Each `<img>` carries a `sizes` hint
+  computed from how wide it really renders (catalogue tiles by their own proportions, gallery cards, panoramas that are cropped),
+  so a 3x iPhone or a 2x iPad loads the tier its screen needs. `node scripts/image-audit.mjs` checks this at five screen sizes
+  and the e2e suite fails if any image is softer than ~90% of what the screen needs (when a sharper file exists).
+- **Low-end phones get the plain page.** Devices reporting <= 2 GB RAM, <= 2 CPU cores, Save-Data or 2G skip every scroll-driven
+  effect (same path as `prefers-reduced-motion`): no pinned scenes, nothing to repaint while scrolling, everything readable.
+- **Touch devices** get a solid header (no backdrop blur), no tap delay, and rails below the fold are not laid out or painted until
+  they near the screen (`content-visibility`). iOS < 15.4 falls back from `svh` to `vh`.
+- **Catalogue rails** are real scroll containers (swipe on touch, arrows with a mouse). Only the page is prevented from scrolling sideways.
+- **Probes** (need the site served: `npm run serve`):
+  `node scripts/perf-probe.mjs` loads pages on an emulated phone (4x slower CPU, Slow 4G) and reports bytes, LCP, CLS, long tasks and
+  dropped frames while scrolling; `node scripts/image-audit.mjs` checks image sharpness; `node scripts/shots.mjs <dir>` takes
+  screenshots of every page (diff two runs with ImageMagick `compare` to prove a CSS change moved nothing);
+  `node scripts/css-prune.mjs [--write]` lists / removes CSS rules whose classes appear nowhere in the built pages or script.
+- Real-device testing is still worth doing on one iPhone and one budget Android before launch: the probes use emulated Chromium.
