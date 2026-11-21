@@ -287,8 +287,10 @@ a:hover .ph-zoom img{transform:scale(1.035)}
 .swatch .seen{display:block;margin-top:4px;font-size:13.5px;color:var(--ink-mute)}
 .swatch .seen b{color:var(--red-ink);font-weight:500}
 .swatch-tag{display:none}
+@media (max-width:899.98px){.board .swatch:last-child:nth-child(odd){grid-column:1/-1}.board .swatch:last-child:nth-child(odd) .ph{aspect-ratio:16/9}}
+.sw-marble-look .ph img,.sw-grey-oak .ph img{object-position:50% 38%}
 @media (min-width:900px){
-.board{display:flex;gap:6px;height:min(72vh,640px)}
+.board{display:flex;gap:6px;height:min(72vh,640px);max-width:1100px;margin-inline:auto}   /* 1100px board, 2x expansion = a plank is at most ~460px wide: the 486px-wide sources are never enlarged */
 .swatch{flex:1 1 0;min-width:0;transition:flex-grow .9s var(--ease)}
 .swatch .ph{position:absolute;inset:0;aspect-ratio:auto}
 .swatch .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(17,17,16,.8));opacity:0;transition:opacity .6s}
@@ -297,7 +299,7 @@ a:hover .ph-zoom img{transform:scale(1.035)}
 .swatch .seen b{color:var(--red-hi)}
 .swatch-tag{display:block;position:absolute;left:12px;bottom:14px;z-index:2;writing-mode:vertical-rl;transform:rotate(180deg);font-stretch:78%;font-weight:600;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ivory);text-shadow:0 1px 10px rgba(0,0,0,.6);transition:opacity .4s}
 .board:hover .swatch,.board:focus-within .swatch{flex-grow:.7}
-.board .swatch:hover,.board .swatch:focus-within{flex-grow:3.6}
+.board .swatch:hover,.board .swatch:focus-within{flex-grow:2}
 .swatch:hover .swatch-meta,.swatch:focus-within .swatch-meta{opacity:1;transform:none}
 .swatch:hover .ph::after,.swatch:focus-within .ph::after{opacity:1}
 .swatch:hover .swatch-tag,.swatch:focus-within .swatch-tag{opacity:0}}

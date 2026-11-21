@@ -1,7 +1,7 @@
 // Photo pipeline (dev tool, needs ImageMagick 6 `convert`). Run: npm run photos
 // Source of truth: untouched originals in media/originals/<slug>.jpg (never published).
 // For every project in src/data/projects.json → src/assets/img/projects/<slug>-sm.webp (720px) and -lg.webp (1600px)
-// For every crop / swatch in src/data/art.json  → src/assets/img/art/<name>.webp
+// For every crop in src/data/art.json  → src/assets/img/art/<name>.webp
 // Each output: auto-oriented, metadata stripped (removes GPS), `blur` regions applied (TV screens, bystanders),
 // then the house grade, so every phone photo shares one colour language.
 import { execFileSync } from 'node:child_process';
@@ -50,11 +50,6 @@ for (const c of art.crops) {
   execFileSync('convert', [...args, ...crop(w, h, c.rect), ...GRADE[c.grade || 'house'], '-resize', `${c.width}x>`, ...webp(78), out]);
   [c.w, c.h] = size(out);
 }
-for (const s of art.swatches) {
-  const { args, w, h } = base(s.from);
-  const out = path.join(OUT.art, `swatch-${s.name}.webp`);
-  execFileSync('convert', [...args, ...crop(w, h, s.rect), ...GRADE.house, '-resize', '480x640^', '-gravity', 'center', '-extent', '480x640', ...webp(76), out]);
-}
 fs.writeFileSync(projectsFile, JSON.stringify(projects, null, 2) + '\n');
 fs.writeFileSync(path.join(ROOT, 'src/data/art.json'), JSON.stringify(art, null, 2) + '\n');
-console.log(`✓ ${projects.length} projects (×3 sizes), ${art.crops.length} crops, ${art.swatches.length} swatches`);
+console.log(`✓ ${projects.length} projects (×3 sizes), ${art.crops.length} crops`);

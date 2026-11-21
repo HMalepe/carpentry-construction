@@ -198,3 +198,10 @@ The site is tuned for phones first (iOS and Android, including low-end handsets)
   screenshots of every page (diff two runs with ImageMagick `compare` to prove a CSS change moved nothing);
   `node scripts/css-prune.mjs [--write]` lists / removes CSS rules whose classes appear nowhere in the built pages or script.
 - Real-device testing is still worth doing on one iPhone and one budget Android before launch: the probes use emulated Chromium.
+
+## Finishes board
+
+The finishes on the Carpentry page come from `src/data/finishes.json` (name, label, alt text, focal point) with the images in
+`src/assets/img/finishes/` (originals kept in `media/originals/finishes/`). To add or swap a finish, drop a WebP in that folder and add an
+entry. Each tile opens a WhatsApp quote with the finish named. Sources are 486 px wide, so the desktop board is capped (1100 px, 2x
+expansion) so they are never enlarged; send 1000 px+ wide originals if you want a bigger board.

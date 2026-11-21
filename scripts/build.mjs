@@ -18,6 +18,7 @@ const services = JSON.parse(read(path.join(SRC, 'data', 'services.json')));
 const projects = validateProjects(JSON.parse(read(path.join(SRC, 'data', 'projects.json'))));
 const art = JSON.parse(read(path.join(SRC, 'data', 'art.json')));
 const cases = JSON.parse(read(path.join(SRC, 'data', 'cases.json')));
+const finishes = JSON.parse(read(path.join(SRC, 'data', 'finishes.json')));
 const pBy = Object.fromEntries(projects.map((p) => [p.slug, p]));
 for (const c of cases) for (const s of [c.cover, ...c.photos.map((x) => x.slug), c.pair?.before, c.pair?.after].filter(Boolean))
   if (!pBy[s]) throw new Error(`cases.json (${c.slug}): unknown project photo "${s}"`);
@@ -37,11 +38,9 @@ function showcase() {
         <div class="sc-body"><h3>${esc(p.title)}</h3><span class="lbl">${esc(CATEGORY_LABEL[p.category])}</span></div>
       </a>`).join('\n      ');
 }
+/** Finishes board (src/data/finishes.json, images in src/assets/img/finishes/): each tile opens a WhatsApp quote with that finish named. */
 function swatches() {
-  return `<div class="board">${art.swatches.map((s) => {
-    const p = pBy[s.seen];
-    return `<a class="swatch" href="${linkFor(s.seen)}"><span class="swatch-tag" aria-hidden="true">${esc(s.label)}</span><span class="ph"><img src="/assets/img/art/swatch-${s.name}.webp" alt="${esc(s.label)} finish, photographed on one of our installations" width="480" height="640" loading="lazy" decoding="async"></span><div class="swatch-meta"><h3>${esc(s.label)}</h3><span class="seen">Seen in: <b>${esc(p.title)}</b></span></div></a>`;
-  }).join('')}</div>`;
+  return `<div class="board">${finishes.map((f) => `<a class="swatch sw-${f.name}" data-wa="carpentry" data-wa-item="Finish: ${esc(f.label)}" aria-label="${esc(f.label)}: ask for a quote with this finish on WhatsApp"><span class="swatch-tag" aria-hidden="true">${esc(f.label)}</span><span class="ph"><img src="/assets/img/finishes/${f.name}.webp" alt="${esc(f.alt)}" width="486" height="2000" loading="lazy" decoding="async"></span><div class="swatch-meta"><h3>${esc(f.label)}</h3><span class="seen"><b>Ask for this finish</b> on WhatsApp ↗</span></div></a>`).join('')}</div>`;
 }
 function caseFeatures() {
   return cases.map((c, i) => {

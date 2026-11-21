@@ -1,0 +1,32 @@
+[
+  {
+    "name": "marble-look",
+    "label": "Marble-look panel",
+    "alt": "Grey marble-look panel with black veining and a gold vein running diagonally across it",
+    "focus": "38%"
+  },
+  {
+    "name": "espresso-woodgrain",
+    "label": "Espresso woodgrain",
+    "alt": "Dark espresso-brown woodgrain with fine vertical grain lines",
+    "focus": "50%"
+  },
+  {
+    "name": "sand-stone-look",
+    "label": "Sand stone-look",
+    "alt": "Warm sand-coloured stone-look surface with a fine speckled texture",
+    "focus": "50%"
+  },
+  {
+    "name": "matt-black",
+    "label": "Matt black",
+    "alt": "Smooth matt black surface with a very fine leather-like texture",
+    "focus": "50%"
+  },
+  {
+    "name": "grey-oak",
+    "label": "Grey oak",
+    "alt": "Grey oak woodgrain with a visible knot and flowing vertical grain",
+    "focus": "38%"
+  }
+]
