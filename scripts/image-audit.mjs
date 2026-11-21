@@ -25,7 +25,8 @@ for (const [name, vp, dpr] of SCREENS) {
     await page.waitForTimeout(1800);
     const rows = await page.evaluate(() => [...document.querySelectorAll('img')].filter((i) => i.complete && i.naturalWidth && i.clientWidth > 40 && i.currentSrc.includes('/assets/img/')).map((i) => {
       // naturalWidth is density-corrected when a srcset is used, so read the real file width from the chosen srcset entry.
-      const entries = (i.srcset || '').split(',').map((e) => e.trim().split(/\s+/)).filter((e) => e[1]);
+      const file = i.currentSrc.split('/').pop(), owner = [...(i.parentElement.tagName === 'PICTURE' ? i.parentElement.querySelectorAll('source') : []), i].find((el) => el.srcset && el.srcset.includes(file)) || i;
+      const entries = (owner.srcset || '').split(',').map((e) => e.trim().split(/\s+/)).filter((e) => e[1]);
       const picked = entries.find((e) => i.currentSrc.endsWith(e[0].split('/').pop()));
       const widths = entries.map((e) => parseInt(e[1]));
       const fileW = picked ? parseInt(picked[1]) : i.naturalWidth;

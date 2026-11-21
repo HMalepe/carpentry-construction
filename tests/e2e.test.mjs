@@ -557,7 +557,8 @@ test('images stay HD: on phones, iPads and desktops the browser loads a file at 
       await p.waitForFunction(() => [...document.images].every((i) => i.complete), null, { timeout: 15000 });
       const soft = await p.evaluate(() => [...document.images].filter((i) => i.clientWidth > 40 && i.currentSrc.includes('/assets/img/')).flatMap((i) => {
         // naturalWidth is density-corrected under srcset, so take the real file width from the chosen srcset entry
-        const entries = i.srcset.split(',').map((e) => e.trim().split(/\s+/)).filter((e) => e[1]);
+        const file = i.currentSrc.split('/').pop(), owner = [...(i.parentElement.tagName === 'PICTURE' ? i.parentElement.querySelectorAll('source') : []), i].find((el) => el.srcset && el.srcset.includes(file)) || i;
+        const entries = owner.srcset.split(',').map((e) => e.trim().split(/\s+/)).filter((e) => e[1]);
         const picked = entries.find((e) => i.currentSrc.endsWith(e[0].split('/').pop()));
         const fileW = picked ? parseInt(picked[1]) : i.naturalWidth;
         const needed = Math.max(i.clientWidth, i.clientHeight * (i.naturalWidth / i.naturalHeight)) * devicePixelRatio;
