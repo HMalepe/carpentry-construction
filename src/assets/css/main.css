@@ -802,12 +802,13 @@ body{background:#fff;color:#000}}
   /* over the photo the lettering is white with a soft dark shadow and a firmer weight, so sky, leaves and hills behind it never swallow it */
   .open-copy{--sh:0 0 3px rgba(10,8,6,.6),0 2px 10px rgba(10,8,6,.5),0 4px 30px rgba(10,8,6,.5)}
   .open-eyebrow,.open-h,.open-sub{color:#fff;text-shadow:var(--sh)}
-  .open-eyebrow{font-weight:700;font-size:12.5px}
-  .open-eyebrow::after{background:#fff;opacity:.9}
+  /* the two small lines sit on solid dark label strips: guaranteed contrast whatever is behind them */
+  .open-eyebrow{display:inline-flex;width:fit-content;background:var(--ink);padding:9px 16px;font-weight:700;font-size:12.5px;text-shadow:none}
+  .open-eyebrow::after{display:none}
   .open-rule{background:#fff;opacity:.9;box-shadow:0 1px 8px rgba(10,8,6,.5)}
   .oh-l{font-weight:500}
   .oh-dot{color:#ff8f84}
-  .open-sub{font-weight:600}
+  .open-sub{display:block;width:fit-content;background:var(--ink);padding:14px 20px;font-weight:500;text-shadow:none;margin-bottom:var(--s5)}
   .open-bg img{object-position:center 60%}
   .open-h{font-size:clamp(60px,6.4vw,112px)}
   .open-grid{grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);align-items:center}
