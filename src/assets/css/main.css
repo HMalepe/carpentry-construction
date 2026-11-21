@@ -786,7 +786,6 @@ body{background:#fff;color:#000}}
 .oh-l{font-weight:300;font-size:.62em;margin-top:.14em;letter-spacing:-.005em}
 .oh-dot{color:var(--red)}
 .open-rule{display:block;width:48px;height:1px;background:var(--ink);opacity:.6;margin:var(--s5) 0}
-.open-sub{font-size:clamp(17px,1.5vw,21px);line-height:1.5;color:var(--ink);margin-bottom:var(--s5)}
 .doors{display:grid;gap:var(--s3);align-content:end}
 .door{position:relative;display:grid;gap:6px;padding:var(--s5) calc(var(--s5) + 36px) var(--s5) var(--s5);background:var(--ink);color:var(--paper);border:1px solid var(--ink);min-height:132px;transition:background-color .4s var(--ease),color .4s var(--ease),border-color .4s var(--ease)}
 .door:hover,.door:focus-visible{background:var(--red);border-color:var(--red)}
@@ -803,14 +802,13 @@ body{background:#fff;color:#000}}
   .open-bg{inset:0;height:auto}
   /* over the photo the lettering is white with a soft dark shadow and a firmer weight, so sky, leaves and hills behind it never swallow it */
   .open-copy{--sh:0 0 3px rgba(10,8,6,.6),0 2px 10px rgba(10,8,6,.5),0 4px 30px rgba(10,8,6,.5)}
-  .open-eyebrow,.open-h,.open-sub{color:#fff;text-shadow:var(--sh)}
-  /* the two small lines sit on solid dark label strips: guaranteed contrast whatever is behind them */
+  .open-eyebrow,.open-h{color:#fff;text-shadow:var(--sh)}
+  /* the small label line sits on a solid dark strip: guaranteed contrast whatever is behind it */
   .open-eyebrow{display:inline-flex;width:fit-content;background:var(--ink);padding:9px 16px;font-weight:700;font-size:12.5px;text-shadow:none}
   .open-eyebrow::after{display:none}
   .open-rule{background:#fff;opacity:.9;box-shadow:0 1px 8px rgba(10,8,6,.5)}
   .oh-l{font-weight:500}
   .oh-dot{color:#ff8f84}
-  .open-sub{display:block;width:fit-content;background:var(--ink);padding:14px 20px;font-weight:500;text-shadow:none;margin-bottom:var(--s5)}
   .open-bg img{object-position:center 60%}
   .open-h{font-size:clamp(60px,6.4vw,112px)}
   .open-grid{grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);align-items:center}
