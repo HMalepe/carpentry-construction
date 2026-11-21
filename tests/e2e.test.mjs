@@ -325,14 +325,15 @@ test('pinned process scene: one scene, four beats; scrubbed route; rewinds when 
   assert.equal(await p.evaluate(() => getComputedStyle(document.querySelector('.proc-stick')).position), 'sticky', 'process scene is pinned');
   const seen = [];
   for (const f of [0.04, 0.3, 0.55, 0.92]) {
-    await jump(p, await sceneY(p, '.proc', f)); await settle(p);
-    const r = await p.evaluate(() => ({ stage: document.querySelector('.proc').dataset.stage, active: [...document.querySelectorAll('.proc .stage')].findIndex((s) => s.classList.contains('is-active')) + 1, dash: parseFloat((getComputedStyle(document.querySelector('.route-draw')).strokeDashoffset.match(/[\d.]+/) || ['0'])[0]) }));
+    await jump(p, await sceneY(p, '.proc', f)); await settle(p, 1100);
+    const r = await p.evaluate(() => ({ stage: document.querySelector('.proc').dataset.stage, dotX: document.querySelector('.route-dot').getBoundingClientRect().left + 6.5, stageX: document.querySelector('.proc .stage.is-active').getBoundingClientRect().left, active: [...document.querySelectorAll('.proc .stage')].findIndex((s) => s.classList.contains('is-active')) + 1, dash: parseFloat((getComputedStyle(document.querySelector('.route-draw')).strokeDashoffset.match(/[\d.]+/) || ['0'])[0]) }));
     assert.equal(r.stage, String(r.active), 'the highlighted stage matches the scene beat');
+    assert.ok(Math.abs(r.dotX - r.stageX) <= 3, `the marker stops exactly above step ${r.stage} (${Math.round(r.dotX)} vs ${Math.round(r.stageX)})`);
     seen.push(r);
   }
   assert.deepEqual(seen.map((r) => r.stage), ['1', '2', '3', '4']);
   assert.ok(seen.every((r, i) => !i || r.dash < seen[i - 1].dash), 'the route line draws further with every beat');
-  assert.ok(seen[3].dash < 0.2, 'the route is (almost) fully drawn at the end');
+  assert.ok(Math.abs(seen[3].dash - 0.25) < 0.03, 'the line is drawn up to the last step');
   await jump(p, await sceneY(p, '.proc', 0.04)); await settle(p);
   assert.equal(await p.evaluate(() => document.querySelector('.proc').dataset.stage), '1', 'scrubbing rewinds');
   assert.deepEqual(p.problems, []);

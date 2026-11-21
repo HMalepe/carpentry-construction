@@ -337,8 +337,13 @@ a:hover .ph-zoom img{transform:scale(1.035)}
 .motion .proc .route{display:block}
 .motion .proc .timeline{border-top:0;padding-top:0}
 .motion .proc .stage::before{display:none}
-.motion .route-draw{stroke-dashoffset:calc(1 - min(1, var(--p, 0) * 1.12))}
-.motion .route-dot{left:calc(min(1, var(--p, 0) * 1.12) * 100%)}
+/* the marker and the drawn line stop exactly above the active step (each step starts at 0 / 25 / 50 / 75% of the line), never in between */
+.motion .proc{--rp:0}
+.motion .proc[data-stage="2"]{--rp:.25}
+.motion .proc[data-stage="3"]{--rp:.5}
+.motion .proc[data-stage="4"]{--rp:.75}
+.motion .route-draw{stroke-dashoffset:calc(1 - var(--rp));transition:stroke-dashoffset .5s var(--ease)}
+.motion .route-dot{left:calc(var(--rp) * 100%);transition:left .5s var(--ease)}
 /* dim by colour, not opacity: inactive steps stay >= 4.5:1 (opacity would drop them to 3.6:1) */
 .motion .stage{transition:transform .9s var(--ease);transform:translateY(10px)}
 .motion .stage h3,.motion .stage p,.motion .stage .mono{color:var(--stone-2);transition:color .6s var(--ease)}
