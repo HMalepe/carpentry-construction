@@ -328,8 +328,10 @@ a:hover .ph-zoom img{transform:scale(1.035)}
 .stage{padding:0 var(--s6) 0 0;border-left:0;margin:0}
 .stage::before{left:0;top:calc(-1 * var(--s6) - 6px)}
 .stage .glyph{width:92px;height:92px}}
-/* the pinned scene: only with motion, and only where the viewport is tall enough to hold it */
-@media (min-height:560px){
+/* the pinned scene: only with motion, only where the viewport is tall enough to hold it, and only with a mouse or trackpad.
+   Touch screens (iPhone, iPad, Android) scroll this section natively as a plain timeline: a sticky, scroll-linked scene cannot keep up with
+   iOS momentum scrolling and its collapsing toolbar, and it showed as stutter. */
+@media (min-height:560px) and (hover:hover) and (pointer:fine){
 .motion .proc{height:calc(100svh + 190svh);padding:0}
 .motion .proc-stick{position:sticky;top:0;height:100svh;display:flex;align-items:center;padding-top:var(--head-h);overflow:hidden}
 .motion .proc .route{display:block}
@@ -346,7 +348,7 @@ a:hover .ph-zoom img{transform:scale(1.035)}
 .motion .stage .glyph .s *{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.3s var(--ease)}
 .motion .stage.is-active .glyph .s *,.motion .stage.is-past .glyph .s *{stroke-dashoffset:0}}
 /* phones: one beat at a time, stacked in the same cell, so the whole scene fits the screen */
-@media (max-width:899.98px) and (min-height:560px){
+@media (max-width:899.98px) and (min-height:560px) and (hover:hover) and (pointer:fine){
 .motion .proc .timeline{display:grid;border:0;margin:0;padding:0}
 .motion .proc .stage{grid-area:1/1;border:0;margin:0;padding:var(--s4) 0 0;opacity:0;transform:translateY(24px);pointer-events:none}
 .motion .proc .stage.is-active{opacity:1;transform:none;pointer-events:auto}
@@ -920,8 +922,7 @@ a,button,summary,label,.pick,.door{touch-action:manipulation}
 .lite .rail{scroll-behavior:auto}
 /* iOS < 15.4 and old Android WebViews do not know svh: fall back to vh so the pinned scene and full-height sections keep their size. */
 @supports not (height:1svh){
-.motion .proc{height:calc(100vh + 190vh)}
-.motion .proc-stick{height:100vh}
+@media (hover:hover) and (pointer:fine){.motion .proc{height:calc(100vh + 190vh)}.motion .proc-stick{height:100vh}}
 .motion .svc-card{min-height:calc(100vh - var(--head-h) - 72px);margin-bottom:34vh}
 .nf{min-height:86vh}
 .svc-photo-hero{min-height:94vh}

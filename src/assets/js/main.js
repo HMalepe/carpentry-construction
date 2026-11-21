@@ -126,7 +126,7 @@
   }
 
   /* ---- process scene: one scroll = one step, landing exactly on it ----
-     Inside the pinned scene a wheel notch, trackpad flick, swipe or arrow/Page key moves to the next (or previous) step, and anything
+     Inside the pinned scene (mouse / trackpad devices only; touch screens scroll natively) a wheel notch, trackpad flick or arrow/Page key moves to the next (or previous) step, and anything
      else that stops scrolling between steps (scrollbar drag, momentum) is settled onto the nearest one. At the first step scrolling up and
      the last step scrolling down the page simply carries on, so nobody is ever trapped. No pinned scene (reduced motion, low-end, short
      screens) means none of this runs. */
@@ -136,8 +136,9 @@
     var beats = Number(proc.getAttribute('data-beats')) || 0;
     var stick = proc.querySelector('.proc-stick');
     if (beats < 2 || !stick) return;
+    if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;   // touch screens scroll this section natively (see the CSS note)
     var smooth = window.matchMedia('(prefers-reduced-motion: no-preference)').matches ? 'smooth' : 'auto';
-    var busy = false, lastWheel = 0, lastDelta = 0, settleT = 0, tx = null;
+    var busy = false, lastWheel = 0, lastDelta = 0, settleT = 0;
 
     var pinned = function () { return getComputedStyle(stick).position === 'sticky'; };
     // Scroll positions of the steps: first = scene starts, last = scene ends, the rest sit in the middle of their beat
@@ -187,24 +188,6 @@
       if (!dir || busy && inside(window.scrollY, stops())) { if (dir) e.preventDefault(); return; }
       if (step(dir)) e.preventDefault();
     });
-
-    d.addEventListener('touchstart', function (e) { tx = e.touches.length === 1 ? { y: e.touches[0].clientY, x: e.touches[0].clientX, t: performance.now(), own: false, dead: false } : null; }, { passive: true });
-    d.addEventListener('touchmove', function (e) {
-      if (!tx || tx.dead || !pinned()) return;
-      var dy = tx.y - e.touches[0].clientY, dx = tx.x - e.touches[0].clientX;
-      if (!tx.own) {
-        if (Math.abs(dy) < 8 && Math.abs(dx) < 8) return;
-        if (Math.abs(dx) > Math.abs(dy) || busy || target(dy > 0 ? 1 : -1) === null) { tx.dead = busy ? false : true; if (!busy) return; }
-        tx.own = true;
-      }
-      if (e.cancelable) e.preventDefault();   // we are driving this swipe: the page must not also scroll
-    }, { passive: false });
-    d.addEventListener('touchend', function (e) {
-      if (!tx || !tx.own) { tx = null; return; }
-      var dy = tx.y - e.changedTouches[0].clientY, fast = performance.now() - tx.t < 320; tx = null;
-      if (busy) return;
-      if (Math.abs(dy) > (fast ? 18 : 44)) step(dy > 0 ? 1 : -1);
-    }, { passive: true });
 
     // anything that comes to rest between two steps (scrollbar, momentum, find-in-page) is settled onto the nearest one
     window.addEventListener('scroll', function () {

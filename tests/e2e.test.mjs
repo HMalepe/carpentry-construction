@@ -642,33 +642,35 @@ test('process scene: exactly four scrolls, each lands precisely on a step; the p
   await p.context().close();
 });
 
-test('process scene: touch swipes step one at a time; resting between steps settles onto the nearest', async () => {
-  const p = await open({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
-  await p.goto(BASE + '/'); await settle(p, 800);
-  const cdp = await p.context().newCDPSession(p);
-  // a real finger: touch start, a run of moves, touch end (negative = finger moves up = page scrolls down)
-  const swipe = async (dy) => {
+test('touch screens (iPhone, iPad, Android) scroll the process natively: no pinned scene, no scroll hijacking, all four steps are plain content', async () => {
+  for (const [w, h] of [[390, 844], [820, 1180]]) {
+    const p = await open({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true });
+    let hijacked = 0;
+    await p.addInitScript(() => { const orig = EventTarget.prototype.addEventListener; EventTarget.prototype.addEventListener = function (t, f, o) { if ((t === 'touchmove' || t === 'wheel') && o && o.passive === false) window.__nonPassive = (window.__nonPassive || 0) + 1; return orig.call(this, t, f, o); }; });
+    await p.goto(BASE + '/'); await settle(p, 800);
+    const r = await p.evaluate(() => {
+      const proc = document.querySelector('.proc');
+      return { sticky: getComputedStyle(document.querySelector('.proc-stick')).position, h: proc.offsetHeight, vh: innerHeight, stages: [...proc.querySelectorAll('.stage')].map((s) => getComputedStyle(s).opacity),
+        route: getComputedStyle(document.querySelector('.route')).display, nonPassive: window.__nonPassive || 0, ov: document.documentElement.scrollWidth - innerWidth };
+    });
+    assert.equal(r.sticky, 'static', `${w}px: not pinned`);
+    assert.ok(r.h < r.vh * 2.2 + 600, `${w}px: the section is just its content, not a long pinned runway (${r.h}px)`);
+    assert.deepEqual(r.stages, ['1', '1', '1', '1'], `${w}px: every step readable`);
+    assert.equal(r.route, 'none');
+    assert.equal(r.nonPassive, 0, `${w}px: no non-passive touch/wheel listeners (nothing can slow native scrolling)`);
+    assert.equal(r.ov, 0);
+    // touching and flicking over the section never gets prevented
+    const cdp = await p.context().newCDPSession(p);
+    await jump(p, await p.evaluate(() => scrollY + document.querySelector('.proc').getBoundingClientRect().top - 100)); await settle(p, 500);
+    const y0 = await p.evaluate(() => scrollY);
     const pt = (y) => [{ x: 200, y: Math.round(y), id: 1 }];
-    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: pt(500) });
-    for (let i = 1; i <= 10; i++) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: pt(500 + (dy * i) / 10) }); await p.waitForTimeout(12); }
-    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
-    await settle(p, 1100);
-  };
-  await jump(p, await sceneY(p, '.proc', 0)); await settle(p, 900);
-  for (const want of [1, 2, 3]) {
-    await swipe(-260);
-    const st = await procState(p);
-    assert.ok(Math.abs(st.y - st.stops[want]) <= 3 && st.active === want, `swipe ${want}: step ${want + 1} exactly (${st.y} vs ${st.stops[want]}, active ${st.active})`);
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: pt(600) });
+    for (let i = 1; i <= 12; i++) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: pt(600 - i * 30) }); await p.waitForTimeout(12); }
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await settle(p, 900);
+    assert.ok((await p.evaluate(() => scrollY)) - y0 > 200, `${w}px: a swipe scrolls the page freely (moved ${(await p.evaluate(() => scrollY)) - y0}px)`);
+    assert.deepEqual(p.problems, []);
+    await p.context().close();
   }
-  await swipe(-260);
-  assert.ok((await procState(p)).y > (await procState(p)).stops[3] + 20, 'the next swipe leaves the scene');
-  // a jump to the middle of nowhere (scrollbar drag, find-in-page) settles onto a step
-  const st = await procState(p);
-  await jump(p, Math.round((st.stops[1] + st.stops[2]) / 2) + 40); await settle(p, 1400);
-  const after = await procState(p);
-  assert.ok(after.stops.some((x) => Math.abs(after.y - x) <= 2), `settled onto a step (${after.y} in ${after.stops})`);
-  assert.deepEqual(p.problems, []);
-  await p.context().close();
 });
 
 test('process scene: arrow keys and Page Down also step exactly; Tab/typing are left alone', async () => {
