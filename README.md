@@ -190,6 +190,7 @@ The site is tuned for phones first (iOS and Android, including low-end handsets)
   effect (same path as `prefers-reduced-motion`): no pinned scenes, nothing to repaint while scrolling, everything readable.
 - **Touch devices** get a solid header (no backdrop blur), no tap delay, and rails below the fold are not laid out or painted until
   they near the screen (`content-visibility`). iOS < 15.4 falls back from `svh` to `vh`.
+- **Process scene is step-locked.** One wheel notch / flick / swipe / arrow or Page key moves to the next step and lands exactly on it (4 scrolls for 4 steps); anything that stops between steps settles onto the nearest one. At the first step going up and the last step going down the page scrolls on normally. Reduced-motion, low-end and short screens get the plain list instead.
 - **Catalogue rails** are real scroll containers (swipe on touch, arrows with a mouse). Only the page is prevented from scrolling sideways.
 - **Probes** (need the site served: `npm run serve`):
   `node scripts/perf-probe.mjs` loads pages on an emulated phone (4x slower CPU, Slow 4G) and reports bytes, LCP, CLS, long tasks and

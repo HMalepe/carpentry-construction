@@ -601,3 +601,86 @@ test('catalogue rails are real scroll containers on phones (every job is reachab
   assert.equal(await p.evaluate(() => scrollX), 0);
   await p.context().close();
 });
+
+/** Where the scene's steps should land, and which step is highlighted right now (read from the page, the same maths the page uses). */
+const procState = (p) => p.evaluate(() => {
+  const el = document.querySelector('.proc'), r = el.getBoundingClientRect(), top = scrollY + r.top, len = r.height - innerHeight, beats = 4;
+  const stops = [0, 1, 2, 3].map((k) => top + len * (k === 0 ? 0 : k === beats - 1 ? 1 : (k + 0.5) / (beats * 0.985)));
+  return { y: Math.round(scrollY), stops: stops.map(Math.round), active: [...el.querySelectorAll('.stage')].findIndex((x) => x.classList.contains('is-active')), top: Math.round(top), len: Math.round(len) };
+});
+
+test('process scene: exactly four scrolls, each lands precisely on a step; the page leaves normally at both ends (wheel)', async () => {
+  const p = await open({ viewport: { width: 1440, height: 900 } });
+  await p.goto(BASE + '/'); await settle(p, 800);
+  await jump(p, await sceneY(p, '.proc', 0)); await settle(p, 900);
+  let st = await procState(p);
+  assert.equal(Math.abs(st.y - st.stops[0]) <= 2 && st.active === 0, true, 'enters on step one');
+  await p.mouse.move(700, 450);
+  for (const want of [1, 2, 3]) {
+    await p.mouse.wheel(0, 100); await settle(p, 1100);
+    st = await procState(p);
+    assert.ok(Math.abs(st.y - st.stops[want]) <= 2, `scroll ${want}: landed on step ${want + 1} (${st.y} vs ${st.stops[want]})`);
+    assert.equal(st.active, want, `scroll ${want}: that step is the highlighted one`);
+  }
+  // a flick with momentum (many wheel events) is still ONE step, not several
+  await p.mouse.wheel(0, 100); await settle(p, 200);
+  for (let i = 0; i < 8; i++) { await p.mouse.wheel(0, 40 - i * 4); await p.waitForTimeout(25); }
+  await settle(p, 1200);
+  st = await procState(p);
+  assert.ok(st.y > st.stops[3] + 20, 'the fifth scroll leaves the scene and carries on down the page');
+  // and back up: first scroll returns to the last step, then one step per scroll
+  await jump(p, st.stops[3]); await settle(p, 900);
+  await p.mouse.wheel(0, -100); await settle(p, 1100);
+  st = await procState(p);
+  assert.ok(Math.abs(st.y - st.stops[2]) <= 2 && st.active === 2, 'scrolling up goes back one step exactly');
+  await jump(p, st.stops[0]); await settle(p, 900);
+  await p.mouse.wheel(0, -100); await settle(p, 900);
+  st = await procState(p);
+  assert.ok(st.y < st.stops[0] - 20, 'scrolling up from step one leaves the scene (no trap)');
+  assert.deepEqual(p.problems, []);
+  await p.context().close();
+});
+
+test('process scene: touch swipes step one at a time; resting between steps settles onto the nearest', async () => {
+  const p = await open({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  await p.goto(BASE + '/'); await settle(p, 800);
+  const cdp = await p.context().newCDPSession(p);
+  // a real finger: touch start, a run of moves, touch end (negative = finger moves up = page scrolls down)
+  const swipe = async (dy) => {
+    const pt = (y) => [{ x: 200, y: Math.round(y), id: 1 }];
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: pt(500) });
+    for (let i = 1; i <= 10; i++) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: pt(500 + (dy * i) / 10) }); await p.waitForTimeout(12); }
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    await settle(p, 1100);
+  };
+  await jump(p, await sceneY(p, '.proc', 0)); await settle(p, 900);
+  for (const want of [1, 2, 3]) {
+    await swipe(-260);
+    const st = await procState(p);
+    assert.ok(Math.abs(st.y - st.stops[want]) <= 3 && st.active === want, `swipe ${want}: step ${want + 1} exactly (${st.y} vs ${st.stops[want]}, active ${st.active})`);
+  }
+  await swipe(-260);
+  assert.ok((await procState(p)).y > (await procState(p)).stops[3] + 20, 'the next swipe leaves the scene');
+  // a jump to the middle of nowhere (scrollbar drag, find-in-page) settles onto a step
+  const st = await procState(p);
+  await jump(p, Math.round((st.stops[1] + st.stops[2]) / 2) + 40); await settle(p, 1400);
+  const after = await procState(p);
+  assert.ok(after.stops.some((x) => Math.abs(after.y - x) <= 2), `settled onto a step (${after.y} in ${after.stops})`);
+  assert.deepEqual(p.problems, []);
+  await p.context().close();
+});
+
+test('process scene: arrow keys and Page Down also step exactly; Tab/typing are left alone', async () => {
+  const p = await open({ viewport: { width: 1440, height: 900 } });
+  await p.goto(BASE + '/'); await settle(p, 800);
+  await jump(p, await sceneY(p, '.proc', 0)); await settle(p, 900);
+  for (const [key, want] of [['ArrowDown', 1], ['PageDown', 2], ['Space', 3]]) {
+    await p.keyboard.press(key); await settle(p, 1100);
+    const st = await procState(p);
+    assert.ok(Math.abs(st.y - st.stops[want]) <= 2 && st.active === want, `${key} → step ${want + 1} exactly (${st.y} vs ${st.stops[want]})`);
+  }
+  await p.keyboard.press('ArrowUp'); await settle(p, 1100);
+  const st = await procState(p);
+  assert.ok(Math.abs(st.y - st.stops[2]) <= 2, 'ArrowUp goes back one step');
+  await p.context().close();
+});

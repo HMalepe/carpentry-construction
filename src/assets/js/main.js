@@ -125,6 +125,99 @@
     request();
   }
 
+  /* ---- process scene: one scroll = one step, landing exactly on it ----
+     Inside the pinned scene a wheel notch, trackpad flick, swipe or arrow/Page key moves to the next (or previous) step, and anything
+     else that stops scrolling between steps (scrollbar drag, momentum) is settled onto the nearest one. At the first step scrolling up and
+     the last step scrolling down the page simply carries on, so nobody is ever trapped. No pinned scene (reduced motion, low-end, short
+     screens) means none of this runs. */
+  (function () {
+    var proc = d.querySelector('.proc[data-scrub="pin"]');
+    if (!proc || !root.classList.contains('motion')) return;
+    var beats = Number(proc.getAttribute('data-beats')) || 0;
+    var stick = proc.querySelector('.proc-stick');
+    if (beats < 2 || !stick) return;
+    var smooth = window.matchMedia('(prefers-reduced-motion: no-preference)').matches ? 'smooth' : 'auto';
+    var busy = false, lastWheel = 0, lastDelta = 0, settleT = 0, tx = null;
+
+    var pinned = function () { return getComputedStyle(stick).position === 'sticky'; };
+    // Scroll positions of the steps: first = scene starts, last = scene ends, the rest sit in the middle of their beat
+    // (same beat maths as the highlight in the scroll engine above, so the landing step is always the highlighted one).
+    var stops = function () {
+      var r = proc.getBoundingClientRect(), top = window.scrollY + r.top, len = Math.max(1, r.height - window.innerHeight), out = [];
+      for (var k = 0; k < beats; k++) out.push(top + len * (k === 0 ? 0 : k === beats - 1 ? 1 : (k + 0.5) / (beats * 0.985)));
+      return out;
+    };
+    var nearest = function (y, st) { var b = 0; st.forEach(function (v, i) { if (Math.abs(v - y) < Math.abs(st[b] - y)) b = i; }); return b; };
+    var inside = function (y, st) { return y >= st[0] - 2 && y <= st[st.length - 1] + 2; };
+    // target for a move in direction dir (+1 down / -1 up) from the current position, or null when the page should just scroll on
+    var target = function (dir) {
+      var y = window.scrollY, st = stops();
+      if (!inside(y, st)) return null;
+      for (var i = dir > 0 ? 0 : st.length - 1; dir > 0 ? i < st.length : i >= 0; i += dir) if (dir > 0 ? st[i] > y + 4 : st[i] < y - 4) return st[i];
+      return null;
+    };
+    var go = function (y) {
+      busy = true; clearTimeout(settleT);
+      window.scrollTo({ top: y, behavior: smooth });
+      var t0 = performance.now();
+      (function wait() {
+        if (Math.abs(window.scrollY - y) < 1.5 || performance.now() - t0 > 1100) { busy = false; return; }
+        requestAnimationFrame(wait);
+      })();
+    };
+    var step = function (dir) { var y = target(dir); if (y === null) return false; go(y); return true; };
+
+    var ownFlick = false;   // true while the tail of a flick that WE turned into a step is still arriving
+    d.addEventListener('wheel', function (e) {
+      if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY) || !pinned()) return;
+      var inZone = inside(window.scrollY, stops());
+      if (!inZone && !busy) { ownFlick = false; return; }
+      var now = performance.now(), dy = Math.abs(e.deltaY);
+      var fresh = now - lastWheel > 180 || dy > lastDelta * 1.6;   // a new flick, not the tail of trackpad momentum
+      lastWheel = now; lastDelta = dy;
+      if (!fresh) { if (ownFlick || busy) e.preventDefault(); return; }   // momentum tail: swallow it only if we are the ones moving the page
+      ownFlick = false;
+      if (busy) { e.preventDefault(); ownFlick = true; return; }
+      if (step(e.deltaY > 0 ? 1 : -1)) { e.preventDefault(); ownFlick = true; }   // otherwise (first step up / last step down) the page just scrolls on
+    }, { passive: false });
+
+    d.addEventListener('keydown', function (e) {
+      if (e.altKey || e.ctrlKey || e.metaKey || !pinned() || /^(INPUT|TEXTAREA|SELECT|BUTTON|A|SUMMARY)$/.test((e.target || {}).tagName || '')) return;
+      var dir = { ArrowDown: 1, PageDown: 1, ArrowUp: -1, PageUp: -1 }[e.key] || (e.key === ' ' ? (e.shiftKey ? -1 : 1) : 0);
+      if (!dir || busy && inside(window.scrollY, stops())) { if (dir) e.preventDefault(); return; }
+      if (step(dir)) e.preventDefault();
+    });
+
+    d.addEventListener('touchstart', function (e) { tx = e.touches.length === 1 ? { y: e.touches[0].clientY, x: e.touches[0].clientX, t: performance.now(), own: false, dead: false } : null; }, { passive: true });
+    d.addEventListener('touchmove', function (e) {
+      if (!tx || tx.dead || !pinned()) return;
+      var dy = tx.y - e.touches[0].clientY, dx = tx.x - e.touches[0].clientX;
+      if (!tx.own) {
+        if (Math.abs(dy) < 8 && Math.abs(dx) < 8) return;
+        if (Math.abs(dx) > Math.abs(dy) || busy || target(dy > 0 ? 1 : -1) === null) { tx.dead = busy ? false : true; if (!busy) return; }
+        tx.own = true;
+      }
+      if (e.cancelable) e.preventDefault();   // we are driving this swipe: the page must not also scroll
+    }, { passive: false });
+    d.addEventListener('touchend', function (e) {
+      if (!tx || !tx.own) { tx = null; return; }
+      var dy = tx.y - e.changedTouches[0].clientY, fast = performance.now() - tx.t < 320; tx = null;
+      if (busy) return;
+      if (Math.abs(dy) > (fast ? 18 : 44)) step(dy > 0 ? 1 : -1);
+    }, { passive: true });
+
+    // anything that comes to rest between two steps (scrollbar, momentum, find-in-page) is settled onto the nearest one
+    window.addEventListener('scroll', function () {
+      if (busy) return;
+      clearTimeout(settleT);
+      settleT = setTimeout(function () {
+        var st = stops(), y = window.scrollY;
+        if (busy || !pinned() || !inside(y, st)) return;
+        var i = nearest(y, st); if (Math.abs(st[i] - y) > 2) go(st[i]);
+      }, 170);
+    }, { passive: true });
+  })();
+
   /* ---- header: solid once the page scrolls; takes the paper tone while it sits over a paper section ---- */
   if (head) {
     var ticking = false;
