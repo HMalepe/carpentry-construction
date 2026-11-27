@@ -470,6 +470,47 @@
     r.addEventListener('focus', on);
   });
 
+  /* ---- back button / iPhone edge-swipe hygiene ----
+     Every page is a real navigation, so Back and the iPhone swipe walk through the pages you viewed, one by one, back to the first page of
+     the tab. Two things must not get in the way: (1) overlays (photo viewer, menu, sheets) close first, so Back never skips past one;
+     (2) in-page anchor links (e.g. "Browse the catalogue") never add history entries. */
+  (function () {
+    var layers = [].slice.call(d.querySelectorAll('dialog')).concat(menu ? [menu] : []);
+    var pending = null, ignore = 0;
+    var closeEl = function (el) { if (el.tagName === 'DIALOG') el.close(); else el.open = false; };
+    layers.forEach(function (el) {
+      var pushed = false;
+      new MutationObserver(function () {
+        if (el.open && !pushed) { pushed = true; history.pushState({ mrrLayer: 1 }, ''); }
+        else if (!el.open && pushed) { pushed = false; if (history.state && history.state.mrrLayer) { ignore++; history.back(); } }
+      }).observe(el, { attributes: true, attributeFilter: ['open'] });
+      el._unpush = function () { pushed = false; };
+      // a same-tab page link inside an overlay: close the overlay (removing its history entry) and then go, so Back stays clean
+      el.addEventListener('click', function (e) {
+        var a = e.target.closest && e.target.closest('a[href]');
+        if (!a || a.target === '_blank' || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey) return;
+        var u = new URL(a.href, location.href);
+        if (u.origin !== location.origin || (u.pathname === location.pathname && u.search === location.search)) return;
+        e.preventDefault(); pending = u.href; closeEl(el);
+      });
+    });
+    window.addEventListener('popstate', function () {
+      if (ignore > 0) { ignore--; if (pending) { var u = pending; pending = null; location.assign(u); } return; }
+      layers.forEach(function (el) { if (el.open) { el._unpush(); closeEl(el); } });   // Back / swipe while an overlay is open: close it, stay on the page
+    });
+    window.addEventListener('pageshow', function (e) { if (e.persisted) layers.forEach(function (el) { if (el.open) { el._unpush(); closeEl(el); } }); });
+
+    d.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href^="#"]');
+      if (!a || a.classList.contains('skip') || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      var id = a.getAttribute('href').slice(1), t = id && d.getElementById(id);
+      if (!t) return;
+      e.preventDefault();
+      t.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      history.replaceState(history.state, '', '#' + id);   // update the address without adding a history entry
+    });
+  })();
+
   /* ---- quote builder (/quote/) ---- */
   var form = d.getElementById('qb');
   if (!form) return;

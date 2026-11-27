@@ -700,3 +700,37 @@ test('reload starts from scratch: back at the top with an empty shortlist (back/
   assert.deepEqual(p.problems, []);
   await p.context().close();
 });
+
+test('Back / iPhone swipe-back walks the pages you viewed one by one to the first page, overlays close first, anchors add no history', async () => {
+  const p = await open({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  const url = () => p.url().replace(BASE, '') || '/';
+  await p.goto(BASE + '/'); await settle(p, 400);
+  // in-page anchor: the first door scrolls to the catalogue and does NOT add a history entry
+  const before = await p.evaluate(() => history.length);
+  await p.click('.door[href="#catalogue"]'); await settle(p, 900);
+  assert.equal(await p.evaluate(() => history.length), before, 'anchor link adds no history entry');
+  assert.equal(url(), '/#catalogue');
+  // navigate through three pages
+  await p.goto(BASE + '/services/'); await p.goto(BASE + '/projects/'); await settle(p, 400);
+  // open the photo viewer: Back closes it and stays on the page
+  await p.locator('.proj a[data-lightbox]').first().scrollIntoViewIfNeeded(); await p.locator('.proj a[data-lightbox]').first().click();
+  await p.waitForSelector('.lb[open]');
+  await p.goBack(); await settle(p, 500);
+  assert.equal(await p.evaluate(() => !!document.querySelector('.lb[open]')), false, 'Back closed the photo viewer');
+  assert.equal(url(), '/projects/', 'and stayed on the same page');
+  // the mobile menu behaves the same
+  await p.click('.menu summary'); assert.equal(await p.$eval('.menu', (m) => m.open), true);
+  await p.goBack(); await settle(p, 500);
+  assert.equal(await p.$eval('.menu', (m) => m.open), false, 'Back closed the menu');
+  assert.equal(url(), '/projects/');
+  // a page link inside the menu goes there cleanly, and Back returns to the previous page
+  await p.click('.menu summary'); await p.click('.menu-panel a[href="/contact/"]'); await p.waitForURL('**/contact/'); await settle(p, 400);
+  await p.goBack(); await settle(p, 600);
+  assert.equal(url(), '/projects/', 'one Back from the page opened via the menu returns to the page before it');
+  // and the rest of the chain, all the way to the first page
+  await p.goBack(); assert.equal(url(), '/services/');
+  await p.goBack(); assert.ok(url() === '/' || url() === '/#catalogue', `back at the landing page (${url()})`);
+  await p.goBack(); assert.equal(p.url(), 'about:blank', 'one more Back leaves the site: nothing traps the user');
+  assert.deepEqual(p.problems, []);
+  await p.context().close();
+});

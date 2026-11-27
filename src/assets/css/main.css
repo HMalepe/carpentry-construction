@@ -988,3 +988,4 @@ body{background:var(--c-white)}
   .strip-in a{padding:var(--s5) var(--s4)}
   .strip-in li:nth-child(odd) a{border-left:0}
 }
+html{color-scheme:light}

@@ -205,3 +205,13 @@ The finishes on the Carpentry page come from `src/data/finishes.json` (name, lab
 `src/assets/img/finishes/` (originals kept in `media/originals/finishes/`). To add or swap a finish, drop a WebP in that folder and add an
 entry. Each tile opens a WhatsApp quote with the finish named. Sources are 486 px wide, so the desktop board is capped (1100 px, 2x
 expansion) so they are never enlarged; send 1000 px+ wide originals if you want a bigger board.
+
+## Navigation behaviour (Back, swipe-back, reload)
+
+- **Back / iPhone edge-swipe** walks through the pages you viewed, one by one, back to the first page of the tab (every page is a real
+  navigation; nothing manipulates history except the next two points).
+- **Overlays close first:** the photo viewer, mobile menu and sheets add one history entry while open, so Back / swipe closes them and
+  stays on the page instead of skipping past. A same-tab page link inside an overlay closes it first, then goes.
+- **Anchor links** (e.g. "Browse the catalogue") scroll smoothly and update the address without adding a history entry.
+- **Reload** (button, F5, pull-to-refresh) starts from scratch: top of the page, empty shortlist, no restored scroll position.
+- Tested end to end in `tests/e2e.test.mjs` ("Back / iPhone swipe-back…" and "reload starts from scratch…").
