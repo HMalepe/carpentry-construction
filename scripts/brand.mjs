@@ -11,9 +11,7 @@ const mark = fs.readFileSync(path.join(ROOT, 'src/partials/logo-mark.html'), 'ut
 const RED = '#9F2D32', CHAR = '#282828', PAPER = '#EEE9E1', GRAPHITE = '#111110', IVORY = '#ECE7DF', CORAL = '#E8736C';
 // Fonts are embedded as data URIs: setContent() pages cannot load file:// fonts.
 const b64 = (n) => `data:font/woff2;base64,${fs.readFileSync(path.join(A, 'fonts', n)).toString('base64')}`;
-const fontCss = () => `@font-face{font-family:AR;src:url(${b64('archivo.woff2')});font-weight:100 900;font-stretch:62% 100%}
-@font-face{font-family:NR;src:url(${b64('newsreader-display.woff2')});font-weight:200 800}
-@font-face{font-family:NR;font-style:italic;src:url(${b64('newsreader-display-italic.woff2')});font-weight:200 800}`;
+const fontCss = () => `@font-face{font-family:AR;src:url(${b64('archivo.woff2')});font-weight:100 900;font-stretch:62% 100%}`;
 
 // Favicon: the full-colour mark on a paper tile (stays legible in dark and light browser chrome).
 const inner = mark.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '').replace(/class="r"/g, `fill="${RED}"`).replace(/class="c"/g, `fill="${CHAR}"`);
@@ -36,7 +34,7 @@ body{width:1200px;height:630px;background:${GRAPHITE};color:${IVORY};font-family
 .mk{position:absolute;right:60px;top:56px;width:250px}.mk svg{width:100%;height:auto;display:block}.r{fill:#C93C41}.c{fill:${IVORY}}
 .wm{position:absolute;left:72px;top:64px;font-weight:700;font-stretch:72%;font-size:26px;letter-spacing:.16em;text-transform:uppercase}
 .wm small{display:block;font-weight:400;font-size:14px;letter-spacing:.3em;color:#A8A29A;margin-top:6px}
-h1{position:absolute;left:72px;bottom:150px;font-family:NR;font-weight:300;font-size:100px;line-height:.92;letter-spacing:-.04em}
+h1{position:absolute;left:72px;bottom:150px;font-family:AR;font-stretch:68%;font-weight:700;text-transform:uppercase;font-size:110px;line-height:.95;letter-spacing:.005em}
 h1 em{color:${CORAL};font-style:italic}
 .ft{position:absolute;left:72px;bottom:60px;font-size:22px;letter-spacing:.06em;color:#A8A29A}
 .bar{position:absolute;left:0;bottom:0;height:8px;width:100%;background:#9F2D32}</style>

@@ -57,8 +57,8 @@ function caseBody(c, i) {
   const specs = c.specs.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')
     + `<div data-optional><dt>Location</dt><dd><span class="ph-tag" data-placeholder>[Town]</span></dd></div><div data-optional><dt>Year</dt><dd><span class="ph-tag" data-placeholder>[Year]</span></dd></div>`;
   const pair = c.pair ? `<div class="diptych" data-reveal>
-          <figure><span class="ph reveal-img">${respImg(pBy[c.pair.before], '(min-width:600px) 45vw, 92vw')}</span><figcaption class="cap"><span>A — During installation</span></figcaption></figure>
-          <figure><span class="ph reveal-img">${respImg(pBy[c.pair.after], '(min-width:600px) 45vw, 92vw')}</span><figcaption class="cap"><span>B — At handover</span></figcaption></figure>
+          <figure><span class="ph reveal-img">${respImg(pBy[c.pair.before], '(min-width:600px) 45vw, 92vw')}</span><figcaption class="cap"><span>During installation</span></figcaption></figure>
+          <figure><span class="ph reveal-img">${respImg(pBy[c.pair.after], '(min-width:600px) 45vw, 92vw')}</span><figcaption class="cap"><span>At handover</span></figcaption></figure>
         </div>` : '';
   const figs = c.photos.map((x) => `<figure><span class="ph reveal-img">${respImg(pBy[x.slug], '(min-width:900px) 58vw, 92vw')}</span><figcaption class="cap"><span>${esc(x.caption)}</span></figcaption></figure>`).join('');
   return `
@@ -232,7 +232,7 @@ function footer(meta) {
   const svcLinks = Object.values(services).map((s) => `<li><a href="${s.path}">${esc(s.label)}</a></li>`).join('');
   return `<footer class="site-foot">
   <div class="wrap">
-    <p class="foot-sign">Bring us the drawing. <em>We’ll bring the tools.</em></p>
+    <p class="foot-sign">Crafted for clients <em>who refuse to compromise.</em></p>
     <div class="acts"><a class="btn btn-primary" data-wa="general">Start a project <span class="arr" aria-hidden="true">→</span></a><a class="btn-text" href="/quote/">Detailed quote request</a></div>
     <div class="foot-grid">
       <div class="foot-brand">${logo}
@@ -249,13 +249,7 @@ function footer(meta) {
         <li><a data-wa="site">Report a website problem</a></li>
       </ul></div>
     </div>
-    <div class="titleblock">
-      <div><span class="mono">Drawn by</span>${esc(cfg.name)}</div>
-      <div><span class="mono">Sheet</span>${esc(meta.title.split('|')[0].trim())}</div>
-      <div><span class="mono">Dwg no.</span>${esc(meta.dwg || 'MRR-000')}</div>
-      <div><span class="mono">Scale · Rev</span>1:100 · B</div>
-      <div><span class="mono">©</span>${year}</div>
-    </div>
+    <div class="titleblock"><div>© ${year} ${esc(cfg.name)}</div></div>
   </div>
 </footer>`;
 }

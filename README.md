@@ -174,7 +174,7 @@ Add a free uptime monitor (e.g. UptimeRobot) on the home page with an SMS/email 
 
 ## Credits
 
-- Fonts: Space Grotesk and JetBrains Mono (SIL Open Font License, see `src/assets/fonts/`).
+- Font: Archivo only (SIL Open Font License, see `src/assets/fonts/`): condensed capitals for display, normal width for text, tracked small caps for labels. Self-hosted and trimmed to the characters the site uses.
 - Hero photo: Unsplash (free licence). It's cropped to remove a third-party logo and the person's face. Replace it with your own site photo when you have one.
 
 
