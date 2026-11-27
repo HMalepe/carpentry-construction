@@ -398,7 +398,7 @@ test('catalogue: a rail per category, every tile has a no-JS quote link with the
   await p.context().close();
 });
 
-test('shortlist composer: pick jobs, the WhatsApp message writes itself, survives reload, can be edited and cleared', async () => {
+test('shortlist composer: pick jobs, the WhatsApp message writes itself, follows you between pages, can be edited and cleared', async () => {
   const p = await open({ viewport: { width: 390, height: 844 } });
   await p.goto(BASE + '/'); await settle(p, 400);
   assert.equal(await p.locator('.pickbar:visible').count(), 0, 'no bar while the shortlist is empty');
@@ -419,8 +419,6 @@ test('shortlist composer: pick jobs, the WhatsApp message writes itself, survive
   await p.click('.comp-x >> nth=0');
   assert.equal(await p.textContent('[data-pick-count]'), '1', 'removing a job updates the count');
   await p.keyboard.press('Escape');
-  await p.reload(); await settle(p, 400);
-  assert.equal(await p.textContent('[data-pick-count]'), '1', 'the shortlist survives a reload');
   await p.goto(BASE + '/projects/'); await settle(p, 300);
   assert.equal(await p.textContent('[data-pick-count]'), '1', 'and follows you to other pages');
   await p.click('.pickbar-open'); await p.waitForSelector('#composer[open]');
@@ -686,5 +684,19 @@ test('process scene: arrow keys and Page Down also step exactly; Tab/typing are 
   await p.keyboard.press('ArrowUp'); await settle(p, 1100);
   const st = await procState(p);
   assert.ok(Math.abs(st.y - st.stops[2]) <= 2, 'ArrowUp goes back one step');
+  await p.context().close();
+});
+
+test('reload starts from scratch: back at the top with an empty shortlist (back/forward are left alone)', async () => {
+  const p = await open({ viewport: { width: 1440, height: 900 } });
+  await p.goto(BASE + '/'); await settle(p, 500);
+  await p.locator('.pick').first().scrollIntoViewIfNeeded(); await p.locator('.pick').first().click();
+  await jump(p, 3000); await settle(p, 400);
+  assert.ok((await p.evaluate(() => scrollY)) > 2000 && (await p.textContent('[data-pick-count]')) === '1');
+  await p.reload(); await settle(p, 900);
+  assert.equal(await p.evaluate(() => Math.round(scrollY)), 0, 'a reload returns to the top of the landing page');
+  assert.equal(await p.locator('.pickbar:visible').count(), 0, 'and starts with an empty shortlist');
+  await p.goto(BASE + '/contact/'); await p.goBack(); await settle(p, 500);
+  assert.deepEqual(p.problems, []);
   await p.context().close();
 });

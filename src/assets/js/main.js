@@ -8,6 +8,19 @@
   var clamp = function (v, lo, hi) { return Math.max(lo === undefined ? 0 : lo, Math.min(hi === undefined ? 1 : hi, v)); };
   var head = d.querySelector('.site-head');
 
+  /* Reload (the browser's reload button, F5, pull-to-refresh) starts from scratch: back to the top of the page, an empty shortlist,
+     and no scroll position restored by Chrome. Back / forward and ordinary links are untouched. */
+  try {
+    var nav = performance.getEntriesByType('navigation')[0];
+    if (nav && nav.type === 'reload') {
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      try { localStorage.removeItem('mrr-shortlist'); localStorage.removeItem('mrr-sl-loc'); localStorage.removeItem('mrr-sl-note'); } catch (e) {}
+      if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+      window.scrollTo(0, 0);
+      window.addEventListener('load', function () { window.scrollTo(0, 0); }, { once: true });
+    }
+  } catch (e) {}
+
   /* ======================================================================
      MOTION ENGINE (vanilla, ~2 KB gz). Only runs when the visitor has not asked for reduced motion.
      Three relationships between scroll and animation:
