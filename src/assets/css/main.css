@@ -980,3 +980,11 @@ body{background:var(--c-white)}
 .foot-sign{font-size:clamp(40px,6.4vw,104px);max-width:14em}
 .foot-sign em{color:var(--red-hi)}
 .menu-panel nav a{font-size:clamp(32px,9vw,48px)}
+/* service strip on phones: both columns share the same inner padding and every icon + title starts on the same line */
+.strip-in a{align-items:flex-start}
+.strip-in svg{margin-top:2px}
+@media (max-width:899.98px){
+  .strip-in.wrap{padding-inline:0}
+  .strip-in a{padding:var(--s5) var(--s4)}
+  .strip-in li:nth-child(odd) a{border-left:0}
+}
