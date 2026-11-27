@@ -989,3 +989,6 @@ body{background:var(--c-white)}
   .strip-in li:nth-child(odd) a{border-left:0}
 }
 html{color-scheme:light}
+
+/* quote page opens straight on the service choice: no heading block above it, so the first panel clears the fixed header itself */
+.qb-first{margin-top:calc(var(--head-h) * .4)!important;padding-top:calc(var(--head-h) + var(--s5))!important}   /* starts behind the header so the header takes the light tone, content clears it */
