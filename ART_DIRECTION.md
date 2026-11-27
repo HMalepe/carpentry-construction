@@ -249,3 +249,16 @@ should end in a WhatsApp quote, and the buyers are two different people.
   word, no identical card trio. Swap test: the catalogue only works with this company's own jobs.
 - **Fixed on the way**: tall portrait photos overflowed the lightbox footer (stage grid now has a definite row).
 - **Known leftover**: CSS for the removed home sections is still in `main.css` and can be pruned.
+
+## 12. Soft panels theme (light), preview branch `claude/soft-panels-preview`
+
+Applied with the "soft panels" recipe (white page, cool-grey rounded panels, dark rounded blocks):
+
+- **Page:** white. **Panels:** every content section is a rounded `#EDEFF3` panel (`--c-fog`, radius `clamp(22px,2.6vw,40px)`, gap `max(14px,3vw)`).
+- **How:** the formerly dark sections were switched to the existing `tone-paper` tone (its text, line and accent tokens already existed), and
+  `--ivory`, `--stone`, `--stone-2` are re-pointed inside the panels; nested dark blocks reverse them. No component rules were rewritten.
+- **Stays dark (contrast anchors):** the photo hero, the service strip, the "site visit to handover" scene, the call-to-action bands, the
+  Services photo hero, the Services stacking cards that are dark, and the footer.
+- **Accent:** brick red `#9F2D32` on light (passes AA); the lifted red `#E8736C` only on dark.
+- **Checked:** axe colour-contrast on every page at 390 and 1440 wide (0 violations), 58 e2e tests, screenshots of every page.
+- **To merge:** nothing is on `main` yet; merge `claude/soft-panels-preview` when approved.

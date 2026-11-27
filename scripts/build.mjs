@@ -62,7 +62,7 @@ function caseBody(c, i) {
         </div>` : '';
   const figs = c.photos.map((x) => `<figure><span class="ph reveal-img">${respImg(pBy[x.slug], '(min-width:900px) 58vw, 92vw')}</span><figcaption class="cap"><span>${esc(x.caption)}</span></figcaption></figure>`).join('');
   return `
-<section class="case-hero tone-dark">
+<section class="case-hero tone-paper">
   <div class="wrap case-hero-grid">
     <div class="case-hero-txt">
       <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/projects/">Work</a><span aria-hidden="true">/</span><span aria-current="page">${esc(c.title)}</span></nav>
@@ -75,7 +75,7 @@ function caseBody(c, i) {
     </figure>
   </div>
 </section>
-<section class="sec tone-dark">
+<section class="sec tone-paper">
   <div class="wrap case-body">
     <div class="case-aside"><div class="case-aside-in">
       <p class="eyebrow"><span class="n"></span>Specification</p>
@@ -89,7 +89,7 @@ function caseBody(c, i) {
     </div>
   </div>
 </section>
-<section class="tone-raised">
+<section class="tone-paper">
   <div class="wrap"><a class="next-case" href="/projects/${next.slug}/"><span class="lbl">Next project</span><h2 class="h-l">${esc(next.title)} →</h2></a></div>
 </section>`;
 }

@@ -932,3 +932,37 @@ a,button,summary,label,.pick,.door{touch-action:manipulation}
 .nf{min-height:86vh}
 .svc-photo-hero{min-height:94vh}
 .case-cover .ph{max-height:82vh}}
+
+/* ======================================================================
+   SOFT PANELS THEME (white page, cool-grey rounded panels, dark rounded blocks)
+   Built with the "soft panels" recipe: sections flip to the paper tone (their text, line and accent
+   tokens are already defined there), the page goes white, each section is a rounded grey panel.
+   The hero, the service strip, the process scene, the call-to-action bands, the photo hero and the footer stay dark.
+   ====================================================================== */
+:root{--c-white:#fff;--c-fog:#EDEFF3;--c-graphite:#1B1A18;--c-radius:clamp(22px,2.6vw,40px);--c-gap:max(14px,3vw);--c-vgap:clamp(14px,2vw,28px)}
+body{background:var(--c-white)}
+.sec.tone-paper,.page-hero.tone-paper,.nf.tone-paper,.case-hero.tone-paper,section.tone-paper:not(.open):not(.svc-card){
+  background:var(--c-fog);margin:0 var(--c-gap) var(--c-vgap);border-radius:var(--c-radius)}
+.page-hero.tone-paper,.case-hero.tone-paper,.nf.tone-paper{margin-top:calc(var(--head-h) + var(--c-vgap))}
+.tone-paper .dimline span{--dim-bg:var(--c-fog)}
+/* dark rounded blocks for contrast */
+.proc.tone-dark,.cta-band{margin:var(--c-vgap) var(--c-gap);border-radius:var(--c-radius);background:var(--c-graphite)}
+.strip{margin:0}
+/* components that assumed a dark background */
+.tone-paper .pick.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tone-paper .rail-btn:hover:not(:disabled){border-color:var(--ink)}
+.tone-paper .cata-head .lead b{color:var(--ink)}
+.tone-paper .tile-ph.ph,.tone-paper .tile-ph{background:#fff}
+.tone-paper .tile-ph.ph{border-radius:14px}
+.tone-paper .led-draw{background:transparent}
+.tone-paper .ph{background:#fff}
+/* re-point the dark theme's text tokens inside the light panels (the skill's technique: change the tokens, not every rule) ... */
+.sec.tone-paper,.page-hero.tone-paper,.nf.tone-paper,.case-hero.tone-paper,section.tone-paper:not(.open):not(.svc-card){
+  --ivory:var(--c-graphite);--stone:var(--ink-mute);--stone-2:#6B655B}
+/* ... and put them back inside dark blocks that sit on a light page or inside a light panel */
+.tone-dark,.tone-raised,.tone-concrete,.cta-band,.proc,.strip{
+  --ivory:#ECE7DF;--stone:#A8A29A;--stone-2:#8C867D;--line:var(--line-d);--line2:var(--line-d2);--mute:var(--stone);--acc:var(--red-hi);color:var(--ivory)}
+/* form fields and placeholder cards inside the light panels */
+.tone-paper :is(input[type=text],input[type=tel],input[type=email],textarea,select){background:#fff;color:var(--ink);border-color:var(--line2)}
+.tone-paper .ph-photo{background:#fff}
+.tone-paper .ph-photo>span{background:#fff;border-color:var(--line2);color:var(--warn-ink)}

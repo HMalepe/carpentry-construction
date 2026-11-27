@@ -375,9 +375,9 @@ test('header changes tone over paper sections (and back over graphite)', async (
   const paper = () => p.evaluate(() => document.querySelector('.site-head').classList.contains('on-paper'));
   assert.equal(await paper(), true, 'the opening is paper: paper header');
   await jump(p, await p.evaluate(() => scrollY + document.querySelector('.cata').getBoundingClientRect().top + 200)); await settle(p, 500);
-  assert.equal(await paper(), false, 'catalogue is graphite: dark header');
+  assert.equal(await paper(), true, 'the catalogue is a light panel: light header');
   await jump(p, await p.evaluate(() => scrollY + document.querySelector('.proc').getBoundingClientRect().top + 200)); await settle(p, 500);
-  assert.equal(await paper(), false, 'the process scene is dark too');
+  assert.equal(await paper(), false, 'the process scene is a dark block: dark header');
   await jump(p, 0); await settle(p, 500);
   assert.equal(await paper(), true, 'back at the top: paper again');
   await p.context().close();
