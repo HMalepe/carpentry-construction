@@ -318,7 +318,7 @@ const jump = (p, y) => p.evaluate((y) => scrollTo({ top: y, behavior: 'instant' 
 const sceneY = (p, sel, f) => p.evaluate(([sel, f]) => { const el = document.querySelector(sel); return scrollY + el.getBoundingClientRect().top + (el.offsetHeight - innerHeight) * f; }, [sel, f]);
 const settle = (p, ms = 350) => p.waitForTimeout(ms);
 
-test('pinned process scene: one scene, four beats; scrubbed route; rewinds when scrolling back', async () => {
+test('pinned process scene: one scene, four beats; scrubbed route; plays once, re-arms at the top', async () => {
   const p = await open({ viewport: { width: 1440, height: 900 } });
   await p.goto(BASE + '/');
   assert.equal(await p.evaluate(() => document.documentElement.classList.contains('motion')), true);
@@ -335,7 +335,9 @@ test('pinned process scene: one scene, four beats; scrubbed route; rewinds when 
   assert.ok(seen.every((r, i) => !i || r.dash < seen[i - 1].dash), 'the route line draws further with every beat');
   assert.ok(Math.abs(seen[3].dash - 0.25) < 0.03, 'the line is drawn up to the last step');
   await jump(p, await sceneY(p, '.proc', 0.04)); await settle(p);
-  assert.equal(await p.evaluate(() => document.querySelector('.proc').dataset.stage), '1', 'scrubbing rewinds');
+  assert.equal(await p.evaluate(() => document.querySelector('.proc').dataset.stage), '4', 'scrolling back up does NOT rewind it: animations play once, on the way down');
+  await jump(p, 0); await settle(p, 600);
+  assert.equal(await p.evaluate(() => document.querySelector('.proc').dataset.stage), '1', 'back at the top of the page it is re-armed for the next way down');
   assert.deepEqual(p.problems, []);
   await p.context().close();
 });
@@ -628,15 +630,12 @@ test('process scene: exactly four scrolls, each lands precisely on a step; the p
   await settle(p, 1200);
   st = await procState(p);
   assert.ok(st.y > st.stops[3] + 20, 'the fifth scroll leaves the scene and carries on down the page');
-  // and back up: first scroll returns to the last step, then one step per scroll
+  // scrolling back up is plain native scrolling: no step-lock, and the finished animation does not run backwards
   await jump(p, st.stops[3]); await settle(p, 900);
-  await p.mouse.wheel(0, -100); await settle(p, 1100);
-  st = await procState(p);
-  assert.ok(Math.abs(st.y - st.stops[2]) <= 2 && st.active === 2, 'scrolling up goes back one step exactly');
-  await jump(p, st.stops[0]); await settle(p, 900);
   await p.mouse.wheel(0, -100); await settle(p, 900);
   st = await procState(p);
-  assert.ok(st.y < st.stops[0] - 20, 'scrolling up from step one leaves the scene (no trap)');
+  assert.ok(st.y < st.stops[3] - 20 && !st.stops.some((x) => Math.abs(st.y - x) <= 2), 'going up is free scrolling, not snapped to a step');
+  assert.equal(st.active, 3, 'and the scene stays complete (nothing rewinds)');
   assert.deepEqual(p.problems, []);
   await p.context().close();
 });
@@ -681,9 +680,9 @@ test('process scene: arrow keys and Page Down also step exactly; Tab/typing are 
     const st = await procState(p);
     assert.ok(Math.abs(st.y - st.stops[want]) <= 2 && st.active === want, `${key} → step ${want + 1} exactly (${st.y} vs ${st.stops[want]})`);
   }
-  await p.keyboard.press('ArrowUp'); await settle(p, 1100);
+  await p.keyboard.press('ArrowUp'); await settle(p, 900);
   const st = await procState(p);
-  assert.ok(Math.abs(st.y - st.stops[2]) <= 2, 'ArrowUp goes back one step');
+  assert.ok(st.y < st.stops[3] && st.active === 3, 'ArrowUp is plain scrolling and nothing rewinds');
   await p.context().close();
 });
 
@@ -731,6 +730,27 @@ test('Back / iPhone swipe-back walks the pages you viewed one by one to the firs
   await p.goBack(); assert.equal(url(), '/services/');
   await p.goBack(); assert.ok(url() === '/' || url() === '/#catalogue', `back at the landing page (${url()})`);
   await p.goBack(); assert.equal(p.url(), 'about:blank', 'one more Back leaves the site: nothing traps the user');
+  assert.deepEqual(p.problems, []);
+  await p.context().close();
+});
+
+test('animations play once on the way down, never when scrolling back up; they re-arm at the top and on reload', async () => {
+  const p = await open({ viewport: { width: 1440, height: 900 } });
+  await p.goto(BASE + '/services/'); await settle(p, 800);
+  const state = () => p.evaluate(() => ({ in: document.querySelectorAll('.stg.in, [data-reveal].in, .reveal-img.in').length, total: document.querySelectorAll('.stg, [data-reveal], .reveal-img').length }));
+  for (let y = 0; y < 5000; y += 400) { await jump(p, y); await p.waitForTimeout(120); }
+  await settle(p, 600);
+  const down = await state();
+  assert.ok(down.in > 3, `things revealed on the way down (${down.in})`);
+  for (let y = 5000; y > 600; y -= 400) { await jump(p, y); await p.waitForTimeout(120); }
+  await settle(p, 400);
+  const up = await state();
+  assert.ok(up.in >= down.in, `scrolling back up does not remove or replay entrances (${down.in} -> ${up.in})`);
+  await jump(p, 0); await settle(p, 800);
+  const top = await state();
+  assert.ok(top.in < down.in, `back at the top the entrances below are re-armed (${down.in} -> ${top.in})`);
+  await p.reload(); await settle(p, 800);
+  assert.ok((await state()).in < down.in, 'a reload starts them from scratch');
   assert.deepEqual(p.problems, []);
   await p.context().close();
 });

@@ -43,6 +43,7 @@
 
     /* -- triggered reveals; items marked .stg ripple outward from the middle of the screen -- */
     d.querySelectorAll('.proj-grid > .proj, .board > .swatch, .facts > .fact, .stages > li, .principles > li, .channels > .channel, .verify > a, .index > li, .index > a').forEach(function (el) { el.classList.add('stg'); });
+    var revealed = [];   // elements that have already played their entrance (re-armed when the visitor returns to the top)
     var reveal = new IntersectionObserver(function (entries) {
       var hit = entries.filter(function (e) { return e.isIntersecting; });
       var mid = vw / 2;
@@ -53,6 +54,7 @@
         var el = en.target;
         if (el.classList.contains('stg')) el.style.transitionDelay = Math.min(i * 70, 560) + 'ms';
         el.classList.add('in');
+        revealed.push(el);
         reveal.unobserve(el);
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
@@ -68,7 +70,7 @@
       request();
     }, { rootMargin: '30% 0px 30% 0px' });
     var register = function (el, kind) {
-      var s = { el: el, kind: kind, vis: false, last: '', beats: 0, stages: null, next: null, nextTop: 0 };
+      var s = { el: el, kind: kind, vis: false, last: '', max: 0, beats: 0, stages: null, next: null, nextTop: 0 };
       if (kind === 'pin') {
         s.beats = Number(el.getAttribute('data-beats')) || 0;
         s.stages = s.beats ? [].slice.call(el.querySelectorAll('.stage')) : null;
@@ -92,6 +94,9 @@
       return 0;
     };
     var apply = function (s, p) {
+      // one-way: an animation plays once on the way down and never runs backwards when scrolling back up
+      if (p > s.max) s.max = p;
+      p = s.max;
       var v = p.toFixed(3);
       if (v === s.last) return;
       s.last = v;
@@ -132,6 +137,21 @@
       lastY = y;
       if (again) request();
     };
+    /* Back at the top of the page (header / hero) every animation is re-armed so it plays again on the next way down. A reload re-arms everything too. */
+    var wentDown = false;
+    var rearm = function () {
+      scrubs.forEach(function (s) { s.max = 0; s.last = ''; });
+      revealed.forEach(function (el) {
+        if (el.getBoundingClientRect().top > window.innerHeight) { el.classList.remove('in'); el.style.transitionDelay = ''; reveal.observe(el); }
+      });
+      revealed = revealed.filter(function (el) { return el.classList.contains('in'); });
+      request();
+    };
+    window.addEventListener('scroll', function () {
+      var y = window.scrollY;
+      if (y > 240) wentDown = true;
+      else if (y < 30 && wentDown) { wentDown = false; rearm(); }
+    }, { passive: true });
     measure();
     window.addEventListener('scroll', request, { passive: true });
     window.addEventListener('resize', function () { measure(); request(); });
@@ -164,7 +184,9 @@
     var nearest = function (y, st) { var b = 0; st.forEach(function (v, i) { if (Math.abs(v - y) < Math.abs(st[b] - y)) b = i; }); return b; };
     var inside = function (y, st) { return y >= st[0] - 2 && y <= st[st.length - 1] + 2; };
     // target for a move in direction dir (+1 down / -1 up) from the current position, or null when the page should just scroll on
+    var complete = function () { return proc.getAttribute('data-stage') === String(beats); };   // already played: from then on it is just a normal page
     var target = function (dir) {
+      if (dir < 0 || complete()) return null;
       var y = window.scrollY, st = stops();
       if (!inside(y, st)) return null;
       for (var i = dir > 0 ? 0 : st.length - 1; dir > 0 ? i < st.length : i >= 0; i += dir) if (dir > 0 ? st[i] > y + 4 : st[i] < y - 4) return st[i];
@@ -208,7 +230,7 @@
       clearTimeout(settleT);
       settleT = setTimeout(function () {
         var st = stops(), y = window.scrollY;
-        if (busy || !pinned() || !inside(y, st)) return;
+        if (busy || !pinned() || complete() || !inside(y, st)) return;
         var i = nearest(y, st); if (Math.abs(st[i] - y) > 2) go(st[i]);
       }, 170);
     }, { passive: true });

@@ -215,3 +215,10 @@ expansion) so they are never enlarged; send 1000 px+ wide originals if you want 
 - **Anchor links** (e.g. "Browse the catalogue") scroll smoothly and update the address without adding a history entry.
 - **Reload** (button, F5, pull-to-refresh) starts from scratch: top of the page, empty shortlist, no restored scroll position.
 - Tested end to end in `tests/e2e.test.mjs` ("Back / iPhone swipe-back…" and "reload starts from scratch…").
+
+## Animation rules
+
+- **Play once, on the way down.** Entrances, scroll-driven scenes and parallax only ever move forward; scrolling back up never reverses or replays them.
+- **Re-armed at the top.** Returning to the header / hero (top of the page) after scrolling down re-arms everything so it plays again on the next way down; a reload starts from scratch.
+- The pinned process scene is step-locked only while it has not finished (downward, mouse/trackpad); once complete it is plain scrolling in both directions.
+- Touch screens, reduced motion and low-end devices get no scroll-driven animation at all.
