@@ -992,3 +992,11 @@ html{color-scheme:light}
 
 /* header sits inside ONE colour: a panel that opens a page runs flush to the top edge with square top corners, so the logo never straddles white and grey */
 #main>.tone-paper:first-child,#main>.qb-first{margin-top:0!important;border-top-left-radius:0;border-top-right-radius:0}
+
+/* quote builder: every option row is ONE horizontal list (swipe/scroll sideways instead of wrapping onto extra rows) */
+.qb .chips{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.qb .chips::-webkit-scrollbar{display:none}
+.qb .chip{flex:0 0 auto;scroll-snap-align:start}
+.qb .chip.big{flex:1 1 0;min-width:0}
+.qb .chip.big>span{justify-content:center;font-size:clamp(15px,4vw,22px);padding:12px clamp(6px,3vw,22px);white-space:nowrap}
+.qb .chip>span{white-space:nowrap}
