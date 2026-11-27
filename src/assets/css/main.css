@@ -966,3 +966,17 @@ body{background:var(--c-white)}
 .tone-paper :is(input[type=text],input[type=tel],input[type=email],textarea,select){background:#fff;color:var(--ink);border-color:var(--line2)}
 .tone-paper .ph-photo{background:#fff}
 .tone-paper .ph-photo>span{background:#fff;border-color:var(--line2);color:var(--warn-ink)}
+
+/* ======================================================================
+   ONE TYPE SYSTEM, SITE-WIDE (matches the landing page): condensed caps for big headings, condensed semi-bold sans for card and
+   list titles. No serif and no pencil underline anywhere.
+   ====================================================================== */
+.display em,.h-xl em,.h-l em,.h-m em,.foot-sign em{background:none;padding:0;color:inherit;font-style:normal}
+.svc-card h2,.channel h2,.feature h2,.exp-row h3,.sheet h2,.foot-sign,.menu-panel nav a{
+  font-family:var(--sans);font-stretch:68%;font-weight:700;text-transform:uppercase;letter-spacing:.005em;line-height:1}
+.principles h3,.swatch h3,.stage h3,.index h3,.faq summary,.panel h2,.panel h3,.proj-body h3,.stages h3,.verify h3,.sched tbody th,.qb legend,.sheet-opt b,.prose h2,.lb-title,.chip.big>span{
+  font-family:var(--sans);font-stretch:82%;font-weight:600;letter-spacing:0;text-transform:none}
+.h-s{font-family:var(--sans);font-stretch:100%;font-weight:400;letter-spacing:-.01em;line-height:1.35}
+.foot-sign{font-size:clamp(40px,6.4vw,104px);max-width:14em}
+.foot-sign em{color:var(--red-hi)}
+.menu-panel nav a{font-size:clamp(32px,9vw,48px)}
