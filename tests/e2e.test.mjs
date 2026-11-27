@@ -368,20 +368,24 @@ test('sticky stacking cards: Services deals as a deck on desktop and stays plain
   await m.context().close();
 });
 
-test('header changes tone over paper sections (and back over graphite)', async () => {
-  const p = await open({ viewport: { width: 1440, height: 900 } });
-  await p.goto(BASE + '/services/construction/'); await settle(p, 500);
-  assert.equal(await p.evaluate(() => document.querySelector('.site-head').classList.contains('on-paper')), true, 'a paper hero starts with the paper header');
-  await p.goto(BASE + '/');
-  await settle(p, 500);
-  const paper = () => p.evaluate(() => document.querySelector('.site-head').classList.contains('on-paper'));
-  assert.equal(await paper(), true, 'the opening is paper: paper header');
-  await jump(p, await p.evaluate(() => scrollY + document.querySelector('.cata').getBoundingClientRect().top + 200)); await settle(p, 500);
-  assert.equal(await paper(), true, 'the catalogue is a light panel: light header');
-  await jump(p, await p.evaluate(() => scrollY + document.querySelector('.proc').getBoundingClientRect().top + 200)); await settle(p, 500);
-  assert.equal(await paper(), false, 'the process scene is a dark block: dark header');
-  await jump(p, 0); await settle(p, 500);
-  assert.equal(await paper(), true, 'back at the top: paper again');
+test('header is one solid white bar on every page, with the first panel starting below it', async () => {
+  const p = await open({ viewport: { width: 390, height: 844 } });
+  for (const url of ['/', '/projects/', CASE_PAGES[0], '/services/', '/services/construction/', '/services/maintenance/', '/services/carpentry/', '/quote/', '/contact/', '/privacy/', '/nope/']) {
+    await p.goto(BASE + url); await settle(p, 300);
+    for (const y of [0, 30, 600]) {
+      await jump(p, y); await settle(p, 200);
+      assert.equal(await p.evaluate(() => getComputedStyle(document.querySelector('.site-head')).backgroundColor), 'rgb(255, 255, 255)', `${url} at ${y}`);
+    }
+    await jump(p, 0); await settle(p, 200);
+    const gap = await p.evaluate(() => {
+      const s = document.querySelector('main>section.tone-paper:first-child:not(.open)');
+      return s ? s.getBoundingClientRect().top - document.querySelector('.site-head').getBoundingClientRect().bottom : 0;
+    });
+    assert.ok(gap >= -0.5, `${url}: panel starts under the header (${gap}px)`);
+  }
+  await p.click('.menu>summary');
+  const menu = await p.evaluate(() => [getComputedStyle(document.querySelector('.menu-panel')).backgroundColor, getComputedStyle(document.querySelector('.menu-panel nav a')).color]);
+  assert.deepEqual(menu, ['rgb(255, 255, 255)', 'rgb(27, 26, 24)'], 'menu links are readable');
   await p.context().close();
 });
 

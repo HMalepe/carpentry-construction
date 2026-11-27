@@ -136,8 +136,10 @@ main{counter-reset:sec}
 .ph-photo>span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--warn);text-align:center;background:var(--g-950);padding:8px 12px;border:1px solid var(--line2)}
 .ph-photo>span small{display:block;color:var(--stone);font-size:10px;margin-top:2px}
 /* ---------- header ---------- */
-.site-head{position:fixed;top:0;left:0;right:0;z-index:60;height:var(--head-h);transition:background-color .5s var(--ease),border-color .5s var(--ease);border-bottom:1px solid transparent}
-.site-head.is-scrolled,html:not(.js) .site-head{background:rgba(17,17,16,.88);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom-color:var(--line-d)}
+/* one solid white bar on every page and scroll position, so nothing behind it can split the logo into two colours */
+.site-head{position:fixed;top:0;left:0;right:0;z-index:60;height:var(--head-h);background:var(--c-white);border-bottom:1px solid transparent;transition:border-color .5s var(--ease);
+  --ivory:var(--c-graphite);--stone:var(--ink-mute);--stone-2:#6B655B;--line:var(--line-l);--line2:var(--line-l2);--line-d:var(--line-l);--line-d2:var(--line-l2);--acc:var(--red);--logo-red:#9F2D32;--logo-ink:#282828}
+.site-head.is-scrolled,html:not(.js) .site-head{border-bottom-color:var(--line-l)}
 .head-in{height:100%;display:flex;align-items:center;gap:var(--s5);max-width:var(--max);margin:0 auto;padding:0 var(--margin);color:var(--ivory)}
 .logo{display:inline-flex;align-items:center;gap:12px;margin-right:auto}
 .logo-mark{width:46px;height:auto;flex:none;overflow:visible}
@@ -171,11 +173,12 @@ main{counter-reset:sec}
 .menu .m-close{display:none}
 .menu[open] .m-open{display:none}
 .menu[open] .m-close{display:inline}
-.menu-panel{position:fixed;left:0;right:0;top:var(--head-h);bottom:0;z-index:59;overflow:auto;background:var(--g-950);border-top:1px solid var(--line-d);padding:var(--s5) var(--margin) calc(var(--s7) + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:var(--s6)}
+.menu-panel{position:fixed;left:0;right:0;top:var(--head-h);bottom:0;z-index:59;overflow:auto;background:var(--c-white);color:var(--ivory);border-top:1px solid var(--line-d);padding:var(--s5) var(--margin) calc(var(--s7) + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:var(--s6)}
 .menu-panel nav{display:flex;flex-direction:column}
 .menu-panel nav a{display:flex;align-items:baseline;gap:18px;padding:12px 0;border-bottom:1px solid var(--line-d);font-family:var(--serif);font-weight:300;font-size:clamp(30px,8.6vw,46px);line-height:1.1;letter-spacing:-.02em}
 .menu-panel nav a .mono{width:30px;color:var(--acc)}
-.menu-panel nav a[aria-current]{color:var(--red-hi)}
+.menu-panel nav a[aria-current]{color:var(--red)}
+.menu-panel .btn-primary{background:var(--c-graphite);border-color:var(--c-graphite);color:var(--c-white)}
 .motion .menu[open] .menu-panel nav a{animation:rise .7s var(--ease) both}
 .motion .menu[open] .menu-panel nav a:nth-child(2){animation-delay:.04s}
 .motion .menu[open] .menu-panel nav a:nth-child(3){animation-delay:.08s}
@@ -704,15 +707,6 @@ a.channel:hover .arr{transform:translate(4px,-4px)}
 .titleblock>div:last-child{border-right:0}}
 .has-cta .foot-sign,.has-cta .site-foot>.wrap>.acts{display:none}
 .home .foot-grid,.has-cta .foot-grid{margin-top:0}
-/* header over paper heroes: ink until the page scrolls */
-/* header over a paper section (class set by JS from what is under the header): ink on paper, in every scroll state */
-.site-head.on-paper{--logo-red:#9F2D32;--logo-ink:#282828}
-.site-head.on-paper .head-in{color:var(--ink)}
-.site-head.on-paper.is-scrolled{background:rgba(238,233,225,.9);border-bottom-color:var(--line-l)}
-.site-head.on-paper .logo-word small,.site-head.on-paper .nav-d a{color:var(--ink-mute)}
-.site-head.on-paper .nav-d a[aria-current],.site-head.on-paper .nav-d a:hover{color:var(--ink)}
-.site-head.on-paper .btn-ghost{border-color:var(--line-l2)}
-.site-head.on-paper .burger,.site-head.on-paper .menu>summary{color:var(--ink)}
 .nf{min-height:86svh;display:grid;align-items:end;padding-bottom:var(--s9)}
 /* utilities */
 .mt-0{margin-top:0!important}
@@ -780,7 +774,6 @@ body{background:#fff;color:#000}}
 .open-bg{position:absolute;inset:0 0 auto 0;height:calc(var(--head-h) + 46svh);z-index:-2}
 .open-bg img{width:100%;height:100%;object-fit:cover;object-position:center 62%}
 /* the photo is shown clean (no fade or tint): legibility comes from a solid header bar and a solid cream card behind the text */
-.home .site-head:not(.is-scrolled){background:rgba(238,233,225,.97);border-bottom-color:var(--line-l)}
 .open-grid{display:grid;gap:var(--s6)}
 .open-eyebrow{margin-bottom:var(--s5);font-size:12px;letter-spacing:.2em;color:var(--ink)}
 .open-eyebrow::after{max-width:280px;background:var(--ink);opacity:.7}
@@ -914,10 +907,6 @@ a,button,summary,label,.pick,.door{touch-action:manipulation}
 /* no 300ms tap delay, no double-tap zoom on controls */
 /* Rails below the fold are not laid out or painted until they near the screen (they are scroll containers already, so paint containment changes nothing visible). */
 .rail{content-visibility:auto;contain-intrinsic-size:auto 480px}
-/* Blurring everything behind the header re-renders it on every scroll frame: fine on a laptop, janky on a cheap phone. Touch devices get a solid bar. */
-@media (hover:none){
-.site-head.is-scrolled,html:not(.js) .site-head{background:rgba(17,17,16,.97);-webkit-backdrop-filter:none;backdrop-filter:none}
-.site-head.on-paper.is-scrolled{background:rgba(238,233,225,.97)}}
 /* Low-end mode (<=2 GB RAM, <=2 cores, Save-Data, 2G): the plain page, no shadows or filters to repaint. */
 .lite .site-head,.lite .fab,.lite .pickbar{box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
 .lite .ph img,.lite .tile-ph img{transition:none;filter:none}
@@ -940,7 +929,8 @@ a,button,summary,label,.pick,.door{touch-action:manipulation}
 body{background:var(--c-white)}
 .sec.tone-paper,.page-hero.tone-paper,.nf.tone-paper,.case-hero.tone-paper,section.tone-paper:not(.open):not(.svc-card){
   background:var(--c-fog);margin:0 var(--c-gap) var(--c-vgap);border-radius:var(--c-radius)}
-.page-hero.tone-paper,.case-hero.tone-paper,.nf.tone-paper{margin-top:calc(var(--head-h) + var(--c-vgap))}
+/* the first panel of a page starts under the white header (the selector has to outrank the panel margin above) */
+main>section.tone-paper:first-child:not(.open){margin-top:var(--head-h);padding-top:var(--s7)}
 .tone-paper .dimline span{--dim-bg:var(--c-fog)}
 /* dark rounded blocks for contrast */
 .proc.tone-dark,.cta-band{margin:var(--c-vgap) var(--c-gap);border-radius:var(--c-radius);background:var(--c-graphite)}
@@ -986,9 +976,6 @@ body{background:var(--c-white)}
   .strip-in li:nth-child(odd) a{border-left:0}
 }
 html{color-scheme:light}
-
-/* quote page opens straight on the service choice: no heading block above it, so the first panel clears the fixed header itself */
-.qb-first{margin-top:calc(var(--head-h) * .4)!important;padding-top:calc(var(--head-h) + var(--s5))!important}   /* starts behind the header so the header takes the light tone, content clears it */
-
-/* header sits inside ONE colour: a panel that opens a page runs flush to the top edge with square top corners, so the logo never straddles white and grey */
-#main>.tone-paper:first-child,#main>.qb-first{margin-top:0!important;border-top-left-radius:0;border-top-right-radius:0}
+/* quote page opens straight on the service choice: the panel edge replaces the first divider */
+main>section.qb-first:first-child{padding-top:var(--s2)}
+.qb-first .qb{border-top:0}

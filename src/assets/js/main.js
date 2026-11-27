@@ -236,7 +236,7 @@
     }, { passive: true });
   })();
 
-  /* ---- header: solid once the page scrolls; takes the paper tone while it sits over a paper section ---- */
+  /* ---- header: gains a hairline once the page scrolls ---- */
   if (head) {
     var ticking = false;
     var fab = d.querySelector('.fab');
@@ -250,20 +250,6 @@
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(paint); } }, { passive: true });
     paint();
 
-    var papers = [].slice.call(d.querySelectorAll('.tone-paper')), over = [], toneIO = null, toneT = 0;
-    var watchTone = function () {
-      if (toneIO) toneIO.disconnect();
-      over = [];
-      var band = Math.round(head.offsetHeight / 2);
-      toneIO = new IntersectionObserver(function (es) {
-        es.forEach(function (e) {
-          var i = over.indexOf(e.target);
-          if (e.isIntersecting && i < 0) over.push(e.target); else if (!e.isIntersecting && i >= 0) over.splice(i, 1);
-        });
-        head.classList.toggle('on-paper', over.length > 0);
-      }, { rootMargin: '0px 0px ' + (-(window.innerHeight - band)) + 'px 0px', threshold: 0 });
-      papers.forEach(function (el) { toneIO.observe(el); });
-    };
     /* the floating WhatsApp pill steps aside while a big call to action is on screen */
     if (fab && 'IntersectionObserver' in window) {
       var cta = new IntersectionObserver(function (es) {
@@ -271,10 +257,6 @@
         fab.classList.toggle('fab-off', [].some.call(d.querySelectorAll('.invite, .cta-band'), function (n) { return n._cta; }));
       }, { threshold: 0.35 });
       d.querySelectorAll('.invite, .cta-band').forEach(function (n) { cta.observe(n); });
-    }
-    if (papers.length && 'IntersectionObserver' in window) {
-      watchTone();
-      window.addEventListener('resize', function () { clearTimeout(toneT); toneT = setTimeout(watchTone, 150); });
     }
   }
   var NUMBER = d.body.getAttribute('data-wa-number');
